@@ -5,12 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".pages.MainActivity">
 
-    <com.richpath.RichPathView
-        android:id="@+id/iv_korea"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:vector="@drawable/ic_img_korea_detail" />
+        android:layout_weight="1" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:itemIconTint="@drawable/nav_selected_color"
+        app:itemTextColor="@drawable/nav_selected_color"
+        app:labelVisibilityMode="selected"
+        app:menu="@menu/menu_bottom_nav" />
+    <!--    <com.richpath.RichPathView-->
+    <!--        android:id="@+id/iv_korea"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        app:vector="@drawable/ic_img_korea_detail" />-->
 
 </LinearLayout>

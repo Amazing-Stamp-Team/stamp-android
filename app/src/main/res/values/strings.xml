@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">stamp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_menu_home">홈</string>
+    <string name="nav_menu_map">여행지도</string>
+    <string name="nav_menu_feed">피드</string>
+    <string name="nav_menu_my_page">마이페이지</string>
 </resources>

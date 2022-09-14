@@ -8,5 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="testColor">#FF0000</color>
+    <color name="main_color_100">#53BF9D</color>
+    <color name="main_color_80">#ddf2eb</color>
+
 </resources>
