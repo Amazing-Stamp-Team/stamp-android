@@ -6,9 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.stamp.R
+import com.example.stamp.databinding.FragmentMapBinding
 
 
 class MapFragment : Fragment() {
+
+    private val binding by lazy { FragmentMapBinding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,8 +22,14 @@ class MapFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false)
+
+        binding.run {
+            val cheonan = ivKorea.findRichPathByName("충남 천안")!!
+            cheonan.fillColor = requireActivity().getColor(R.color.teal_700)
+        }
+
+
+        return binding.root
     }
 
 }
