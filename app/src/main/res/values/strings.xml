@@ -11,4 +11,8 @@
     <string name="obj_login">로그인</string>
     <string name="obj_register">회원가입</string>
     <string name="obj_login_help">아이디 혹은 비밀번호를 잊으셨나요?</string>
+    <string name="obj_stamp_login">스탬프 로그인</string>
+    <string name="obj_email">이메일</string>
+    <string name="obj_pw">비밀번호</string>
+    <string name="obj_home_title">STAMP</string>
 </resources>

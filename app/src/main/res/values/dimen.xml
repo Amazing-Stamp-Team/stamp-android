@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="big_title_size">70sp</dimen>
+    <dimen name="title_size">30sp</dimen>
 
     <dimen name="gap_horizontal">30dp</dimen>
     <dimen name="gap_vertical">30dp</dimen>
