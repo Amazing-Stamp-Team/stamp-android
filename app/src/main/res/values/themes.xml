@@ -15,8 +15,16 @@
         <!-- Customize your theme here. -->
 
         <item name="colorDistrict1">#ff0000</item>
+        <item name="buttonStyle">@style/customBtnStyle</item>
 
     </style>
 
     <attr name="colorDistrict1" format="color" />
+
+    <style name="customBtnStyle" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>

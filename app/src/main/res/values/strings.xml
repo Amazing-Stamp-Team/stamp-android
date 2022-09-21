@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">stamp</string>
+    <string name="glb_stamp">Stamp</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_menu_home">홈</string>
     <string name="nav_menu_map">여행지도</string>
     <string name="nav_menu_feed">피드</string>
     <string name="nav_menu_my_page">마이페이지</string>
+    <string name="obj_login">로그인</string>
+    <string name="obj_register">회원가입</string>
+    <string name="obj_login_help">아이디 혹은 비밀번호를 잊으셨나요?</string>
 </resources>
