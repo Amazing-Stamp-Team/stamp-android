@@ -14,9 +14,12 @@
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
         <activity
+            android:name=".pages.sign.RegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".pages.sign.LoginActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true" >
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,9 +28,7 @@
         </activity>
         <activity
             android:name=".pages.MainActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
     </application>
 
 </manifest>

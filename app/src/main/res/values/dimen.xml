@@ -11,4 +11,6 @@
 
     <dimen name="btn_full_height">50dp</dimen>
 
+    <dimen name="btn_small_height">30dp</dimen>
+
 </resources>

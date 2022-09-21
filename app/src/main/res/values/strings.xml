@@ -15,4 +15,14 @@
     <string name="obj_email">이메일</string>
     <string name="obj_pw">비밀번호</string>
     <string name="obj_home_title">STAMP</string>
+    <string name="obj_register_title">회원 가입</string>
+    <string name="obj_register_email">이메일</string>
+    <string name="obj_email_certify">인증</string>
+    <string name="obj_register_email_certify">인증번호</string>
+    <string name="obj_email_certify_ok">확인</string>
+    <string name="obj_register_nickname">닉네임</string>
+    <string name="obj_register_nickname_dupl">중복확인</string>
+    <string name="obj_register_password">비밀번호</string>
+    <string name="obj_register_password_check">비밀번호 확인</string>
+    <string name="obj_register_finish">회원가입</string>
 </resources>
