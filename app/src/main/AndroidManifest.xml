@@ -14,10 +14,13 @@
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
         <activity
-            android:name=".pages.sign.RegisterActivity"
+            android:name=".pages.sns.PostAddActivity"
             android:exported="false" />
         <activity
-            android:name=".pages.sign.LoginActivity"
+            android:name=".pages.session.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pages.session.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -28,7 +31,7 @@
         </activity>
         <activity
             android:name=".pages.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

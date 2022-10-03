@@ -1,9 +1,8 @@
-package com.example.stamp.pages.sign
+package com.example.stamp.pages.session
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText

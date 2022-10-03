@@ -1,4 +1,4 @@
-package com.example.stamp.pages.sign
+package com.example.stamp.pages.session
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

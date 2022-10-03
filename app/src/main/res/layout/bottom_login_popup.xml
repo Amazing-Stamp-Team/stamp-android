@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/gap_horizontal"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:context=".pages.sign.LoginPopupFragment">
+    tools:context=".pages.session.LoginPopupFragment">
 
     <TextView
         android:layout_width="wrap_content"

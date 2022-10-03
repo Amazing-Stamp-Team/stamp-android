@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityMainBinding
+import com.example.stamp.pages.sns.FeedFragment
 
 
 class MainActivity : AppCompatActivity() {

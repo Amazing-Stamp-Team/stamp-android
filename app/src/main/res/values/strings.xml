@@ -25,4 +25,6 @@
     <string name="obj_register_password">비밀번호</string>
     <string name="obj_register_password_check">비밀번호 확인</string>
     <string name="obj_register_finish">회원가입</string>
+    <string name="obj_post_add_toolbar">여행 기록하기</string>
+    <string name="obj_post_add_photo">사진 추가하기</string>
 </resources>

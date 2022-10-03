@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/img_login_back_1"
-    tools:context=".pages.sign.LoginActivity">
+    tools:context=".pages.session.LoginActivity">
 
     <Button
         android:layout_width="wrap_content"
