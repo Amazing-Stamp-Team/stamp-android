@@ -26,6 +26,9 @@ class MapFragment : Fragment() {
         binding.run {
             val cheonan = ivKorea.findRichPathByName("충남 천안")!!
             cheonan.fillColor = requireActivity().getColor(R.color.teal_700)
+
+            val  yesan = ivKorea.findRichPathByName("충남_예산군")!!
+            yesan.fillColor = requireActivity().getColor(R.color.purple_700)
         }
 
 
