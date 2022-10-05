@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "371331893475",
+    "project_id": "stamp-3fea1",
+    "storage_bucket": "stamp-3fea1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371331893475:android:613fc20999da6fe8dd5dd6",
+        "android_client_info": {
+          "package_name": "com.amazing.stamp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371331893475-0oj18r2dv9pc1ub673ta473b4da5nnuq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZwIlqYTIUkAA-cP-ZuOXUEX4Z0VzhZ_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371331893475-0oj18r2dv9pc1ub673ta473b4da5nnuq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
