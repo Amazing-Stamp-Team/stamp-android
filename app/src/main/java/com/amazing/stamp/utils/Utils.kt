@@ -1,4 +1,4 @@
-package com.example.stamp.utils
+package com.amazing.stamp.utils
 
 import android.icu.text.SimpleDateFormat
 

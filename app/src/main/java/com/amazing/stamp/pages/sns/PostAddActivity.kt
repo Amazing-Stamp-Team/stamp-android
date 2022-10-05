@@ -1,4 +1,4 @@
-package com.example.stamp.pages.sns
+package com.amazing.stamp.pages.sns
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -14,9 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stamp.R
-import com.example.stamp.adapter.PostImageAdapter
+import com.amazing.stamp.adapter.PostImageAdapter
 import com.example.stamp.databinding.ActivityPostAddBinding
-import com.example.stamp.utils.Utils
+import com.amazing.stamp.utils.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 

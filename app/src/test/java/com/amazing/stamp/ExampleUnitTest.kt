@@ -1,4 +1,4 @@
-package com.example.stamp
+package com.amazing.stamp
 
 import org.junit.Test
 

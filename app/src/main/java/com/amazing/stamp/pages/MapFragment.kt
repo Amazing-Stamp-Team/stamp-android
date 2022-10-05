@@ -1,4 +1,4 @@
-package com.example.stamp.pages
+package com.amazing.stamp.pages
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.example.stamp.adapter
+package com.amazing.stamp.adapter
 
 import android.content.Context
 import android.graphics.Color

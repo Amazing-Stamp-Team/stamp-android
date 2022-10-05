@@ -1,4 +1,4 @@
-package com.example.stamp.pages.session
+package com.amazing.stamp.pages.session
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityLoginBinding
-import com.example.stamp.pages.MainActivity
+import com.amazing.stamp.pages.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class LoginActivity : AppCompatActivity() {

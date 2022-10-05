@@ -1,4 +1,4 @@
-package com.example.stamp.pages
+package com.amazing.stamp.pages
 
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.stamp.R
-import com.example.stamp.adapter.ImageSliderAdapter
+import com.amazing.stamp.adapter.ImageSliderAdapter
 import com.example.stamp.databinding.FragmentHomeBinding
 
 

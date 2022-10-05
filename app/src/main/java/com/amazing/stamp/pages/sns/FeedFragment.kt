@@ -1,4 +1,4 @@
-package com.example.stamp.pages.sns
+package com.amazing.stamp.pages.sns
 
 import android.content.Intent
 import android.os.Bundle

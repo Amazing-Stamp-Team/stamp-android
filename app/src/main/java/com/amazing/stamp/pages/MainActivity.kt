@@ -1,10 +1,10 @@
-package com.example.stamp.pages
+package com.amazing.stamp.pages
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityMainBinding
-import com.example.stamp.pages.sns.FeedFragment
+import com.amazing.stamp.pages.sns.FeedFragment
 
 
 class MainActivity : AppCompatActivity() {

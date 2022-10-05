@@ -1,4 +1,4 @@
-package com.example.stamp.pages.session
+package com.amazing.stamp.pages.session
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
