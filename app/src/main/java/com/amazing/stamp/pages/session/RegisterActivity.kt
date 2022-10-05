@@ -2,14 +2,17 @@ package com.amazing.stamp.pages.session
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.example.stamp.databinding.ActivityRegisterBinding
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
+    private val TAG = "RegisterActivity"
     private var auth: FirebaseAuth? = null
     private val binding by lazy { ActivityRegisterBinding.inflate(layoutInflater) }
 
@@ -17,7 +20,8 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        auth = Firebase.auth
+        FirebaseApp.initializeApp(this)
+        auth = FirebaseAuth.getInstance()
 
         setSupportActionBar(binding.toolbarRegister)
         supportActionBar?.run {
@@ -63,6 +67,7 @@ class RegisterActivity : AppCompatActivity() {
                         Toast.makeText(applicationContext, "계정이 생성되었습니다", Toast.LENGTH_SHORT).show()
                         finish()
                     } else {
+                        Log.d(TAG, "onRegister: ${task.exception.toString()}")
                         Toast.makeText(applicationContext, "계정 생성에 실패하였습니다",Toast.LENGTH_SHORT).show()
                     }
                 }

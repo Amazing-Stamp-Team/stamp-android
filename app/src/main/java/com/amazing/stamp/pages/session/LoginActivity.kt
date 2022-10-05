@@ -11,11 +11,18 @@ import com.example.stamp.R
 import com.example.stamp.databinding.ActivityLoginBinding
 import com.amazing.stamp.pages.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var auth: FirebaseAuth
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -40,13 +47,8 @@ class LoginActivity : AppCompatActivity() {
                 login.setOnClickListener {
                     val id = et_id.text.toString()
                     val pw = et_pw.text.toString()
-
-                    Toast.makeText(applicationContext, "$id\n$pw", Toast.LENGTH_SHORT).show()
                     loginSheetDialog.dismiss()
-
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    onLogin(id, pw)
                 }
             }
 
@@ -55,13 +57,28 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-
-
             // dev
             btnDev.setOnClickListener {
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 finish()
             }
         }
+    }
+
+    private fun onLogin(id: String, password: String) {
+        FirebaseApp.initializeApp(applicationContext)
+
+        auth.signInWithEmailAndPassword(id, password).addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                Toast.makeText(applicationContext, "로그인 성공",Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(applicationContext, "로그인 실패",Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
     }
 }
