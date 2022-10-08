@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.amazing.stamp.pages.MapFragment">
 
-
-    <com.richpath.RichPathView
+    <ImageView
         android:id="@+id/iv_korea"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:vector="@drawable/ic_img_korea_detail" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_img_korea_detail" />
 </FrameLayout>
