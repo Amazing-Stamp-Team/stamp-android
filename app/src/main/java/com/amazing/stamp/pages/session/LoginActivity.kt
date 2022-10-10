@@ -10,13 +10,14 @@ import android.widget.Toast
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityLoginBinding
 import com.amazing.stamp.pages.MainActivity
+import com.amazing.stamp.utils.ParentActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : ParentActivity() {
     private lateinit var auth: FirebaseAuth
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +69,10 @@ class LoginActivity : AppCompatActivity() {
     private fun onLogin(id: String, password: String) {
         FirebaseApp.initializeApp(applicationContext)
 
+        showProgress(this, "잠시만 기다려주세요")
+
         auth.signInWithEmailAndPassword(id, password).addOnCompleteListener { task ->
+            hideProgress()
             if(task.isSuccessful) {
                 Toast.makeText(applicationContext, "로그인 성공",Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)

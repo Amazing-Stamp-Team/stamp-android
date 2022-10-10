@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
         <activity
+            android:name=".ParentActivity"
+            android:exported="false" />
+        <activity
             android:name="com.amazing.stamp.pages.sns.PostAddActivity"
             android:exported="false" />
         <activity

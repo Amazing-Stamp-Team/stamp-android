@@ -1,7 +1,5 @@
 package com.amazing.stamp.pages
 
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +26,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val images = Array(5) { requireActivity().getDrawable(R.drawable.img_hanok)!! }
+        val images = Array(5) { requireActivity().getDrawable(R.drawable.img_sample_3)!! }
         val descriptions = Array(5) { " " }
         descriptions[0] = "전주, 한옥마을"
         descriptions[1] = "Page2"

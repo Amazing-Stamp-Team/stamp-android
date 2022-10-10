@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_hanok" />
+        android:src="@drawable/img_sample_3" />
 
     <TextView
         android:id="@+id/tv_item_slider"

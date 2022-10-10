@@ -1,20 +1,27 @@
 <resources>
     <string name="app_name">stamp</string>
     <string name="glb_stamp">Stamp</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="obj_home_title">STAMP</string>
+
+
+    <!-- Navigation -->
     <string name="nav_menu_home">홈</string>
     <string name="nav_menu_map">여행지도</string>
     <string name="nav_menu_feed">피드</string>
     <string name="nav_menu_my_page">마이페이지</string>
+
+    <!-- Login -->
     <string name="obj_login">로그인</string>
     <string name="obj_register">회원가입</string>
     <string name="obj_login_help">아이디 혹은 비밀번호를 잊으셨나요?</string>
     <string name="obj_stamp_login">스탬프 로그인</string>
     <string name="obj_email">이메일</string>
     <string name="obj_pw">비밀번호</string>
-    <string name="obj_home_title">STAMP</string>
+
+    <!-- Register -->
     <string name="obj_register_title">회원 가입</string>
     <string name="obj_register_email">이메일</string>
     <string name="obj_email_certify">인증</string>
@@ -25,6 +32,9 @@
     <string name="obj_register_password">비밀번호</string>
     <string name="obj_register_password_check">비밀번호 확인</string>
     <string name="obj_register_finish">회원가입</string>
+
+
+    <!-- PostAdd -->
     <string name="obj_post_add_toolbar">여행 기록하기</string>
     <string name="obj_post_add_photo">사진 추가하기</string>
     <string name="msg_max_image_count_exceed">첨부 가능한 사진 개수를 초과했어요</string>
@@ -35,4 +45,10 @@
     <string name="obj_post_add_duration_end">종료 날짜</string>
     <string name="tv_post_add_friends">친구</string>
     <string name="obj_post_add_friends">+ 친구 추가하기</string>
+
+    <!-- MyPage -->
+    <string name="obj_my_page_toolbar">마이페이지</string>
+    <string name="obj_profile_trip">다녀온 여행지</string>
+    <string name="obj_profile_view_trip_all">모두보기</string>
+
 </resources>
