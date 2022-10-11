@@ -15,18 +15,40 @@
         android:elevation="3dp"
         app:title="@string/obj_home_title" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_home"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/layoutIndicators"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="@dimen/gap_line"
-        android:paddingBottom="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_home"
+                android:layout_width="match_parent"
+                android:layout_height="600dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutIndicators"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/gap_line"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_fire"
+                android:gravity="center_vertical"
+                android:text="@string/obj_trip_hot"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

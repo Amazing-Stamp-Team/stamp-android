@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="120dp"
+    android:layout_height="200dp">
 
     <ImageView
-        android:id="@+id/iv_item_slider"
+        android:id="@+id/iv_item_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_sample_3" />
+        tools:src="@drawable/img_sample_1" />
 
     <TextView
-        android:id="@+id/tv_item_slider"
+        android:id="@+id/tv_item_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="200dp"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/gap_line"
         android:textColor="@color/white"
-        android:textSize="@dimen/title_size"
         android:textStyle="bold"
-        tools:text="전주, 한옥마을" />
-
+        tools:text="부산, XXXX" />
 
 </FrameLayout>

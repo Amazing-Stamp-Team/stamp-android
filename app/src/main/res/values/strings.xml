@@ -50,5 +50,6 @@
     <string name="obj_my_page_toolbar">마이페이지</string>
     <string name="obj_profile_trip">다녀온 여행지</string>
     <string name="obj_profile_view_trip_all">모두보기</string>
+    <string name="obj_trip_hot">지금 가장 HOT 한 여행지</string>
 
 </resources>
