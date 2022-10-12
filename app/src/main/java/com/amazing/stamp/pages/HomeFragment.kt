@@ -43,6 +43,8 @@ class HomeFragment : Fragment() {
                 }
             })
 
+            
+
             setupIndicators(images.size)
         }
 
