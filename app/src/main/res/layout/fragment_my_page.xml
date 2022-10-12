@@ -38,7 +38,7 @@
                     android:src="@drawable/ic_profile" />
 
                 <TextView
-                    android:id="@+id/tv_profile"
+                    android:id="@+id/tv_profile_nickname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
