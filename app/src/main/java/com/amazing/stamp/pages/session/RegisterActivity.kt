@@ -99,10 +99,7 @@ class RegisterActivity : ParentActivity() {
 
                         val uid = task.result.user!!.uid
                         val userModel = UserModel(uid, nickname)
-
-                        database!!.reference
-
-
+                        
                         database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
                             .setValue(userModel)
                             .addOnCompleteListener {
