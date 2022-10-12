@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.amazing.stamp.models.UserModel
@@ -14,10 +15,10 @@ import com.amazing.stamp.utils.Utils
 import com.example.stamp.databinding.ActivityRegisterBinding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.R
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -99,7 +100,16 @@ class RegisterActivity : ParentActivity() {
 
                         val uid = task.result.user!!.uid
                         val userModel = UserModel(uid, nickname)
-                        
+
+                        database!!.getReference(FirebaseConstants.DB_REF_USERS).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                Log.d(TAG, "onDataChange: ${snapshot}")
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                            }
+                        })
+
                         database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
                             .setValue(userModel)
                             .addOnCompleteListener {
