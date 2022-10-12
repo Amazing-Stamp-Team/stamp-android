@@ -21,6 +21,11 @@ import com.example.stamp.R
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.io.File
 
 class RegisterActivity : ParentActivity() {
     private val TAG = "RegisterActivity"
@@ -91,32 +96,79 @@ class RegisterActivity : ParentActivity() {
             }
             showProgress(this@RegisterActivity, "잠시만 기다려주세요")
 
+
+            // Step 1. Email, Password 로 계정 생성
             auth?.createUserWithEmailAndPassword(email, password)
                 ?.addOnCompleteListener(this@RegisterActivity) { task ->
                     hideProgress()
 
                     if (task.isSuccessful) {
-                        val user = auth!!.currentUser
-
                         val uid = task.result.user!!.uid
-                        val userModel = UserModel(uid, nickname)
 
-                        database!!.getReference(FirebaseConstants.DB_REF_USERS).addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                Log.d(TAG, "onDataChange: ${snapshot}")
-                            }
+                        // Step 2. 프로필 사진 업로드
+                        var profileSessionUri: String? = null
 
-                            override fun onCancelled(error: DatabaseError) {
-                            }
-                        })
+                        Log.d(TAG, "dev: point1")
 
-                        database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
-                            .setValue(userModel)
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) showShortToast(applicationContext, "닉네임 성공")
-                                else showShortToast(applicationContext, "닉네임 실패")
-                            }
+                        // Step 2 - 1. Coroutine, 비동기처리
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+                            val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
+                            val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
 
+                            uploadTask.addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    profileSessionUri = it.result.uploadSessionUri.toString()
+                                    Log.d(TAG, "dev: point2")
+                                    Log.d(TAG, "dev: point2 - ${profileSessionUri}")
+                                    showShortToast(applicationContext, "프로필 사진 업로드 성공")
+                                } else {
+                                    showShortToast(applicationContext, "프로필 사진 업로드 실패")
+                                }
+                            }.await()
+
+                            Log.d(TAG, "dev: point3")
+                            Log.d(TAG, "dev: point3 - ${profileSessionUri}")
+
+
+                            // Step 3. UserModel 객체 업로드
+                            val userModel = UserModel(uid, email, nickname, profileSessionUri)
+
+
+//                        database!!.getReference(FirebaseConstants.DB_REF_USERS).addListenerForSingleValueEvent(object : ValueEventListener {
+//                            override fun onDataChange(snapshot: DataSnapshot) {
+//                                Log.d(TAG, "onDataChange: ${snapshot}")
+//                            }
+//
+//                            override fun onCancelled(error: DatabaseError) {
+//                            }
+//                        })
+
+                            // Firebase Storage 에 저장될 파일 이름. 중복 방지를 위해 시간을 뒤에 붙임
+//                        val profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+//                        val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
+//                        val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
+//
+//                        uploadTask.addOnCompleteListener {
+//                            if (it.isSuccessful) {
+//                                it.result.uploadSessionUri
+//                                showShortToast(applicationContext, "Photo Upload Success")
+//                            } else {
+//                                showShortToast(applicationContext, "Photo Upload Fail")
+//                            }
+//                        }
+
+                            database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
+                                .setValue(userModel)
+                                .addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        showShortToast(applicationContext, "계정 생성에 성공하였습니다")
+                                        finish()
+                                    }
+                                    else showShortToast(applicationContext, "닉네임 실패")
+                                }
+                            //profileSessionUri = firebasePutProfile(uid)
+                        }
                     } else {
                         showShortToast(applicationContext, "계정 생성에 실패하였습니다")
                     }
@@ -124,6 +176,24 @@ class RegisterActivity : ParentActivity() {
         }
     }
 
+    private suspend fun firebasePutProfile(uid: String): String? {
+        val profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+        val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
+        val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
+        var photoUri: Uri? = null
+
+        uploadTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+                photoUri = it.result.uploadSessionUri
+                Log.d(TAG, "dev: point2")
+                showShortToast(applicationContext, "Photo Upload Success")
+            } else {
+                showShortToast(applicationContext, "Photo Upload Fail")
+            }
+        }.await()
+
+        return if (photoUri == null) null else photoUri.toString()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_OK) return
