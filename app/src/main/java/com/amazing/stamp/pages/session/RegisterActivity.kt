@@ -4,21 +4,22 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.amazing.stamp.models.UserModel
+import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
+import com.amazing.stamp.utils.SecretConstants
 import com.amazing.stamp.utils.Utils
 import com.example.stamp.databinding.ActivityRegisterBinding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.R
-import java.io.File
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : ParentActivity() {
     private val TAG = "RegisterActivity"
@@ -39,7 +40,7 @@ class RegisterActivity : ParentActivity() {
 
         FirebaseApp.initializeApp(this)
         auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance()
+        database = Firebase.database(SecretConstants.FIREBASE_REALTIME_DATABASE_URL)
         storage = FirebaseStorage.getInstance()
 
         setSupportActionBar(binding.toolbarRegister)
@@ -94,53 +95,26 @@ class RegisterActivity : ParentActivity() {
                     hideProgress()
 
                     if (task.isSuccessful) {
+                        val user = auth!!.currentUser
 
                         val uid = task.result.user!!.uid
-                        val file = if (pathUri == null) null else Uri.fromFile(File(pathUri))
+                        val userModel = UserModel(uid, nickname)
 
-                        if (pathUri == null) {
-                            val userModel = UserModel(nickname, uid, null, null)
-                            database!!.reference.child("users").child(uid).setValue(userModel)
-                        } else {
-                            val storageReference = storage!!.reference.child("usersprofileImages")
-                                .child("uid/" + file?.lastPathSegment)
+                        database!!.reference
 
-                            storageReference.putFile(imageUri!!).addOnCompleteListener { task2 ->
 
-//                                val imageUrl = task2.result.storage.downloadUrl
-//
-//                                while (!imageUrl.isComplete) {
-//                                }
-//
-//                                val userModel =
-//                                    UserModel(nickname, uid, imageUrl.result.toString(), null)
-//                                database!!.reference.child("users").child(uid).setValue(userModel)
+                        database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
+                            .setValue(userModel)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) showShortToast(applicationContext, "닉네임 성공")
+                                else showShortToast(applicationContext, "닉네임 실패")
                             }
-                        }
 
-//                    if (task.isSuccessful) {
-//
-//                        task.result.user!!.updateProfile(userProfileChangeRequest {
-//                            displayName = nickname
-//                        }).addOnCompleteListener {
-//                            if (it.isSuccessful) {
-//                                showShortToast(applicationContext, "계정이 생성되었습니다")
-//                                finish()
-//                            } else {
-//                                showShortToast(applicationContext, "계정 생성에 실패하였습니다")
-//                            }
-//                        }
-//                    } else {
-//                        Log.d(TAG, "onRegister: ${task.exception.toString()}")
-//                        showShortToast(applicationContext, "계정 생성에 실패하였습니다")
-//                    }
                     } else {
-                        showShortToast(applicationContext, "계정 생성 실패")
+                        showShortToast(applicationContext, "계정 생성에 실패하였습니다")
                     }
                 }
-
         }
-
     }
 
 
