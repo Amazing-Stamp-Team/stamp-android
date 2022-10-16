@@ -95,76 +95,76 @@ class RegisterActivity : ParentActivity() {
                 Toast.makeText(applicationContext, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
                 return
             }
+
             showProgress(this@RegisterActivity, "잠시만 기다려주세요")
 
 
-            // Step 1. Email, Password 로 계정 생성
-            auth?.createUserWithEmailAndPassword(email, password)
-                ?.addOnCompleteListener(this@RegisterActivity) { task ->
-                    hideProgress()
 
-                    if (task.isSuccessful) {
-                        val uid = task.result.user!!.uid
+            /*
+                회원가입 시작부
+             */
 
-                        // Step 2. 프로필 사진 업로드
-                        // 콜백 중첩 현상을 방지하기 위해 Coroutine - await 사용
-                        CoroutineScope(Dispatchers.IO).launch {
-                            var profilePhotoFileName: String? = null
+            var uid: String? = null
 
-                            if(pathUri != null) {
-                                profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
-                                
-                                
-                                val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
-                                //val uploadTask = photoFileRef.putFile(Uri.fromFile(file))
-                                val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
-                                
-                                uploadTask.addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        showShortToast(applicationContext, "프로필 사진 업로드 성공")
-                                    } else {
-                                            showShortToast(applicationContext, "프로필 사진 업로드 실패")
-                                    }
-                                }.await()
-                            }
+            // 콜백 중첩 현상을 방지하기 위해 Coroutine - await 사용
+            CoroutineScope(Dispatchers.IO).launch {
+                checkDuplicatedNickname(nickname)
 
-                            // Step 3. UserModel 객체 업로드
-                            val userModel = UserModel(uid, email, nickname, profilePhotoFileName)
-
-                            database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
-                                .setValue(userModel)
-                                .addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        showShortToast(applicationContext, "계정 생성에 성공하였습니다")
-                                        finish()
-                                    }
-                                    else showShortToast(applicationContext, "닉네임 실패")
-                                }
+                // Step 1. Email, Password 로 계정 생성
+                auth!!.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this@RegisterActivity) { task ->
+                        if (task.isSuccessful) {
+                            uid = task.result.user!!.uid
+                        } else {
+                            showShortToast(applicationContext, task.exception.toString())
+                            hideProgress()
                         }
-                    } else {
-                        showShortToast(applicationContext, "계정 생성에 실패하였습니다")
-                    }
+                    }.await()
+
+
+                // Step 2. 프로필 사진 업로드
+                var profilePhotoFileName: String? = null
+
+                if (pathUri != null) {
+                    profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+
+                    val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
+                    //val uploadTask = photoFileRef.putFile(Uri.fromFile(file))
+                    val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
+
+                    uploadTask.addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            showShortToast(applicationContext, "프로필 사진 업로드 성공")
+                        } else {
+                            hideProgress()
+                            showShortToast(applicationContext, "프로필 사진 업로드 실패")
+                        }
+                    }.await()
                 }
+
+                // Step 3. UserModel 객체 업로드
+                val userModel = UserModel(uid!!, email, nickname, profilePhotoFileName)
+
+                database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid!!).setValue(userModel)
+                    .addOnCompleteListener {
+                        hideProgress()
+                        if (it.isSuccessful) {
+                            showShortToast(applicationContext, "계정 생성에 성공하였습니다")
+                            finish()
+                        } else showShortToast(applicationContext, "닉네임 실패")
+                    }
+            }
         }
     }
 
-    private suspend fun firebasePutProfile(uid: String): String? {
-        val profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
-        val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
-        val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
-        var photoUri: Uri? = null
-
-        uploadTask.addOnCompleteListener {
-            if (it.isSuccessful) {
-                photoUri = it.result.uploadSessionUri
-                Log.d(TAG, "dev: point2")
-                showShortToast(applicationContext, "Photo Upload Success")
-            } else {
-                showShortToast(applicationContext, "Photo Upload Fail")
-            }
-        }.await()
-
-        return if (photoUri == null) null else photoUri.toString()
+    private suspend fun checkDuplicatedNickname(nickname:String) {
+        database!!.getReference(FirebaseConstants.DB_REF_USERS).orderByChild("nickname").equalTo(nickname).get()
+            .addOnCompleteListener{
+        //database!!.getReference(FirebaseConstants.DB_REF_USERS).orderByChild("nickname").equalTo(nickname).get()
+            //.addOnCompleteListener {
+                Log.d(TAG, "checkDuplicatedNickname - nicknameCount: ${it.result.childrenCount.toString()}")
+                showShortToast(applicationContext, it.result.childrenCount.toString())
+            }.await()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
