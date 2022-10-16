@@ -106,7 +106,6 @@ class RegisterActivity : ParentActivity() {
                         val uid = task.result.user!!.uid
 
                         // Step 2. 프로필 사진 업로드
-                        var profileSessionUri: String? = null
 
                         Log.d(TAG, "dev: point1")
 
@@ -118,21 +117,15 @@ class RegisterActivity : ParentActivity() {
 
                             uploadTask.addOnCompleteListener {
                                 if (it.isSuccessful) {
-                                    profileSessionUri = it.result.uploadSessionUri.toString()
-                                    Log.d(TAG, "dev: point2")
-                                    Log.d(TAG, "dev: point2 - ${profileSessionUri}")
                                     showShortToast(applicationContext, "프로필 사진 업로드 성공")
                                 } else {
                                     showShortToast(applicationContext, "프로필 사진 업로드 실패")
                                 }
                             }.await()
 
-                            Log.d(TAG, "dev: point3")
-                            Log.d(TAG, "dev: point3 - ${profileSessionUri}")
-
 
                             // Step 3. UserModel 객체 업로드
-                            val userModel = UserModel(uid, email, nickname, profileSessionUri)
+                            val userModel = UserModel(uid, email, nickname, profilePhotoFileName)
 
 
 //                        database!!.getReference(FirebaseConstants.DB_REF_USERS).addListenerForSingleValueEvent(object : ValueEventListener {
