@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.io.FileInputStream
 
 class RegisterActivity : ParentActivity() {
     private val TAG = "RegisterActivity"
@@ -112,14 +113,17 @@ class RegisterActivity : ParentActivity() {
 
                             if(pathUri != null) {
                                 profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+                                
+                                
                                 val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
-                                val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
-
+                                //val uploadTask = photoFileRef.putFile(Uri.fromFile(file))
+                                val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
+                                
                                 uploadTask.addOnCompleteListener {
                                     if (it.isSuccessful) {
                                         showShortToast(applicationContext, "프로필 사진 업로드 성공")
                                     } else {
-                                        showShortToast(applicationContext, "프로필 사진 업로드 실패")
+                                            showShortToast(applicationContext, "프로필 사진 업로드 실패")
                                     }
                                 }.await()
                             }
