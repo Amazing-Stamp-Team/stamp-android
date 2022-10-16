@@ -65,6 +65,7 @@ class LoginActivity : ParentActivity() {
             }
         }
     }
+    
 
     private fun onLogin(id: String, password: String) {
         FirebaseApp.initializeApp(applicationContext)
