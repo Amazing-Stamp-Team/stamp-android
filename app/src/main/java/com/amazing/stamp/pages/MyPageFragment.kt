@@ -1,9 +1,9 @@
 package com.amazing.stamp.pages
 
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,30 +12,31 @@ import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.MyPageTripModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
+import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
 import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
-import com.google.firebase.installations.Utils
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import java.io.File
+import kotlinx.coroutines.tasks.await
 
 
-class MyPageFragment : Fragment() {
+class MyPageFragment : ParentFragment() {
     val TAG = "MyPageFragment"
     private val binding by lazy { FragmentMyPageBinding.inflate(layoutInflater) }
     private var auth: FirebaseAuth? = null
     private var database: FirebaseDatabase? = null
-    private var storage:FirebaseStorage? = null
+    private var storage: FirebaseStorage? = null
+    private lateinit var userModel: UserModel
+    private val TEN_MEGABYTE: Long = 1024 * 1024 * 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +49,20 @@ class MyPageFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
         database = Firebase.database(SecretConstants.FIREBASE_REALTIME_DATABASE_URL)
-        storage = FirebaseStorage.getInstance()
+        storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
 
         binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
 
         setUpTripSampleRecyclerView()
+        showProgress(requireActivity(), "잠시만 기다려주세요")
 
         CoroutineScope(Dispatchers.IO).launch {
-            getUserModel()
+
+            // UserModel 의 imageName 값을 이용해 이미지를 가져오므로 순차적으로 실행되야함
+            getUserModel() // UserModel 가져오기
+            getUserProfilePhoto() // UserProfileImage 가져오기
+
+            hideProgress()
         }
 
         return binding.root
@@ -63,32 +70,32 @@ class MyPageFragment : Fragment() {
 
     private suspend fun getUserModel() {
         // 한 번만 필요할 경우 get() 으로 호출
-//        database!!.getReference(FirebaseConstants.DB_REF_USERS).get().addOnCompleteListener {
-//
-//        }
 
+        database!!.getReference(FirebaseConstants.DB_REF_USERS).child(auth!!.uid!!).get()
+            .addOnCompleteListener {
+                hideProgress()
+                userModel = it.result.getValue<UserModel>()!!
+                binding.tvProfileNickname.text = userModel.nickname
+            }.await()
+    }
 
+    private suspend fun getUserProfilePhoto() {
 
-        database!!.getReference(FirebaseConstants.DB_REF_USERS)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
+        if (userModel.imageName != null && userModel.imageName != "") {
+            val gsReference = storage!!.getReference("profile/${userModel.imageName!!}")
 
-                    val dto = snapshot.getValue<UserModel>()
-                    Log.d(TAG, "onDataChange: ${dto!!.nickname}")
-                    binding.tvProfileNickname.text = dto?.nickname
-
-//                    val photoFileRef = storage!!.reference.child("profile").child("IMG_PROFILE_F3cjkXMD1TcUDclqxKB4wVS9ne43_1665589384351.png\n")
-//                    photoFileRef.downloadUrl.addOnCompleteListener {
-//                        binding.ivProfile.setImageURI(it.result)
-//                    }
-
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
+            gsReference.getBytes(TEN_MEGABYTE).addOnCompleteListener {
+                val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
+                binding.ivProfile.setImageBitmap(
+                    Bitmap.createScaledBitmap(
+                        bmp,
+                        binding.ivProfile.width,
+                        binding.ivProfile.height,
+                        false
+                    )
+                )
+            }.await()
+        }
     }
 
     private fun setUpTripSampleRecyclerView() {

@@ -106,50 +106,26 @@ class RegisterActivity : ParentActivity() {
                         val uid = task.result.user!!.uid
 
                         // Step 2. 프로필 사진 업로드
-
-                        Log.d(TAG, "dev: point1")
-
-                        // Step 2 - 1. Coroutine, 비동기처리
+                        // 콜백 중첩 현상을 방지하기 위해 Coroutine - await 사용
                         CoroutineScope(Dispatchers.IO).launch {
-                            val profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
-                            val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
-                            val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
+                            var profilePhotoFileName: String? = null
 
-                            uploadTask.addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    showShortToast(applicationContext, "프로필 사진 업로드 성공")
-                                } else {
-                                    showShortToast(applicationContext, "프로필 사진 업로드 실패")
-                                }
-                            }.await()
+                            if(pathUri != null) {
+                                profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+                                val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
+                                val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
 
+                                uploadTask.addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        showShortToast(applicationContext, "프로필 사진 업로드 성공")
+                                    } else {
+                                        showShortToast(applicationContext, "프로필 사진 업로드 실패")
+                                    }
+                                }.await()
+                            }
 
                             // Step 3. UserModel 객체 업로드
                             val userModel = UserModel(uid, email, nickname, profilePhotoFileName)
-
-
-//                        database!!.getReference(FirebaseConstants.DB_REF_USERS).addListenerForSingleValueEvent(object : ValueEventListener {
-//                            override fun onDataChange(snapshot: DataSnapshot) {
-//                                Log.d(TAG, "onDataChange: ${snapshot}")
-//                            }
-//
-//                            override fun onCancelled(error: DatabaseError) {
-//                            }
-//                        })
-
-                            // Firebase Storage 에 저장될 파일 이름. 중복 방지를 위해 시간을 뒤에 붙임
-//                        val profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
-//                        val photoFileRef = storage!!.reference.child("profile").child(profilePhotoFileName)
-//                        val uploadTask = photoFileRef.putFile(Uri.fromFile(File(pathUri)))
-//
-//                        uploadTask.addOnCompleteListener {
-//                            if (it.isSuccessful) {
-//                                it.result.uploadSessionUri
-//                                showShortToast(applicationContext, "Photo Upload Success")
-//                            } else {
-//                                showShortToast(applicationContext, "Photo Upload Fail")
-//                            }
-//                        }
 
                             database!!.getReference(FirebaseConstants.DB_REF_USERS).child(uid)
                                 .setValue(userModel)
@@ -160,7 +136,6 @@ class RegisterActivity : ParentActivity() {
                                     }
                                     else showShortToast(applicationContext, "닉네임 실패")
                                 }
-                            //profileSessionUri = firebasePutProfile(uid)
                         }
                     } else {
                         showShortToast(applicationContext, "계정 생성에 실패하였습니다")
