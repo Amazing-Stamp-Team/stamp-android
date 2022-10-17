@@ -3,7 +3,6 @@ package com.amazing.stamp.pages
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,18 +13,19 @@ import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
+import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 
@@ -33,9 +33,9 @@ class MyPageFragment : ParentFragment() {
     val TAG = "MyPageFragment"
     private val binding by lazy { FragmentMyPageBinding.inflate(layoutInflater) }
     private var auth: FirebaseAuth? = null
-    private var database: FirebaseDatabase? = null
     private var storage: FirebaseStorage? = null
-    private lateinit var userModel: UserModel
+    private var fireStore: FirebaseFirestore? = null
+    private var userModel: UserModel? = null
     private val TEN_MEGABYTE: Long = 1024 * 1024 * 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +48,9 @@ class MyPageFragment : ParentFragment() {
     ): View? {
 
         auth = FirebaseAuth.getInstance()
-        database = Firebase.database(SecretConstants.FIREBASE_REALTIME_DATABASE_URL)
         storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
-
+        fireStore = Firebase.firestore
+        
         binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
 
         setUpTripSampleRecyclerView()
@@ -59,7 +59,9 @@ class MyPageFragment : ParentFragment() {
         CoroutineScope(Dispatchers.IO).launch {
 
             // UserModel 의 imageName 값을 이용해 이미지를 가져오므로 순차적으로 실행되야함
-            getUserModel() // UserModel 가져오기
+            runBlocking {
+                getUserModel() // UserModel 가져오기
+            }
             getUserProfilePhoto() // UserProfileImage 가져오기
 
             hideProgress()
@@ -70,19 +72,26 @@ class MyPageFragment : ParentFragment() {
 
     private suspend fun getUserModel() {
         // 한 번만 필요할 경우 get() 으로 호출
+        val userModelResult = fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get().await()
+        userModel = userModelResult.toObject()
+        binding.tvProfileNickname.text = userModel!!.nickname
 
-        database!!.getReference(FirebaseConstants.DB_REF_USERS).child(auth!!.uid!!).get()
-            .addOnCompleteListener {
-                hideProgress()
-                userModel = it.result.getValue<UserModel>()!!
-                binding.tvProfileNickname.text = userModel.nickname
-            }.await()
+
+//        fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get()
+//            .addOnCompleteListener { task ->
+//                if(task.isSuccessful) {
+//                    userModel = task.result.toObject<UserModel>()!!
+//                    binding.tvProfileNickname.text = userModel!!.nickname
+//                } else {
+//                    showShortToast(requireContext(), "유저 모델 가져오기 실패")
+//                }
+//            }.await()
     }
 
     private suspend fun getUserProfilePhoto() {
 
-        if (userModel.imageName != null && userModel.imageName != "") {
-            val gsReference = storage!!.getReference("profile/${userModel.imageName!!}")
+        if (userModel!!.imageName != null && userModel!!.imageName != "") {
+            val gsReference = storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
 
             gsReference.getBytes(TEN_MEGABYTE).addOnCompleteListener {
                 val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
