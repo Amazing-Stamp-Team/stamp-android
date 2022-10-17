@@ -11,5 +11,6 @@ object FirebaseConstants {
 
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
     const val STORAGE_PROFILE = "profile"
+    const val TEN_MEGABYTE: Long = 1024 * 1024 * 10
 
 }
