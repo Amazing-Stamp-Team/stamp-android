@@ -61,5 +61,7 @@
     <string name="obj_feed_toolbar">피드</string>
     <string name="obj_friends_add_id">닉네임/이메일로 친구 추가</string>
     <string name="obj_friends_add_location">주위 친구 찾기</string>
+    <string name="obj_friends_toolbar">친구 추가하기</string>
+    <string name="obj_friends_search_hint">닉네임 혹은 이메일을 입력해주세요</string>
 
 </resources>

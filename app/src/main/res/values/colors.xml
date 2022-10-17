@@ -15,4 +15,6 @@
 
     <color name="gray_10">#EDEDED</color>
     <color name="gray_50">#939393</color>
+    <color name="dark_gray">#b2b2b2</color>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.amazing.stamp.pages.sns
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,7 @@ class FeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+
         binding.run {
             btnPostAdd.setOnClickListener {
                 val intent = Intent(requireActivity(), PostAddActivity::class.java)
@@ -36,7 +38,10 @@ class FeedFragment : Fragment() {
             toolbarFeed.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.toolbar_action_friends -> {
-                        showShortToast(requireActivity(), "Friends Add Click")
+                        val intent = Intent(requireActivity(), FriendsSearchActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().overridePendingTransition(R.anim.horizon_enter, R.anim.none) // 옆에서 들어오는 애니메이션
+
                         return@setOnMenuItemClickListener true
                     }
                     R.id.toolbar_action_dm -> {
