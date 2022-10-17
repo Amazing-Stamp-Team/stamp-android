@@ -32,6 +32,7 @@
     <string name="obj_register_password">비밀번호</string>
     <string name="obj_register_password_check">비밀번호 확인</string>
     <string name="obj_register_finish">회원가입</string>
+    <string name="obj_register_nickname_dupl_check">사용 가능한 닉네임입니다!</string>
 
 
     <!-- PostAdd -->
@@ -50,7 +51,15 @@
     <string name="obj_my_page_toolbar">마이페이지</string>
     <string name="obj_profile_trip">다녀온 여행지</string>
     <string name="obj_profile_view_trip_all">모두보기</string>
+
+
+    <!-- MainPage -->
     <string name="obj_trip_hot">지금 가장 HOT 한 여행지</string>
-    <string name="obj_register_nickname_dupl_check">사용 가능한 닉네임입니다!</string>
+
+
+    <!-- FeedFragment -->
+    <string name="obj_feed_toolbar">피드</string>
+    <string name="obj_friends_add_id">닉네임/이메일로 친구 추가</string>
+    <string name="obj_friends_add_location">주위 친구 찾기</string>
 
 </resources>

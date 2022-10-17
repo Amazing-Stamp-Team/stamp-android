@@ -6,6 +6,22 @@
     android:layout_height="match_parent"
     tools:context="com.amazing.stamp.pages.sns.FeedFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_feed"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:elevation="3dp"
+            app:menu="@menu/menu_toolbar_feed"
+            app:title="@string/obj_feed_toolbar" />
+
+    </LinearLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_post_add"
         android:layout_width="wrap_content"

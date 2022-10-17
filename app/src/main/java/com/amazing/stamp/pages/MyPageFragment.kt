@@ -59,9 +59,7 @@ class MyPageFragment : ParentFragment() {
         CoroutineScope(Dispatchers.IO).launch {
 
             // UserModel 의 imageName 값을 이용해 이미지를 가져오므로 순차적으로 실행되야함
-            runBlocking {
-                getUserModel() // UserModel 가져오기
-            }
+            getUserModel() // UserModel 가져오기
             getUserProfilePhoto() // UserProfileImage 가져오기
 
             hideProgress()
@@ -75,7 +73,6 @@ class MyPageFragment : ParentFragment() {
         val userModelResult = fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get().await()
         userModel = userModelResult.toObject()
         binding.tvProfileNickname.text = userModel!!.nickname
-
 
 //        fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get()
 //            .addOnCompleteListener { task ->
