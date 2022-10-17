@@ -11,18 +11,22 @@ import com.example.stamp.databinding.ActivityFriendsSearchBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 class FriendsSearchActivity : AppCompatActivity() {
     private val binding by lazy { ActivityFriendsSearchBinding.inflate(layoutInflater) }
     private val friendsList = ArrayList<UserModel>()
-    private lateinit var friendAdapter: FriendAddAdapter
     private var fireStore: FirebaseFirestore? = null
+    private var storage: FirebaseStorage? = null
+    private lateinit var friendAdapter: FriendAddAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         fireStore = Firebase.firestore
+        storage = Firebase.storage
 
         setUpFriendRecyclerView()
         setUpSearchOption()
@@ -30,7 +34,7 @@ class FriendsSearchActivity : AppCompatActivity() {
 
 
     private fun setUpFriendRecyclerView() {
-        friendAdapter = FriendAddAdapter(applicationContext, fireStore, friendsList)
+        friendAdapter = FriendAddAdapter(applicationContext, storage, fireStore, friendsList)
         binding.rvFriends.adapter = friendAdapter
         friendAdapter.notifyDataSetChanged()
     }
