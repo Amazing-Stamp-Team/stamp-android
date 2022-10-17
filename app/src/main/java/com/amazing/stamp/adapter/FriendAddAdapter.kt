@@ -25,15 +25,19 @@ class FriendAddAdapter(
 ) :
     RecyclerView.Adapter<FriendAddAdapter.Holder>() {
 
+    interface ItemClickListener {
+        fun onItemClick(userModel: UserModel)
+    }
+
+    lateinit var itemClickListener: ItemClickListener
+
     fun fireStoreSearch(keyword: String) {
         fireStore?.collection(FirebaseConstants.COLLECTION_USERS)
             ?.addSnapshotListener { value, error ->
                 models.clear()
 
                 for (snapshot in value!!.documents) {
-                    if (snapshot.getString(FirebaseConstants.USER_FIELD_NICKNAME)!!
-                            .contains(keyword)
-                    ) {
+                    if (snapshot.getString(FirebaseConstants.USER_FIELD_NICKNAME)!!.contains(keyword)) {
                         val item = snapshot.toObject<UserModel>()
                         models.add(item!!)
                     }
@@ -87,5 +91,10 @@ class FriendAddAdapter(
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ItemFriendsAddBinding.bind(itemView)
+        init {
+            itemView.setOnClickListener {
+                itemClickListener.onItemClick(models[adapterPosition])
+            }
+        }
     }
 }

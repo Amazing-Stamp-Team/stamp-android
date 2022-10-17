@@ -1,11 +1,12 @@
 package com.amazing.stamp.pages.sns
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.amazing.stamp.adapter.FriendAddAdapter
-import com.amazing.stamp.models.FriendAddModel
 import com.amazing.stamp.models.UserModel
+import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityFriendsSearchBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,8 +29,16 @@ class FriendsSearchActivity : AppCompatActivity() {
         fireStore = Firebase.firestore
         storage = Firebase.storage
 
+        setSupportActionBar(binding.toolbarFriendsAdd)
+        supportActionBar?.run {
+            // 앱 바 뒤로가기 버튼 설정
+            setDisplayHomeAsUpEnabled(true)
+        }
+
+
         setUpFriendRecyclerView()
         setUpSearchOption()
+        setUpItemClickEvent()
     }
 
 
@@ -45,8 +54,28 @@ class FriendsSearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun setUpItemClickEvent() {
+        friendAdapter.itemClickListener = object : FriendAddAdapter.ItemClickListener {
+            override fun onItemClick(userModel: UserModel) {
+                showShortToast(applicationContext, "${userModel.nickname} 클릭됨")
+            }
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // 앱 바 클릭 이벤트
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
