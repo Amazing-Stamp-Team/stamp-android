@@ -56,9 +56,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
                     android:background="@drawable/circle_main_select_effect"
+                    android:elevation="5dp"
                     android:padding="@dimen/gap_line"
                     android:src="@drawable/ic_photo"
-                    android:elevation="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.88"
@@ -146,6 +146,17 @@
                     android:text="@string/obj_register_nickname_dupl"
                     android:textColor="@color/main_color_100" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_nickname_dupl_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:animateLayoutChanges="true"
+                android:text="@string/obj_register_nickname_dupl_check"
+                android:textColor="@color/black"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <TextView
                 android:layout_width="wrap_content"

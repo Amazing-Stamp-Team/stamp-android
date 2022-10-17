@@ -2,11 +2,14 @@ package com.amazing.stamp.pages.session
 
 import android.content.Intent
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
@@ -37,6 +40,8 @@ class RegisterActivity : ParentActivity() {
     private var imageUri: Uri? = null
     private var pathUri: String? = null
 
+    var nicknameDuplicateCheck = false // 닉네임 중복 체크 변수
+
     companion object {
         val PICK_FROM_ALBUM = 1
     }
@@ -59,7 +64,33 @@ class RegisterActivity : ParentActivity() {
         binding.run {
             btnRegisterFinish.setOnClickListener { onRegister() }
             ivProfileAdd.setOnClickListener { selectProfile() }
+            btnNicknameDupl.setOnClickListener { checkDuplicatedNickname() }
+
+            etNickname.addTextChangedListener {
+                nicknameDuplicateCheck = false
+                tvNicknameDuplCheck.visibility = View.GONE
+            }
         }
+    }
+
+    private fun checkDuplicatedNickname() {
+        val nickname = binding.etNickname.text.toString()
+
+        if(nickname.isEmpty()) {
+            showShortToast(applicationContext, "닉네임을 입력해주세요")
+            return
+        }
+
+        database!!.getReference(FirebaseConstants.DB_REF_USERS).orderByChild("nickname").equalTo(nickname).get()
+            .addOnCompleteListener{
+
+                if(it.result.childrenCount == 0L) {
+                    nicknameDuplicateCheck = true
+                    binding.tvNicknameDuplCheck.visibility = View.VISIBLE
+                } else {
+                    showShortToast(applicationContext,"이미 존재하는 닉네임입니다")
+                }
+            }
     }
 
     private fun selectProfile() {
@@ -96,6 +127,11 @@ class RegisterActivity : ParentActivity() {
                 return
             }
 
+            if(!nicknameDuplicateCheck) {
+                showShortToast(applicationContext, "닉네임 중복체크를 해주세요")
+                return
+            }
+
             showProgress(this@RegisterActivity, "잠시만 기다려주세요")
 
 
@@ -108,7 +144,6 @@ class RegisterActivity : ParentActivity() {
 
             // 콜백 중첩 현상을 방지하기 위해 Coroutine - await 사용
             CoroutineScope(Dispatchers.IO).launch {
-                checkDuplicatedNickname(nickname)
 
                 // Step 1. Email, Password 로 계정 생성
                 auth!!.createUserWithEmailAndPassword(email, password)
@@ -157,15 +192,7 @@ class RegisterActivity : ParentActivity() {
         }
     }
 
-    private suspend fun checkDuplicatedNickname(nickname:String) {
-        database!!.getReference(FirebaseConstants.DB_REF_USERS).orderByChild("nickname").equalTo(nickname).get()
-            .addOnCompleteListener{
-        //database!!.getReference(FirebaseConstants.DB_REF_USERS).orderByChild("nickname").equalTo(nickname).get()
-            //.addOnCompleteListener {
-                Log.d(TAG, "checkDuplicatedNickname - nicknameCount: ${it.result.childrenCount.toString()}")
-                showShortToast(applicationContext, it.result.childrenCount.toString())
-            }.await()
-    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_OK) return
