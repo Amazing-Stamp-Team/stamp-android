@@ -72,15 +72,17 @@ class FriendAddAdapter(
             storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
 
         gsReference.getBytes(FirebaseConstants.TEN_MEGABYTE).addOnCompleteListener {
-            val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
-            binding.ivFriendsProfile.setImageBitmap(
-                Bitmap.createScaledBitmap(
-                    bmp,
-                    binding.ivFriendsProfile.width,
-                    binding.ivFriendsProfile.height,
-                    false
+            if(it.isSuccessful) {
+                val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
+                binding.ivFriendsProfile.setImageBitmap(
+                    Bitmap.createScaledBitmap(
+                        bmp,
+                        binding.ivFriendsProfile.width,
+                        binding.ivFriendsProfile.height,
+                        false
+                    )
                 )
-            )
+            }
         }
     }
 
