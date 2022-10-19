@@ -76,7 +76,10 @@ class PostAddActivity : AppCompatActivity() {
                 activityResultLauncher.launch(intent)
             }
 
-            btnPostAddFinish.setOnClickListener { finish() }
+            btnPostAddFinish.setOnClickListener {
+
+
+                finish() }
         }
 
     }
