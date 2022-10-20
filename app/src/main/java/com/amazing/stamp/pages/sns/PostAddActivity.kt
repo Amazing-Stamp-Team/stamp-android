@@ -78,7 +78,9 @@ class PostAddActivity : AppCompatActivity() {
 
             btnPostAddFinish.setOnClickListener {
 
-
+                val startDate_post = etPostDurationStart
+                val endDate_post = etPostDurationEnd
+                val written_post = etPostWritePost.toString()
                 finish() }
         }
 

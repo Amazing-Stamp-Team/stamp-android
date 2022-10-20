@@ -45,6 +45,8 @@
     <string name="obj_post_add_duration_start">시작 날짜</string>
     <string name="obj_post_add_duration_end">종료 날짜</string>
     <string name="tv_post_add_friends">친구</string>
+    <string name="tv_post_add_write">글 작성</string>
+    <string name="et_post_add_write_feed">글 내용을 작성해주세요</string>
     <string name="obj_post_add_friends">+ 친구 추가하기</string>
 
     <!-- MyPage -->

@@ -105,6 +105,7 @@
 
             </LinearLayout>
 
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,8 +116,6 @@
                 android:text="@string/tv_post_add_friends"
                 android:textStyle="bold" />
 
-
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_post_add_friends"
                 android:layout_width="wrap_content"
@@ -126,6 +125,30 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/obj_post_add_friends"
                 android:textColor="@color/gray_50" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_edit_note"
+                android:drawablePadding="@dimen/gap_line"
+                android:text="@string/tv_post_add_write"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_post_write_post"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/et_gray_10"
+                android:hint="@string/et_post_add_write_feed"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:maxLines="10"
+                android:scrollbars = "vertical"
+                android:padding="@dimen/gap_line"
+                 />
+
         </LinearLayout>
     </ScrollView>
 
