@@ -1,5 +1,6 @@
 package com.amazing.stamp.pages.session
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -22,10 +23,14 @@ import com.example.stamp.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.FileInputStream
+
+
 
 class RegisterActivity : ParentActivity() {
     private val TAG = "RegisterActivity"
@@ -37,6 +42,17 @@ class RegisterActivity : ParentActivity() {
     private var fireStore :FirebaseFirestore? = null
 
     private var nicknameDuplicateCheck = false // 닉네임 중복 체크 변수
+
+    private val permissionListener = object :PermissionListener{
+        override fun onPermissionGranted() {
+            showShortToast(applicationContext, "권한이 승인되었습니다")
+            selectProfile()
+        }
+
+        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+            showShortToast(applicationContext, "권한이 없으면 사진 기능을 사용할 수 없습니다.")
+        }
+    }
 
     companion object {
         const val PICK_FROM_ALBUM = 1
@@ -51,7 +67,6 @@ class RegisterActivity : ParentActivity() {
         storage = FirebaseStorage.getInstance()
         fireStore = Firebase.firestore
 
-
         setSupportActionBar(binding.toolbarRegister)
         supportActionBar?.run {
             // 앱 바 뒤로가기 버튼 설정
@@ -60,7 +75,9 @@ class RegisterActivity : ParentActivity() {
 
         binding.run {
             btnRegisterFinish.setOnClickListener { onRegister() }
-            ivProfileAdd.setOnClickListener { selectProfile() }
+            ivProfileAdd.setOnClickListener {
+                permissionCheck()
+            }
             btnNicknameDupl.setOnClickListener { checkDuplicatedNickname() }
 
             etNickname.addTextChangedListener {
@@ -68,6 +85,14 @@ class RegisterActivity : ParentActivity() {
                 tvNicknameDuplCheck.visibility = View.GONE
             }
         }
+    }
+
+    private fun permissionCheck() {
+        TedPermission.create()
+            .setPermissionListener(permissionListener)
+            .setDeniedMessage("[설정] > [권한] 에서 권한 허용을 할 수 있습니다")
+            .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .check()
     }
 
     private fun checkDuplicatedNickname() {
