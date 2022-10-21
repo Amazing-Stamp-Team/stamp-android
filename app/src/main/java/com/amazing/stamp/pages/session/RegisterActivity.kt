@@ -171,38 +171,16 @@ class RegisterActivity : ParentActivity() {
                 val authResult = auth!!.createUserWithEmailAndPassword(email, password).await()
                 uid = authResult.user!!.uid
 
-//                    .addOnCompleteListener { task ->
-//                        if (task.isSuccessful) {
-//                            uid = task.result.user!!.uid
-//                            Log.d(TAG, "onRegister: point2 ${uid}")
-//                        } else {
-//                            showShortToast(applicationContext, task.exception.toString())
-//                            hideProgress()
-//                        }
-//                    }.await()
-
-                Log.d(TAG, "onRegister: point1 $uid")
-
 
                 // Step 2. 프로필 사진 업로드
                 var profilePhotoFileName: String? = null
 
                 if (pathUri != null) {
-                    Log.d(TAG, "onRegister: point3 $uid ")
                     profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
 
                     val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE).child(profilePhotoFileName)
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask.await()
-
-//                    uploadTask.addOnCompleteListener {
-//                        if (it.isSuccessful) {
-//                            showShortToast(applicationContext, "프로필 사진 업로드 성공")
-//                        } else {
-//                            hideProgress()
-//                            showShortToast(applicationContext, "프로필 사진 업로드 실패")
-//                        }
-//                    }.await()
                 }
 
 
