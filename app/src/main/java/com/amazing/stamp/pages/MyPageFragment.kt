@@ -1,5 +1,6 @@
 package com.amazing.stamp.pages
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -11,6 +12,7 @@ import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.MyPageTripModel
 import com.amazing.stamp.models.UserModel
+import com.amazing.stamp.pages.session.LoginActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
@@ -81,9 +83,27 @@ class MyPageFragment : ParentFragment() {
 
         bottomSheetDialog.show()
 
+
         bottomSheetDialog.findViewById<Button>(R.id.btn_withdrawal_yes)?.setOnClickListener {
-            showShortToast(requireContext(), "예 클릭했음")
+            showProgress(requireActivity(), "잠시만 기다려주세요")
             bottomSheetDialog.dismiss()
+
+            val uid = auth!!.currentUser!!.uid
+
+            auth!!.currentUser?.delete()?.addOnCompleteListener {
+                hideProgress()
+                if (it.isSuccessful) {
+
+                    fireStore!!.collection(FirebaseConstants.COLLECTION_USERS)
+                        .document(uid).delete().addOnCompleteListener {
+                            showShortToast(requireContext(), "계정이 삭제되었습니다")
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+                } else {
+                    showShortToast(requireContext(), "계정 삭제에 실패했습니다")
+                }
+            }
         }
 
         bottomSheetDialog.findViewById<Button>(R.id.btn_withdrawal_no)?.setOnClickListener {
