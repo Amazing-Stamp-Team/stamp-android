@@ -206,10 +206,8 @@ class RegisterActivity : ParentActivity() {
                 }
 
 
-
-
                 // Step 3. UserModel 객체 업로드
-                val userModel = UserModel(uid!!, email, nickname, profilePhotoFileName)
+                val userModel = UserModel(uid!!, email, nickname, profilePhotoFileName, null, null)
 
                 fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid!!)?.set(userModel)
                     ?.addOnCompleteListener {
