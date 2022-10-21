@@ -7,6 +7,7 @@ data class UserModel(
     val imageName: String?,
     val followers: ArrayList<String>?,
     val followings: ArrayList<String>?
+    
 ) {
     constructor() : this(
         "",
