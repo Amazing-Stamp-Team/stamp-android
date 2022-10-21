@@ -36,7 +36,6 @@ class MyPageFragment : ParentFragment() {
     private var storage: FirebaseStorage? = null
     private var fireStore: FirebaseFirestore? = null
     private var userModel: UserModel? = null
-    private val TEN_MEGABYTE: Long = 1024 * 1024 * 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +89,7 @@ class MyPageFragment : ParentFragment() {
         if (userModel!!.imageName != null && userModel!!.imageName != "") {
             val gsReference = storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
 
-            gsReference.getBytes(TEN_MEGABYTE).addOnCompleteListener {
+            gsReference.getBytes(FirebaseConstants.TEN_MEGABYTE).addOnCompleteListener {
                 val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
                 binding.ivProfile.setImageBitmap(
                     Bitmap.createScaledBitmap(
