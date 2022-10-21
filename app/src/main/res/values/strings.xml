@@ -66,4 +66,11 @@
     <string name="obj_friends_toolbar">친구 추가하기</string>
     <string name="obj_friends_search_hint">닉네임 혹은 이메일을 입력해주세요</string>
 
+
+    <string name="obj_Withdrawal_title">스탬프 회원을 탈퇴하시겠습니까?</string>
+    <string name="obj_Withdrawal_content">탈퇴 시 정보는 즉시 삭제되며,\n삭제된 정보는 복구할 수 없습니다.</string>
+    <string name="obj_Withdrawal_no">아니요. 탈퇴하지 않겠습니다.</string>
+    <string name="obj_Withdrawal_yes">네, 탈퇴하겠습니다</string>
+    <string name="obj_Withdrawal">회원탈퇴</string>
+
 </resources>
