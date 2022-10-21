@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/gap_vertical"
+    android:paddingHorizontal="@dimen/gap_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/obj_Withdrawal_title"
+        android:textSize="@dimen/semi_title_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:text="@string/obj_Withdrawal_content" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_withdrawal_no"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:background="@drawable/btn_gray_10"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/obj_Withdrawal_no"
+        android:textColor="@color/black" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_withdrawal_yes"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:background="@drawable/btn_main_10"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/obj_Withdrawal_yes"
+        android:textColor="@color/black" />
+
+</LinearLayout>

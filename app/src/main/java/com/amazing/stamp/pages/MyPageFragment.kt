@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.MyPageTripModel
@@ -14,7 +15,9 @@ import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
 import com.amazing.stamp.utils.Utils.showShortToast
+import com.example.stamp.R
 import com.example.stamp.databinding.FragmentMyPageBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -49,8 +52,12 @@ class MyPageFragment : ParentFragment() {
         auth = FirebaseAuth.getInstance()
         storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
         fireStore = Firebase.firestore
-        
+
         binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
+
+        binding.run {
+            btnWithdrawal.setOnClickListener { withdrawal() }
+        }
 
         setUpTripSampleRecyclerView()
         showProgress(requireActivity(), "잠시만 기다려주세요")
@@ -67,9 +74,29 @@ class MyPageFragment : ParentFragment() {
         return binding.root
     }
 
+    private fun withdrawal() {
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_withdrawal, null)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        bottomSheetDialog.show()
+
+        bottomSheetDialog.findViewById<Button>(R.id.btn_withdrawal_yes)?.setOnClickListener {
+            showShortToast(requireContext(), "예 클릭했음")
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.findViewById<Button>(R.id.btn_withdrawal_no)?.setOnClickListener {
+            showShortToast(requireContext(), "아니오 클릭했음")
+            bottomSheetDialog.dismiss()
+        }
+    }
+
     private suspend fun getUserModel() {
         // 한 번만 필요할 경우 get() 으로 호출
-        val userModelResult = fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get().await()
+        val userModelResult =
+            fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get()
+                .await()
         userModel = userModelResult.toObject()
         binding.tvProfileNickname.text = userModel!!.nickname
 
@@ -87,7 +114,8 @@ class MyPageFragment : ParentFragment() {
     private suspend fun getUserProfilePhoto() {
 
         if (userModel!!.imageName != null && userModel!!.imageName != "") {
-            val gsReference = storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
+            val gsReference =
+                storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
 
             gsReference.getBytes(FirebaseConstants.TEN_MEGABYTE).addOnCompleteListener {
                 val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
