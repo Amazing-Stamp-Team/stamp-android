@@ -3,6 +3,7 @@ package com.amazing.stamp.pages
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.MyPageTripModel
@@ -25,6 +28,7 @@ import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -64,6 +68,7 @@ class MyPageFragment : ParentFragment() {
         binding.run {
             btnWithdrawal.setOnClickListener { withdrawal() }
             btnChangePw.setOnClickListener { changepw() }
+            btnChangeNickname.setOnClickListener { changenickname() }
         }
 
         setUpTripSampleRecyclerView()
@@ -80,6 +85,55 @@ class MyPageFragment : ParentFragment() {
 
         return binding.root
     }
+
+    private fun changenickname() {
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_changenickname, null)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        var nicknameDuplicateCheck = false
+
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        bottomSheetDialog.show()
+
+        bottomSheetDialog.findViewById<Button>(R.id.btn_change_nickname_finish)
+            ?.setOnClickListener {
+                val newNickname =
+                    bottomSheetDialog.findViewById<EditText>(R.id.et_change_nickname!!)?.text.toString()
+
+                //닉네임 중복체크
+                fireStore!!.collection(FirebaseConstants.COLLECTION_USERS)
+                    .whereEqualTo(FirebaseConstants.USER_FIELD_NICKNAME, newNickname)
+                    .get()
+                    .addOnCompleteListener {
+                        if (it.result.isEmpty) {
+                            nicknameDuplicateCheck = true
+                        } else {
+                            showShortToast(requireContext(), "이미 존재하는 닉네임입니다")
+                        }
+
+                        if (!newNickname.isEmpty() && nicknameDuplicateCheck) {
+                            val uid = auth!!.currentUser!!.uid
+                            val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)
+
+                            //ex)db.collection에서 db는 firestore로 지정해줘야함
+                            ref?.update(FirebaseConstants.USER_FIELD_NICKNAME, newNickname //해당 컬렉션, 필드의 값을 update(변경) 한다
+                            )?.addOnSuccessListener {
+                                    Toast.makeText(requireContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                                    bottomSheetDialog.dismiss()
+                                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                                }
+                                ?.addOnFailureListener { e -> Log.w(TAG, "Error updating document", e)
+                                }
+                        }
+                        if (newNickname.isEmpty()) {
+                            Toast.makeText(requireContext(), "변경하실 닉네임을 입력해주세요", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                    }
+            }
+    }
+    
 
     private fun changepw(){
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_changepassword, null)

@@ -72,10 +72,16 @@
     <string name="obj_Withdrawal_no">아니요. 탈퇴하지 않겠습니다.</string>
     <string name="obj_Withdrawal_yes">네, 탈퇴하겠습니다</string>
     <string name="obj_Withdrawal">회원탈퇴</string>
-    <string name="obj_Withdrawal_changetitle">비밀번호 변경</string>
-    <string name="tv_Withdrawal_wanttochange1">변경할 비밀번호를 입력해주세요</string>
-    <string name="tv_Withdrawal_wanttochange2">변경할 번호를 한 번 더 입력해주세요.</string>
-    <string name="obj_Withdrawal_change_pw_yes">변경하기</string>
+
+    <!-- 회원정보 변경 -->
+    <string name="obj_Change_value_changetitle">비밀번호 변경</string>
+    <string name="tv_Change_value_wanttochange1">변경할 비밀번호를 입력해주세요</string>
+    <string name="tv_Change_value_wanttochange2">변경할 번호를 한 번 더 입력해주세요.</string>
+    <string name="obj_Change_value_change_pw_yes">변경하기</string>
     <string name="obj_Change_pw">비밀번호 변경</string>
+    <string name="obj_Change_value_change_nickname_title">닉네임 변경</string>
+    <string name="tv_Change_value_change_name">변경하려는 닉네임을 입력하세요</string>
+    <string name="obj_Change_nickname">닉네임 변경</string>
+    <string name="obj_Change_profile_picture">프로필 사진 변경</string>
 
 </resources>
