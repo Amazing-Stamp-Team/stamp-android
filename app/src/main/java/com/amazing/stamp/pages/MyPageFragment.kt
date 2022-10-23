@@ -4,10 +4,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.MyPageTripModel
@@ -21,6 +24,7 @@ import com.example.stamp.R
 import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -59,6 +63,7 @@ class MyPageFragment : ParentFragment() {
 
         binding.run {
             btnWithdrawal.setOnClickListener { withdrawal() }
+            btnChangePw.setOnClickListener { changepw() }
         }
 
         setUpTripSampleRecyclerView()
@@ -74,6 +79,50 @@ class MyPageFragment : ParentFragment() {
         }
 
         return binding.root
+    }
+
+    private fun changepw(){
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_changepassword, null)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        bottomSheetDialog.show()
+
+        bottomSheetDialog.findViewById<Button>(R.id.btn_change_pw_finish)?.setOnClickListener {
+                val user = Firebase.auth.currentUser
+                val newPassword : String
+                val password = bottomSheetDialog.findViewById<EditText>(R.id.et_change_pw!!)?.text.toString()
+                val passwordCheck = bottomSheetDialog.findViewById<EditText>(R.id.et_change_pw_check!!)?.text.toString()
+
+                if (password == passwordCheck){
+                    if (!passwordCheck.isEmpty()){
+                        showProgress(requireActivity(), "잠시만 기다려주세요")
+                        newPassword = passwordCheck
+                        //Log.d(TAG, "${newPassword}+${user}")
+                        hideProgress()
+                        user!!.updatePassword(newPassword).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d(TAG, "User password updated.")
+                                Toast.makeText(requireContext(), "비밀번호가 변경되었습니다", Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                                requireActivity().finish()
+                            }
+                            else{
+                                Log.d(TAG, "Can't updated User password.")
+                                Toast.makeText(requireContext(), "비밀번호 변경 실패", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+                if(password != passwordCheck){
+                    Toast.makeText(requireContext(), "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
+                }
+                if(password.isEmpty() || passwordCheck.isEmpty()){
+                    Toast.makeText(requireContext(), "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
     }
 
     private fun withdrawal() {

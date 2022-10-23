@@ -105,12 +105,25 @@
                 android:background="@color/black" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_change_pw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="@string/obj_Change_pw"
+                android:textColor="@color/black" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_withdrawal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/obj_Withdrawal"
                 android:textColor="@color/black" />
+
+
+
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
