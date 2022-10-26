@@ -5,8 +5,8 @@ data class UserModel(
     val email: String,
     val nickname: String,
     val imageName: String?,
-    val followers: ArrayList<String>?,
-    val followings: ArrayList<String>?
+    var followers: ArrayList<String>?,
+    var followings: ArrayList<String>?
     
 ) {
     constructor() : this(

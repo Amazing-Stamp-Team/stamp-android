@@ -1,11 +1,10 @@
 package com.amazing.stamp.pages.sns
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.amazing.stamp.adapter.FriendAddAdapter
+import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
@@ -49,24 +48,22 @@ class FriendsSearchActivity : ParentActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
+        CoroutineScope(Dispatchers.IO).launch {
+            getUserModel()
+        }
 
         setUpFriendRecyclerView()
         setUpSearchOption()
         setUpItemClickEvent()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            getUserModel()
-        }
+
     }
 
     private suspend fun getUserModel() {
-        val userModelResult = fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get().await()
+        val userModelResult =
+            fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get()
+                .await()
         userModel = userModelResult.toObject()!!
-
-        // ?: (엘비스 연산자) - null 값인지 체크하고 디폴트값을 줌
-        // null 값이면 ArrayList 생성
-        userModel.followers?: ArrayList()
-        userModel.followings?: ArrayList()
     }
 
 
@@ -85,23 +82,51 @@ class FriendsSearchActivity : ParentActivity() {
     private fun setUpItemClickEvent() {
         friendAdapter.itemClickListener = object : FriendAddAdapter.ItemClickListener {
             override fun onItemClick(followingUserModel: UserModel) {
-                Log.d(TAG, "onItemClick: Point1")
-                Log.d(TAG, "onItemClick: ${followingUserModel.nickname}")
-                Log.d(TAG, "onItemClick: Point2")
+                if (userModel.followers == null) {
+                    userModel.followers = ArrayList()
+                }
+                if (userModel.followings == null) {
+                    userModel.followings = ArrayList()
+                }
+
                 userModel.followings!!.add(followingUserModel.uid)
-                Log.d(TAG, "onItemClick: Point3")
 
                 showProgress(this@FriendsSearchActivity, "잠시만 기다려주세요")
 
-                fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(userModel.uid)?.set(userModel)
+                fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(userModel.uid)
+                    ?.set(userModel)
                     ?.addOnCompleteListener {
                         hideProgress()
-                        if(it.isSuccessful) showShortToast(applicationContext, "${followingUserModel.nickname}님을 팔로우합니다")
-                        else showShortToast(applicationContext, "팔로우 실패")
+                        if (it.isSuccessful) {
+                            showShortToast(applicationContext, "${followingUserModel.nickname}님을 팔로우합니다")
+
+                            // 내 팔로잉 리스트에 해당 유저 추가
+                            setCurrentUserFollowing()
+                            // 내가 팔로잉 하는 유저의 팔로워에 나 추가
+                            setTargetUserFollower(followingUserModel.uid)
+                        } else {
+                            showShortToast(applicationContext, "팔로우 실패")
+                        }
                     }
             }
         }
     }
+
+    private fun setCurrentUserFollowing() {
+        val friendModel = FriendModel(userModel.followers!!, userModel.followings!!)
+        fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)
+            ?.document(auth.uid!!)
+            ?.set(friendModel)
+    }
+
+    private fun setTargetUserFollower(targetUid:String) {
+        val targetFriendModel = fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)?.get()?.addOnSuccessListener {
+            val friendModel = it.toObject<FriendModel>()
+
+            if(friendModel?.followers == null) friendModel?.followers = ArrayList()
+        }
+    }
+
 
     override fun onBackPressed() {
         super.onBackPressed()
