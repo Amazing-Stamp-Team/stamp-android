@@ -1,6 +1,7 @@
 package com.amazing.stamp.pages.sns
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.core.widget.addTextChangedListener
 import com.amazing.stamp.adapter.FriendAddAdapter
@@ -121,9 +122,13 @@ class FriendsSearchActivity : ParentActivity() {
 
     private fun setTargetUserFollower(targetUid:String) {
         val targetFriendModel = fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)?.get()?.addOnSuccessListener {
-            val friendModel = it.toObject<FriendModel>()
+            val friendModel = it.toObject<FriendModel>() ?: FriendModel(null, null)
 
-            if(friendModel?.followers == null) friendModel?.followers = ArrayList()
+            if(friendModel.followers == null) friendModel.followers = ArrayList()
+
+            friendModel.followers?.add(auth.uid!!)
+
+            fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)?.set(friendModel)
         }
     }
 

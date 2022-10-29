@@ -1,6 +1,10 @@
 package com.amazing.stamp.models
 
 data class FriendModel(
-    var followers: ArrayList<String>,
-    var followings: ArrayList<String>
-)
+    var followers: ArrayList<String>?,
+    var followings: ArrayList<String>?
+) {
+    constructor() : this(
+        null, null
+    )
+}
