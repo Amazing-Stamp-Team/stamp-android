@@ -3,6 +3,8 @@
     <style name="Theme.Stamp" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/main_color_100</item>
+        <item name="colorPrimaryDark">@color/main_color_100</item>
+        <item name="colorAccent">@color/main_color_100</item>
         <item name="colorPrimaryVariant">@color/main_color_80</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -34,5 +36,6 @@
         <item name="backgroundColor">@color/white</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
 
 </resources>
