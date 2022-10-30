@@ -25,15 +25,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class FriendsSearchActivity : ParentActivity() {
-    private val TAG = "FriendsSearchActivity"
-    private val binding by lazy { ActivityFriendsSearchBinding.inflate(layoutInflater) }
-    private val friendsList = ArrayList<UserModel>()
-    private var fireStore: FirebaseFirestore? = null
-    private var storage: FirebaseStorage? = null
-    private lateinit var friendAdapter: FriendAddAdapter
-    private lateinit var auth: FirebaseAuth
-    private lateinit var userModel: UserModel
+open class FriendsSearchActivity : ParentActivity() {
+    protected val TAG = "FriendsSearchActivity"
+    protected val binding by lazy { ActivityFriendsSearchBinding.inflate(layoutInflater) }
+    protected val friendsList = ArrayList<UserModel>()
+    protected var fireStore: FirebaseFirestore? = null
+    protected var storage: FirebaseStorage? = null
+    protected lateinit var friendAdapter: FriendAddAdapter
+    protected lateinit var auth: FirebaseAuth
+    protected lateinit var userModel: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +43,9 @@ class FriendsSearchActivity : ParentActivity() {
         fireStore = Firebase.firestore
         storage = Firebase.storage
 
-        setSupportActionBar(binding.toolbarFriendsAdd)
-        supportActionBar?.run {
-            // 앱 바 뒤로가기 버튼 설정
-            setDisplayHomeAsUpEnabled(true)
+        binding.ibFriendSearchBack.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -80,15 +79,11 @@ class FriendsSearchActivity : ParentActivity() {
         }
     }
 
-    private fun setUpItemClickEvent() {
+    protected open fun setUpItemClickEvent() {
         friendAdapter.itemClickListener = object : FriendAddAdapter.ItemClickListener {
-            override fun onItemClick(followingUserModel: UserModel) {
-                if (userModel.followers == null) {
-                    userModel.followers = ArrayList()
-                }
-                if (userModel.followings == null) {
-                    userModel.followings = ArrayList()
-                }
+            override fun onItemClick(profile: ByteArray?, followingUserModel: UserModel) {
+                if (userModel.followers == null) userModel.followers = ArrayList()
+                if (userModel.followings == null) userModel.followings = ArrayList()
 
                 userModel.followings!!.add(followingUserModel.uid)
 
@@ -99,7 +94,7 @@ class FriendsSearchActivity : ParentActivity() {
                     ?.addOnCompleteListener {
                         hideProgress()
                         if (it.isSuccessful) {
-                            showShortToast(applicationContext, "${followingUserModel.nickname}님을 팔로우합니다")
+                            showShortToast("${followingUserModel.nickname}님을 팔로우합니다")
 
                             // 내 팔로잉 리스트에 해당 유저 추가
                             setCurrentUserFollowing()
@@ -120,33 +115,23 @@ class FriendsSearchActivity : ParentActivity() {
             ?.set(friendModel)
     }
 
-    private fun setTargetUserFollower(targetUid:String) {
-        val targetFriendModel = fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)?.get()?.addOnSuccessListener {
-            val friendModel = it.toObject<FriendModel>() ?: FriendModel(null, null)
+    private fun setTargetUserFollower(targetUid: String) {
+        fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)?.get()
+            ?.addOnSuccessListener {
+                val friendModel = it.toObject<FriendModel>() ?: FriendModel(null, null)
 
-            if(friendModel.followers == null) friendModel.followers = ArrayList()
+                if (friendModel.followers == null) friendModel.followers = ArrayList()
 
-            friendModel.followers?.add(auth.uid!!)
+                friendModel.followers?.add(auth.uid!!)
 
-            fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)?.set(friendModel)
-        }
+                fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(targetUid)
+                    ?.set(friendModel)
+            }
     }
 
 
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // 앱 바 클릭 이벤트
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 }
