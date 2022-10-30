@@ -15,12 +15,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stamp.R
 import com.amazing.stamp.adapter.PostImageAdapter
+import com.amazing.stamp.adapter.ProfileNicknameAdapter
+import com.amazing.stamp.models.ProfileNicknameModel
+import com.amazing.stamp.pages.session.RegisterActivity
+import com.amazing.stamp.utils.ParentActivity
 import com.example.stamp.databinding.ActivityPostAddBinding
 import com.amazing.stamp.utils.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PostAddActivity : AppCompatActivity() {
+class PostAddActivity : ParentActivity() {
+    companion object {
+        const val FRIEND_SEARCH_REQUEST_CODE = 1001
+        const val INTENT_EXTRA_PROFILE = "INTENT_EXTRA_PROFILE"
+        const val INTENT_EXTRA_UID = "INTENT_EXTRA_UID"
+        const val INTENT_EXTRA_NAME = "INTENT_EXTRA_NAME"
+    }
+
+    private val TAG = "PostAddActivity"
     private val binding by lazy { ActivityPostAddBinding.inflate(layoutInflater) }
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private var imageUriList = ArrayList<Uri>()
@@ -28,6 +40,13 @@ class PostAddActivity : AppCompatActivity() {
     private val MAX_IMAGE_COUNT = 10
     private val startDate = Calendar.getInstance()
     private val endDate = Calendar.getInstance()
+    private val taggedFriends = ArrayList<ProfileNicknameModel>()
+    private val taggedFriendAdapter by lazy {
+        ProfileNicknameAdapter(
+            applicationContext,
+            taggedFriends
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +63,17 @@ class PostAddActivity : AppCompatActivity() {
         initDurationPicker()
 
         binding.run {
-            rvPostPhoto.run {
-                adapter = imageAdapter
-                layoutManager =
-                    LinearLayoutManager(applicationContext, RecyclerView.HORIZONTAL, false)
-            }
+            rvPostPhoto.adapter = imageAdapter
+            rvTaggedFriends.adapter = taggedFriendAdapter
+
+            taggedFriendAdapter.onItemRemoveClickListener =
+                object : ProfileNicknameAdapter.OnItemRemoveClickListener {
+                    override fun onItemRemoved(model: ProfileNicknameModel, position: Int) {
+                        taggedFriends.removeIf { it.uid == model.uid }
+                        taggedFriendAdapter.notifyDataSetChanged()
+                    }
+                }
+
             imageAdapter.onImageRemoveClickListener =
                 object : PostImageAdapter.OnImageRemoveClickListener {
                     override fun onRemove(position: Int) {
@@ -56,6 +81,7 @@ class PostAddActivity : AppCompatActivity() {
                         refreshImage()
                     }
                 }
+
             refreshImage()
 
             btnPostPhotoAdd.setOnClickListener {
@@ -63,11 +89,7 @@ class PostAddActivity : AppCompatActivity() {
                 // 개선판인 activityResultLauncher 와 registerForActivityResult 를 사용하는 것이 권장
 
                 if (imageUriList.size >= MAX_IMAGE_COUNT) {
-                    Toast.makeText(
-                        applicationContext,
-                        R.string.msg_max_image_count_exceed,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showShortToast(R.string.msg_max_image_count_exceed)
                     return@setOnClickListener
                 }
 
@@ -76,14 +98,42 @@ class PostAddActivity : AppCompatActivity() {
                 activityResultLauncher.launch(intent)
             }
 
-            btnPostAddFinish.setOnClickListener {
+            btnPostAddFriends.setOnClickListener {
+                val intent = Intent(applicationContext, FriendsTagActivity::class.java)
+                startActivityForResult(intent, FRIEND_SEARCH_REQUEST_CODE)
+            }
 
+            btnPostAddFinish.setOnClickListener {
                 val startDate_post = etPostDurationStart
                 val endDate_post = etPostDurationEnd
                 val written_post = etPostWritePost.toString()
-                finish() }
+                finish()
+            }
         }
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            FRIEND_SEARCH_REQUEST_CODE -> {
+                val uid = data?.getStringExtra(INTENT_EXTRA_UID)
+                val nickname = data?.getStringExtra(INTENT_EXTRA_NAME)
+                val profile = data?.getByteArrayExtra(INTENT_EXTRA_PROFILE)
+                if (uid != null && nickname != null) {
+                    tagFriend(profile, uid, nickname)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun tagFriend(profile: ByteArray?, uid: String, nickname: String) {
+        // 존재하지 않을 경우 (idx == -1) 추가
+        if (taggedFriends.indexOfFirst { it.uid == uid } == -1) {
+            taggedFriends.add(ProfileNicknameModel(profile, uid, nickname))
+            taggedFriendAdapter.notifyDataSetChanged()
+        } else {
+            showShortToast("이미 태그된 사용자입니다")
+        }
     }
 
     private fun initDurationPicker() {
@@ -152,6 +202,7 @@ class PostAddActivity : AppCompatActivity() {
                 }
             }
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // 앱 바 클릭 이벤트

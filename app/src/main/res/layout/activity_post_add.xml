@@ -29,7 +29,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_post_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_post_image" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_post_photo_add"
@@ -116,6 +119,17 @@
                 android:text="@string/tv_post_add_friends"
                 android:textStyle="bold" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tagged_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_line"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/gap_horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_profile_nickname" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_post_add_friends"
                 android:layout_width="wrap_content"
@@ -139,15 +153,13 @@
             <EditText
                 android:id="@+id/et_post_write_post"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_line"
                 android:background="@drawable/et_gray_10"
                 android:hint="@string/et_post_add_write_feed"
-                android:layout_marginHorizontal="@dimen/gap_horizontal"
                 android:maxLines="10"
-                android:scrollbars = "vertical"
-                android:padding="@dimen/gap_line"
-                 />
+                android:padding="@dimen/gap_line" />
 
         </LinearLayout>
     </ScrollView>
