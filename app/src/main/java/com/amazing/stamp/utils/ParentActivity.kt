@@ -5,6 +5,7 @@ import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import com.example.stamp.R
 
 open class ParentActivity : AppCompatActivity() {
@@ -30,5 +31,13 @@ open class ParentActivity : AppCompatActivity() {
             progressDialog?.dismiss()
         }
         progressDialog = null
+    }
+
+    fun showShortToast(msg: String) {
+        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    fun showShortToast(resId: Int) {
+        Toast.makeText(applicationContext, getString(resId), Toast.LENGTH_SHORT).show()
     }
 }
