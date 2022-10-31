@@ -1,7 +1,11 @@
 package com.amazing.stamp.pages.sns
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,22 +29,34 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class PostAddActivity : ParentActivity() {
+
     companion object {
         const val FRIEND_SEARCH_REQUEST_CODE = 1001
+
+        // 액티비티간 값 전달을 위한 Intent Extra
         const val INTENT_EXTRA_PROFILE = "INTENT_EXTRA_PROFILE"
         const val INTENT_EXTRA_UID = "INTENT_EXTRA_UID"
         const val INTENT_EXTRA_NAME = "INTENT_EXTRA_NAME"
     }
 
-    private val TAG = "PostAddActivity"
     private val binding by lazy { ActivityPostAddBinding.inflate(layoutInflater) }
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private val TAG = "PostAddActivity"
+
+    // 이미지 관련
     private var imageUriList = ArrayList<Uri>()
     private val imageAdapter by lazy { PostImageAdapter(applicationContext, imageUriList) }
     private val MAX_IMAGE_COUNT = 10
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent> // 이미지 선택 후 돌아올때 사용
+
+    // 날짜 관련
     private val startDate = Calendar.getInstance()
     private val endDate = Calendar.getInstance()
+
+    // 친구 태그 관련
     private val taggedFriends = ArrayList<ProfileNicknameModel>()
+
+    // 액티비티가 다 로딩되지 않았을 때 applicationContext 를 넘겨주려 하면 에러를 일으키기 때문에,
+    // lazy (늦은 초기화, 해당 변수가 처음 언급, 실행될때 초기화됨)로 applicationContext 를 넘겨줌
     private val taggedFriendAdapter by lazy {
         ProfileNicknameAdapter(
             applicationContext,
@@ -66,6 +82,8 @@ class PostAddActivity : ParentActivity() {
             rvPostPhoto.adapter = imageAdapter
             rvTaggedFriends.adapter = taggedFriendAdapter
 
+            // 친구 태그 리사이클러뷰
+            // x 버튼 클릭하여 언급된 친구 삭제
             taggedFriendAdapter.onItemRemoveClickListener =
                 object : ProfileNicknameAdapter.OnItemRemoveClickListener {
                     override fun onItemRemoved(model: ProfileNicknameModel, position: Int) {
@@ -74,6 +92,8 @@ class PostAddActivity : ParentActivity() {
                     }
                 }
 
+            // 이미지 첨부 리사이클러뷰
+            // x 버튼 클릭하여 첨부된 사진 삭제
             imageAdapter.onImageRemoveClickListener =
                 object : PostImageAdapter.OnImageRemoveClickListener {
                     override fun onRemove(position: Int) {
@@ -84,6 +104,7 @@ class PostAddActivity : ParentActivity() {
 
             refreshImage()
 
+            // 이미지 첨부하기 버튼
             btnPostPhotoAdd.setOnClickListener {
                 // startActivityForResult 가 메모리 관련 문제로 Deprecated (사용 가능하긴 하지만 비권장) 됨
                 // 개선판인 activityResultLauncher 와 registerForActivityResult 를 사용하는 것이 권장
@@ -98,22 +119,29 @@ class PostAddActivity : ParentActivity() {
                 activityResultLauncher.launch(intent)
             }
 
+            // 친구 언급 버튼
             btnPostAddFriends.setOnClickListener {
                 val intent = Intent(applicationContext, FriendsTagActivity::class.java)
                 startActivityForResult(intent, FRIEND_SEARCH_REQUEST_CODE)
             }
 
+
+            // 등록하기 버튼
             btnPostAddFinish.setOnClickListener {
                 val startDate_post = etPostDurationStart
                 val endDate_post = etPostDurationEnd
                 val written_post = etPostWritePost.toString()
                 finish()
             }
+
+
+            tvPostLocation.setOnClickListener { currentLocationSet() }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
+            // 친구 태그 RequestCode 일때
             FRIEND_SEARCH_REQUEST_CODE -> {
                 val uid = data?.getStringExtra(INTENT_EXTRA_UID)
                 val nickname = data?.getStringExtra(INTENT_EXTRA_NAME)
@@ -124,6 +152,16 @@ class PostAddActivity : ParentActivity() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun currentLocationSet() {
+
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+
+
     }
 
     private fun tagFriend(profile: ByteArray?, uid: String, nickname: String) {
