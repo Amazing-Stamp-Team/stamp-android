@@ -1,32 +1,32 @@
 package com.amazing.stamp.pages.sns
 
+import android.Manifest
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.stamp.R
+import androidx.core.app.ActivityCompat
 import com.amazing.stamp.adapter.PostImageAdapter
 import com.amazing.stamp.adapter.ProfileNicknameAdapter
 import com.amazing.stamp.models.ProfileNicknameModel
-import com.amazing.stamp.pages.session.RegisterActivity
 import com.amazing.stamp.utils.ParentActivity
-import com.example.stamp.databinding.ActivityPostAddBinding
 import com.amazing.stamp.utils.Utils
+import com.example.stamp.R
+import com.example.stamp.databinding.ActivityPostAddBinding
+import com.google.android.gms.location.LocationAvailability
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import java.util.*
-import kotlin.collections.ArrayList
 
 class PostAddActivity : ParentActivity() {
 
@@ -54,6 +54,9 @@ class PostAddActivity : ParentActivity() {
 
     // 친구 태그 관련
     private val taggedFriends = ArrayList<ProfileNicknameModel>()
+
+    // 위치 관련
+    var location: String? = null
 
     // 액티비티가 다 로딩되지 않았을 때 applicationContext 를 넘겨주려 하면 에러를 일으키기 때문에,
     // lazy (늦은 초기화, 해당 변수가 처음 언급, 실행될때 초기화됨)로 applicationContext 를 넘겨줌
@@ -135,7 +138,7 @@ class PostAddActivity : ParentActivity() {
             }
 
 
-            tvPostLocation.setOnClickListener { currentLocationSet() }
+            tvPostLocationSet.setOnClickListener { currentLocationSet() }
         }
     }
 
@@ -154,14 +157,53 @@ class PostAddActivity : ParentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationAvailability(p0: LocationAvailability) {
+            super.onLocationAvailability(p0)
+        }
+
+        override fun onLocationResult(p0: LocationResult) {
+            val lastLocation = p0.lastLocation
+            val lat = lastLocation!!.latitude
+            val long = lastLocation!!.longitude
+
+            // 위도와 경도를 이용하여 주소로 변환
+
+            val geocoder = Geocoder(this@PostAddActivity)
+            val address = geocoder.getFromLocation(lat, long, 10)
+
+            if (address.size == 0) showShortToast("주소 찾기 오류")
+            else {
+                // 반환 예시) 대한민국 충청남도 천안시 서북구 두정역동0길 00
+                location = address[0].getAddressLine(0).replaceFirst("대한민국 ", "")
+                binding.tvPostLocation.text = location
+                binding.tvPostLocation.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun currentLocationSet() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
+            priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
 
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
 
-        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-
-
-
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     private fun tagFriend(profile: ByteArray?, uid: String, nickname: String) {

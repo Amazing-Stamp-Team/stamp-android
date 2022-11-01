@@ -48,7 +48,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_post_location"
+                android:id="@+id/tv_post_location_set"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gap_horizontal"
@@ -56,8 +56,20 @@
                 android:drawableLeft="@drawable/ic_location"
                 android:drawablePadding="@dimen/gap_line"
                 android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
                 android:text="@string/obj_post_add_location"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_post_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_line"
+                android:animateLayoutChanges="true"
+                android:visibility="gone"
+                tools:text="경기도 용인시 처인구 000"
+                tools:visibility="visible" />
 
             <TextView
                 android:layout_width="wrap_content"
