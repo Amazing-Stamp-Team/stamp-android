@@ -1,5 +1,6 @@
 package com.amazing.stamp.utils
 
+import android.app.Activity
 import android.content.Context
 import android.database.Cursor
 import android.icu.text.SimpleDateFormat
@@ -24,6 +25,20 @@ object Utils {
         val index: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()
         return cursor.getString(index)
+    }
+
+    fun getRealPathFromURI(activity: Activity, contentURI: Uri): String? {
+        val result: String?
+        val cursor: Cursor? = activity.contentResolver.query(contentURI, null, null, null, null)
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.path
+        } else {
+            cursor.moveToFirst()
+            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor.getString(idx)
+            cursor.close()
+        }
+        return result
     }
 
 }

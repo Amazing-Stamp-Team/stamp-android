@@ -4,10 +4,12 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +19,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.amazing.stamp.adapter.PostImageAdapter
 import com.amazing.stamp.adapter.ProfileNicknameAdapter
+import com.amazing.stamp.models.PostAddModel
 import com.amazing.stamp.models.ProfileNicknameModel
+import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.Utils
 import com.example.stamp.R
@@ -26,12 +30,24 @@ import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.io.File
+import java.io.FileInputStream
 import java.util.*
 
 class PostAddActivity : ParentActivity() {
 
     companion object {
         const val FRIEND_SEARCH_REQUEST_CODE = 1001
+        const val PHOTO_ADD_REQUEST_CODE = 1002
 
         // 액티비티간 값 전달을 위한 Intent Extra
         const val INTENT_EXTRA_PROFILE = "INTENT_EXTRA_PROFILE"
@@ -44,19 +60,18 @@ class PostAddActivity : ParentActivity() {
 
     // 이미지 관련
     private var imageUriList = ArrayList<Uri>()
+    private val pathUri = ArrayList<String?>()
+
     private val imageAdapter by lazy { PostImageAdapter(applicationContext, imageUriList) }
     private val MAX_IMAGE_COUNT = 10
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent> // 이미지 선택 후 돌아올때 사용
 
     // 날짜 관련
-    private val startDate = Calendar.getInstance()
-    private val endDate = Calendar.getInstance()
+    val startDate = Calendar.getInstance()
+    val endDate = Calendar.getInstance()
 
     // 친구 태그 관련
     private val taggedFriends = ArrayList<ProfileNicknameModel>()
-
-    // 위치 관련
-    var location: String? = null
 
     // 액티비티가 다 로딩되지 않았을 때 applicationContext 를 넘겨주려 하면 에러를 일으키기 때문에,
     // lazy (늦은 초기화, 해당 변수가 처음 언급, 실행될때 초기화됨)로 applicationContext 를 넘겨줌
@@ -66,6 +81,17 @@ class PostAddActivity : ParentActivity() {
             taggedFriends
         )
     }
+
+
+    // 위치 관련
+    var location: String? = null
+
+
+    //파이어베이스 관련
+    private val auth by lazy { Firebase.auth }
+    private val storage by lazy { Firebase.storage }
+    private val fireStore by lazy { Firebase.firestore }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +127,7 @@ class PostAddActivity : ParentActivity() {
                 object : PostImageAdapter.OnImageRemoveClickListener {
                     override fun onRemove(position: Int) {
                         imageUriList.removeAt(position)
+                        pathUri.removeAt(position)
                         refreshImage()
                     }
                 }
@@ -117,9 +144,9 @@ class PostAddActivity : ParentActivity() {
                     return@setOnClickListener
                 }
 
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                activityResultLauncher.launch(intent)
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = MediaStore.Images.Media.CONTENT_TYPE
+                startActivityForResult(intent, PHOTO_ADD_REQUEST_CODE)
             }
 
             // 친구 언급 버튼
@@ -128,21 +155,16 @@ class PostAddActivity : ParentActivity() {
                 startActivityForResult(intent, FRIEND_SEARCH_REQUEST_CODE)
             }
 
-
             // 등록하기 버튼
-            btnPostAddFinish.setOnClickListener {
-                val startDate_post = etPostDurationStart
-                val endDate_post = etPostDurationEnd
-                val written_post = etPostWritePost.toString()
-                finish()
-            }
-
+            btnPostAddFinish.setOnClickListener { onPostAdd() }
 
             tvPostLocationSet.setOnClickListener { currentLocationSet() }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == RESULT_CANCELED) return
+
         when (requestCode) {
             // 친구 태그 RequestCode 일때
             FRIEND_SEARCH_REQUEST_CODE -> {
@@ -152,6 +174,14 @@ class PostAddActivity : ParentActivity() {
                 if (uid != null && nickname != null) {
                     tagFriend(profile, uid, nickname)
                 }
+            }
+
+            PHOTO_ADD_REQUEST_CODE -> {
+                val currentImageUri = data?.data!!
+                imageUriList.add(currentImageUri)
+                val currentPathUri = Utils.getPath(applicationContext, currentImageUri)
+                pathUri.add(currentPathUri)
+                refreshImage()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -223,12 +253,12 @@ class PostAddActivity : ParentActivity() {
                     this@PostAddActivity,
                     DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
                         startDate[Calendar.YEAR] = year
-                        startDate[Calendar.MONTH] = month - 1
+                        startDate[Calendar.MONTH] = month
                         startDate[Calendar.DAY_OF_MONTH] = day
                         etPostDurationStart.setText(Utils.sliderDateFormat.format(startDate.timeInMillis))
                     },
                     startDate[Calendar.YEAR],
-                    startDate[Calendar.MONTH] + 1,
+                    startDate[Calendar.MONTH],
                     startDate[Calendar.DAY_OF_MONTH]
                 )
 
@@ -240,12 +270,12 @@ class PostAddActivity : ParentActivity() {
                     this@PostAddActivity,
                     DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
                         endDate[Calendar.YEAR] = year
-                        endDate[Calendar.MONTH] = month - 1
+                        endDate[Calendar.MONTH] = month
                         endDate[Calendar.DAY_OF_MONTH] = day
                         etPostDurationEnd.setText(Utils.sliderDateFormat.format(endDate.timeInMillis))
                     },
                     endDate[Calendar.YEAR],
-                    endDate[Calendar.MONTH] + 1,
+                    endDate[Calendar.MONTH],
                     endDate[Calendar.DAY_OF_MONTH]
                 )
                 datePickerDialog.show()
@@ -271,6 +301,10 @@ class PostAddActivity : ParentActivity() {
                     val currentImageUri = it.data?.data
                     try {
                         imageUriList.add(currentImageUri!!)
+                        val currentPathUri = getPath(currentImageUri)
+                        Log.d(TAG, "initGetImage: $currentImageUri")
+                        Log.d(TAG, "initGetImage: $currentPathUri")
+                        pathUri.add(currentPathUri)
                         refreshImage()
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -283,6 +317,68 @@ class PostAddActivity : ParentActivity() {
             }
     }
 
+    private fun onPostAdd() {
+        //    val writer: String,
+        //    val friends: ArrayList<String>,
+        //    val content: String?,
+        //    val startDate: LocalDate?,
+        //    val endDate: LocalDate?,
+        //    val createdAt: LocalDateTime
+
+        val friendsUID = ArrayList<String>()
+        taggedFriends.forEach { friendsUID.add(it.uid) }
+
+        // 구글 파이어베이스의 Timestamp 타입 사용
+        val createdAt = Timestamp.now()
+        val startTimeStamp = Timestamp(Date(startDate.timeInMillis))
+        val endTimeStamp = Timestamp(Date(endDate.timeInMillis))
+
+        showProgress(this, "게시글 등록 중...")
+
+        // 코틀린 코루틴의 Dispatchers 에는 여러 종류가 있음
+        // IO - 네트워크 작업 최적화
+        // Main - UI와 상호작용
+        // Default - CPU를 많이 사용하는 작업
+        CoroutineScope(Dispatchers.Main).launch {
+            val postModel = PostAddModel(auth.uid!!, friendsUID, binding.etPostWritePost.text.toString(), location, startTimeStamp, endTimeStamp, createdAt, null)
+
+            fireStore.collection(FirebaseConstants.COLLECTION_POSTS).add(postModel).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        showShortToast("등록이 완료되었습니다")
+                    } else {
+                        showShortToast("등록에 실패했습니다")
+                    }
+                }
+
+            hideProgress()
+            showProgress(this@PostAddActivity, "사진 업로드 중...")
+
+            val postModelUploadResult = fireStore.collection(FirebaseConstants.COLLECTION_POSTS).add(postModel).await()
+            imageUpload(postModelUploadResult.id)
+        }
+    }
+
+    private suspend fun imageUpload(id:String) {
+        val imageName = ArrayList<String>()
+
+        for(i in 0 until imageUriList.size) {
+            imageName.add("IMG_POST_${id}_${i}")
+
+            Log.d(TAG, "imageUpload: $i   ${imageUriList[i]}  ${pathUri[i]}")
+
+            if(pathUri[i] == null) continue
+            val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_POST).child(id).child(imageName[i])
+            val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri[i])))
+            val uploadResult = uploadTask.await()
+        }
+
+        fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
+            .document(id)
+            .update(FirebaseConstants.POSTS_FIELD_IMAGE_NAME, imageName)
+
+        hideProgress()
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // 앱 바 클릭 이벤트
@@ -293,5 +389,15 @@ class PostAddActivity : ParentActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+
+    fun getPath(uri: Uri?): String? {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor = managedQuery(uri, projection, null, null, null)
+        startManagingCursor(cursor)
+        val columnIndex: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        cursor.moveToFirst()
+        return cursor.getString(columnIndex)
     }
 }
