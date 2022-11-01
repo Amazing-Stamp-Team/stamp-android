@@ -171,6 +171,7 @@
                 android:background="@drawable/et_gray_10"
                 android:hint="@string/et_post_add_write_feed"
                 android:maxLines="10"
+                android:layout_marginBottom="@dimen/gap_vertical"
                 android:padding="@dimen/gap_line" />
 
         </LinearLayout>
