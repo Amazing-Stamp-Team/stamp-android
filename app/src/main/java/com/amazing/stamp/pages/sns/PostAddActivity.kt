@@ -342,14 +342,6 @@ class PostAddActivity : ParentActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val postModel = PostAddModel(auth.uid!!, friendsUID, binding.etPostWritePost.text.toString(), location, startTimeStamp, endTimeStamp, createdAt, null)
 
-            fireStore.collection(FirebaseConstants.COLLECTION_POSTS).add(postModel).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        showShortToast("등록이 완료되었습니다")
-                    } else {
-                        showShortToast("등록에 실패했습니다")
-                    }
-                }
-
             hideProgress()
             showProgress(this@PostAddActivity, "사진 업로드 중...")
 
@@ -377,6 +369,7 @@ class PostAddActivity : ParentActivity() {
             .update(FirebaseConstants.POSTS_FIELD_IMAGE_NAME, imageName)
 
         hideProgress()
+        finish()
     }
 
 
