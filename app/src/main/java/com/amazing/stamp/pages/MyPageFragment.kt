@@ -30,6 +30,7 @@ import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -128,7 +129,19 @@ class MyPageFragment : ParentFragment() {
                             ref?.update(FirebaseConstants.USER_FIELD_NICKNAME, newNickname //해당 컬렉션, 필드의 값을 update(변경) 한다
                             )?.addOnSuccessListener {
                                     Toast.makeText(requireContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                                    binding.tvProfileNickname.text=(newNickname) //마이페이지에 변경된 닉네임을 즉시 반영하여 출력해준다.
                                     bottomSheetDialog.dismiss()
+
+                                val profileUpdates = userProfileChangeRequest { //firestore의 displayNickname 도 동시 업데이트한다.
+                                    displayName = newNickname
+                                }
+                                val user = Firebase.auth.currentUser
+                                user!!.updateProfile(profileUpdates)
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Log.d(TAG, "User profile updated.")
+                                        }
+                                    }
                                     Log.d(TAG, "DocumentSnapshot successfully updated!")
                                 }
                                 ?.addOnFailureListener { e -> Log.w(TAG, "Error updating document", e)
@@ -154,8 +167,6 @@ class MyPageFragment : ParentFragment() {
         selectProfile()
 
         // 2.새로운 프로필 사진이 업로드되면, 기존 프로필 사진은 삭제한다.
-
-
 
 
     }
