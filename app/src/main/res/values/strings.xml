@@ -53,6 +53,8 @@
     <string name="obj_my_page_toolbar">마이페이지</string>
     <string name="obj_profile_trip">다녀온 여행지</string>
     <string name="obj_profile_view_trip_all">모두보기</string>
+    <string name="obj_profile_follower">팔로워</string>
+    <string name="obj_profile_following">팔로잉</string>
 
 
     <!-- MainPage -->
@@ -83,5 +85,7 @@
     <string name="tv_Change_value_change_name">변경하려는 닉네임을 입력하세요</string>
     <string name="obj_Change_nickname">닉네임 변경</string>
     <string name="obj_Change_profile_picture">프로필 사진 변경</string>
+
+
 
 </resources>
