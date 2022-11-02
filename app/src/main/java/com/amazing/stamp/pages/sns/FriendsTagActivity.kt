@@ -10,7 +10,7 @@ import com.example.stamp.R
 
 class FriendsTagActivity : FriendsSearchActivity() {
 
-    // 클릭했을때 이벤트만 오버라이딩
+    // 틀을 그대로 쓰고 클릭했을때 이벤트만 오버라이딩
     // UID와 닉네임을 return 해줌
     override fun setUpItemClickEvent() {
         friendAdapter.itemClickListener = object : FriendAddAdapter.ItemClickListener {

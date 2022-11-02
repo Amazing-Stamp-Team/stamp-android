@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
@@ -186,14 +187,22 @@ class RegisterActivity : ParentActivity() {
 
                 // Step 3. UserModel 객체 업로드
                 val userModel = UserModel(uid!!, email, nickname, profilePhotoFileName, null, null)
+                fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)?.set(userModel)?.await()
 
-                fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid!!)?.set(userModel)
-                    ?.addOnCompleteListener {
-                        hideProgress()
-                        if(it.isSuccessful) showShortToast(applicationContext, "계정 생성에 성공하였습니다")
-                        else showShortToast(applicationContext, "닉네임 실패")
-                        finish()
-                    }
+//                fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid!!)?.set(userModel)
+//                    ?.addOnCompleteListener {
+//                        hideProgress()
+//                        if(it.isSuccessful) showShortToast(applicationContext, "계정 생성에 성공하였습니다")
+//                        else showShortToast(applicationContext, "닉네임 실패")
+//                        finish()
+//                    }
+
+                // Step 4. Friend Collection 생성
+                val friendModel = FriendModel(ArrayList(), ArrayList())
+                fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(uid)?.set(friendModel)?.await()
+                hideProgress()
+                finish()
+
             }
         }
     }
