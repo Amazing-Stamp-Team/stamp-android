@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
+import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.MyPageTripModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.pages.session.LoginActivity
@@ -33,6 +34,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -72,6 +74,8 @@ class MyPageFragment : ParentFragment() {
         storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
         fireStore = Firebase.firestore
 
+        countfollow()
+
         binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
 
         binding.run {
@@ -94,6 +98,30 @@ class MyPageFragment : ParentFragment() {
         }
 
         return binding.root
+    }
+
+    private fun countfollow(){
+        val uid = auth!!.currentUser!!.uid
+        val followRef = fireStore?.collection("friends")?.document(uid)
+
+
+        followRef?.get()
+            ?.addOnSuccessListener { document ->
+                if (document != null) {
+                    val model = document.toObject<FriendModel>() // 다큐먼트.toObject<모델>()을 변수로 받아와 접근 가능하게 한다
+//                    Log.d(TAG,model!!.followers!!.size.toString()) 해당 유저 모델의 followers 변수의 길이를 받는다
+//                    Log.d(TAG, model!!.followings!!.size.toString())
+                    
+                    binding.tvProfileFollowerCount.text = model!!.followers!!.size.toString()
+                    binding.tvProfileFollowingCount.text = model!!.followings!!.size.toString()
+
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            ?.addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
     }
 
     private fun changenickname() {
