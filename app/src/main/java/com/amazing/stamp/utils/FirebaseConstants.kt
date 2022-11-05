@@ -25,6 +25,7 @@ object FirebaseConstants {
      */
     const val COLLECTION_POSTS = "posts"
     const val POSTS_FIELD_IMAGE_NAME = "imageNames"
+    const val POSTS_FIELD_WRITER = "writer"
 
 
 

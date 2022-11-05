@@ -13,12 +13,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.amazing.stamp.adapter.FeedAdapter
 import com.amazing.stamp.models.FeedModel
+import com.amazing.stamp.models.FriendModel
+import com.amazing.stamp.models.PostAddModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.R
 import com.example.stamp.databinding.FragmentFeedBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 class FeedFragment : Fragment() {
@@ -26,6 +35,9 @@ class FeedFragment : Fragment() {
     private val feedModes = ArrayList<FeedModel>()
     private val feedAdapter by lazy { FeedAdapter(requireActivity(), feedModes) }
     private val storage by lazy { Firebase.storage }
+    private val fireStore by lazy { Firebase.firestore }
+    private val auth by lazy { Firebase.auth }
+    private var friendModel: FriendModel? = null
 
     private val TAG = "TAG_FEED"
 
@@ -39,13 +51,13 @@ class FeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
         binding.run {
+            // 글쓰기 버튼 세팅
             btnPostAdd.setOnClickListener {
                 val intent = Intent(requireActivity(), PostAddActivity::class.java)
                 startActivity(intent)
             }
-
+            // 툴바 세팅
             toolbarFeed.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.toolbar_action_friends -> {
@@ -65,8 +77,14 @@ class FeedFragment : Fragment() {
                 }
                 return@setOnMenuItemClickListener false
             }
-
             setUpFeedRecyclerView()
+
+            CoroutineScope(Dispatchers.Main).launch {
+                getUserFriends()
+                getFeeds()
+            }
+
+
         }
 
 
@@ -86,33 +104,66 @@ class FeedFragment : Fragment() {
         //    val createdAt: String,
         //    val place: String // GPS 기능 구현후에
 
-        val drawableList = ArrayList<Drawable>()
-        drawableList.run {
-            add(requireContext().getDrawable(R.drawable.img_sample_1)!!)
-            add(requireContext().getDrawable(R.drawable.img_sample_1)!!)
-            add(requireContext().getDrawable(R.drawable.img_sample_1)!!)
-            add(requireContext().getDrawable(R.drawable.img_sample_1)!!)
+    }
 
-        }
+    private suspend fun getUserFriends() {
+        val getFriendResult = fireStore.collection(FirebaseConstants.COLLECTION_FRIENDS)
+            .document(auth.uid!!).get().await()
 
-//        feedModes.add(FeedModel("너굴맨", ArrayList(), "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-//        feedModes.add(FeedModel("너굴맨", ArrayList(), "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-//        feedModes.add(FeedModel("너굴맨", ArrayList(), "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
+        friendModel = getFriendResult.toObject<FriendModel>()
+    }
+
+    private suspend fun getFeeds() {
+        val uid = ArrayList<String>()
+
+        friendModel!!.followers?.forEach { uid.add(it) }
+        friendModel!!.followings?.forEach { uid.add(it) }
+
+        uid.forEach {
+            val postResult = fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
+                .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, it)
+                .get().await()
+
+            postResult.forEach {
+                val postAddModel = it.toObject<PostAddModel>()
+
+                feedModes.add(
+                    FeedModel(
+                        getUserNickname(postAddModel.writer),
+                        ArrayList(),
+                        postAddModel.content.toString(),
+                        postAddModel.startDate.toString(),
+                        postAddModel.endDate.toString(),
+                        ArrayList(),
+                        "",
+                        postAddModel.location.toString()
+                    )
+                )
+            }
+
+            feedAdapter.notifyDataSetChanged()
+
+//            val gsReference =
+//                storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/IMG_PROFILE_1kaofPc9DReZJJ1TqqR0wJr2IMg2_1667401347534.png")
+//                    .downloadUrl.addOnSuccessListener {
+//                        val uris = ArrayList<Uri>()
+//                        uris.add(it)
+//                        uris.add(it)
+//                        uris.add(it)
+//                        feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
+//                        feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
+//                        feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
 //
-//        feedAdapter.notifyDataSetChanged()
+//                        feedAdapter.notifyDataSetChanged()
+//                    }
+        }
+    }
 
-        val gsReference =
-            storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/IMG_PROFILE_1kaofPc9DReZJJ1TqqR0wJr2IMg2_1667401347534.png")
-                .downloadUrl.addOnSuccessListener {
-                    val uris = ArrayList<Uri>()
-                    uris.add(it)
-                    uris.add(it)
-                    uris.add(it)
-                    feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-                    feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-                    feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
+    private suspend fun getUserNickname(userUid: String): String {
+        val result = fireStore.collection(FirebaseConstants.COLLECTION_USERS)
+            .document(userUid)
+            .get().await()
 
-                    feedAdapter.notifyDataSetChanged()
-                }
+        return result.get(FirebaseConstants.USER_FIELD_NICKNAME).toString()
     }
 }
