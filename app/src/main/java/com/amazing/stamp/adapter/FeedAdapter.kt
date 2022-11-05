@@ -26,6 +26,12 @@ class FeedAdapter(val context: Context, private val feedModels: ArrayList<FeedMo
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
             val model = feedModels[position]
+            val feedImageAdapter = FeedImageAdapter(context, model.imageUris)
+
+            rvFeedImage.adapter = feedImageAdapter
+            feedImageAdapter.notifyDataSetChanged()
+
+
 
             tvItemFeedLocation.text = model.place
             tvItemFeedContent.text = model.content

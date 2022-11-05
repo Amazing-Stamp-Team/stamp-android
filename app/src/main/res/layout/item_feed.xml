@@ -39,11 +39,13 @@
             tools:text="부산, 광안리" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_item_feed_picture"
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:src="@drawable/img_sample_2" />
+        android:id="@+id/rv_feed_image"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_feed_image" />
 
     <TextView
         android:id="@+id/tv_item_feed_content"

@@ -1,8 +1,10 @@
 package com.amazing.stamp.models
 
+import android.net.Uri
+
 data class FeedModel(
     val writer: String,
-    val imageName: ArrayList<String>,
+    val imageUris: ArrayList<Uri>,
     val content: String,
     val startTime: String,
     val endTime: String,
