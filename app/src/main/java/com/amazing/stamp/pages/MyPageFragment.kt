@@ -26,6 +26,7 @@ import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
 import com.amazing.stamp.utils.Utils
 import com.amazing.stamp.utils.Utils.showShortToast
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -34,7 +35,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.getField
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -74,33 +74,33 @@ class MyPageFragment : ParentFragment() {
         storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
         fireStore = Firebase.firestore
 
-        countfollow()
+        countFollow()
 
         binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
 
         binding.run {
             btnWithdrawal.setOnClickListener { withdrawal() }
             btnChangePw.setOnClickListener { changepw() }
-            btnChangeNickname.setOnClickListener { changenickname() }
+            btnChangeNickname.setOnClickListener { changeNickname() }
             btnChangeProfilepicture.setOnClickListener { changephoto() }
         }
 
         setUpTripSampleRecyclerView()
-        showProgress(requireActivity(), "잠시만 기다려주세요")
+        //showProgress(requireActivity(), "잠시만 기다려주세요")
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
 
             // UserModel 의 imageName 값을 이용해 이미지를 가져오므로 순차적으로 실행되야함
             getUserModel() // UserModel 가져오기
             getUserProfilePhoto() // UserProfileImage 가져오기
 
-            hideProgress()
+            //hideProgress()
         }
 
         return binding.root
     }
 
-    private fun countfollow(){
+    private fun countFollow() {
         val uid = auth!!.currentUser!!.uid
         val followRef = fireStore?.collection("friends")?.document(uid)
 
@@ -108,10 +108,11 @@ class MyPageFragment : ParentFragment() {
         followRef?.get()
             ?.addOnSuccessListener { document ->
                 if (document != null) {
-                    val model = document.toObject<FriendModel>() // 다큐먼트.toObject<모델>()을 변수로 받아와 접근 가능하게 한다
+                    val model =
+                        document.toObject<FriendModel>() // 다큐먼트.toObject<모델>()을 변수로 받아와 접근 가능하게 한다
 //                    Log.d(TAG,model!!.followers!!.size.toString()) 해당 유저 모델의 followers 변수의 길이를 받는다
 //                    Log.d(TAG, model!!.followings!!.size.toString())
-                    
+
                     binding.tvProfileFollowerCount.text = model!!.followers!!.size.toString()
                     binding.tvProfileFollowingCount.text = model!!.followings!!.size.toString()
 
@@ -124,7 +125,7 @@ class MyPageFragment : ParentFragment() {
             }
     }
 
-    private fun changenickname() {
+    private fun changeNickname() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_changenickname, null)
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         var nicknameDuplicateCheck = false
@@ -151,18 +152,27 @@ class MyPageFragment : ParentFragment() {
 
                         if (!newNickname.isEmpty() && nicknameDuplicateCheck) {
                             val uid = auth!!.currentUser!!.uid
-                            val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)
+                            val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)
+                                ?.document(uid)
 
                             //ex)db.collection에서 db는 firestore로 지정해줘야함
-                            ref?.update(FirebaseConstants.USER_FIELD_NICKNAME, newNickname //해당 컬렉션, 필드의 값을 update(변경) 한다
+                            ref?.update(
+                                FirebaseConstants.USER_FIELD_NICKNAME,
+                                newNickname //해당 컬렉션, 필드의 값을 update(변경) 한다
                             )?.addOnSuccessListener {
-                                    Toast.makeText(requireContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show()
-                                    binding.tvProfileNickname.text=(newNickname) //마이페이지에 변경된 닉네임을 즉시 반영하여 출력해준다.
-                                    bottomSheetDialog.dismiss()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "닉네임이 변경되었습니다.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.tvProfileNickname.text =
+                                    (newNickname) //마이페이지에 변경된 닉네임을 즉시 반영하여 출력해준다.
+                                bottomSheetDialog.dismiss()
 
-                                val profileUpdates = userProfileChangeRequest { //firestore의 displayNickname 도 동시 업데이트한다.
-                                    displayName = newNickname
-                                }
+                                val profileUpdates =
+                                    userProfileChangeRequest { //firestore의 displayNickname 도 동시 업데이트한다.
+                                        displayName = newNickname
+                                    }
                                 val user = Firebase.auth.currentUser
                                 user!!.updateProfile(profileUpdates)
                                     .addOnCompleteListener { task ->
@@ -170,9 +180,10 @@ class MyPageFragment : ParentFragment() {
                                             Log.d(TAG, "User profile updated.")
                                         }
                                     }
-                                    Log.d(TAG, "DocumentSnapshot successfully updated!")
-                                }
-                                ?.addOnFailureListener { e -> Log.w(TAG, "Error updating document", e)
+                                Log.d(TAG, "DocumentSnapshot successfully updated!")
+                            }
+                                ?.addOnFailureListener { e ->
+                                    Log.w(TAG, "Error updating document", e)
                                 }
                         }
                         if (newNickname.isEmpty()) {
@@ -205,7 +216,7 @@ class MyPageFragment : ParentFragment() {
         startActivityForResult(intent, PICK_FROM_ALBUM)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // 갤러리에서 선택한 이미지의 경로를 추출, 마이페이지의 프로필 사진을 변경하고 파이어베이스 storage에 업로드한다.
         val uid = auth!!.currentUser!!.uid
         val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)
@@ -216,9 +227,10 @@ class MyPageFragment : ParentFragment() {
             PICK_FROM_ALBUM -> {
                 imageUri = data?.data
                 pathUri = Utils.getPath(requireContext(), data!!.data!!)
-                Log.d(TAG,"${pathUri} 사진 경로")
+                Log.d(TAG, "${pathUri} 사진 경로")
                 binding.ivProfile.setImageURI(imageUri)
-                binding.ivProfile.background = ContextCompat.getDrawable(requireActivity(), R.drawable.bg_for_rounding_10)
+                binding.ivProfile.background =
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.bg_for_rounding_10)
                 binding.ivProfile.clipToOutline = true
 
                 var profilePhotoFileName: String? = null
@@ -226,19 +238,23 @@ class MyPageFragment : ParentFragment() {
                 //Log.d(TAG,"${pathUri} 사진 업로드 과정")
                 if (pathUri != null) {
                     profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
-                    Log.d(TAG,"${pathUri} 파이어베이스에 들어갈 파일 경로")
-                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE).child(profilePhotoFileName)
+                    Log.d(TAG, "${pathUri} 파이어베이스에 들어갈 파일 경로")
+                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE)
+                        .child(profilePhotoFileName)
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask
                 }
 
                 //프로필의 이미지 경로를 바뀐 프로필 이미지의 경로로 수정(update)한다
-                ref?.update(FirebaseConstants.USER_FIELD_IMAGE_NAME, profilePhotoFileName //해당 컬렉션, 필드의 값을 update(변경) 한다
+                ref?.update(
+                    FirebaseConstants.USER_FIELD_IMAGE_NAME,
+                    profilePhotoFileName //해당 컬렉션, 필드의 값을 update(변경) 한다
                 )?.addOnSuccessListener {
                     Toast.makeText(requireContext(), "프로필 사진이 변경되었습니다.", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "DocumentSnapshot successfully updated!")
                 }
-                    ?.addOnFailureListener { e -> Log.w(TAG, "Error updating document", e)
+                    ?.addOnFailureListener { e ->
+                        Log.w(TAG, "Error updating document", e)
                     }
             }
         }
@@ -246,8 +262,7 @@ class MyPageFragment : ParentFragment() {
     }
 
 
-
-    private fun changepw(){
+    private fun changepw() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_changepassword, null)
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(bottomSheetView)
@@ -255,39 +270,42 @@ class MyPageFragment : ParentFragment() {
         bottomSheetDialog.show()
 
         bottomSheetDialog.findViewById<Button>(R.id.btn_change_pw_finish)?.setOnClickListener {
-                val user = Firebase.auth.currentUser
-                val newPassword : String
-                val password = bottomSheetDialog.findViewById<EditText>(R.id.et_change_pw!!)?.text.toString()
-                val passwordCheck = bottomSheetDialog.findViewById<EditText>(R.id.et_change_pw_check!!)?.text.toString()
+            val user = Firebase.auth.currentUser
+            val newPassword: String
+            val password =
+                bottomSheetDialog.findViewById<EditText>(R.id.et_change_pw!!)?.text.toString()
+            val passwordCheck =
+                bottomSheetDialog.findViewById<EditText>(R.id.et_change_pw_check!!)?.text.toString()
 
-                if (password == passwordCheck){
-                    if (!passwordCheck.isEmpty()){
-                        showProgress(requireActivity(), "잠시만 기다려주세요")
-                        newPassword = passwordCheck
-                        //Log.d(TAG, "${newPassword}+${user}")
-                        hideProgress()
-                        user!!.updatePassword(newPassword).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Log.d(TAG, "User password updated.")
-                                Toast.makeText(requireContext(), "비밀번호가 변경되었습니다", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                                requireActivity().finish()
-                            }
-                            else{
-                                Log.d(TAG, "Can't updated User password.")
-                                Toast.makeText(requireContext(), "비밀번호 변경 실패", Toast.LENGTH_SHORT).show()
-                            }
+            if (password == passwordCheck) {
+                if (!passwordCheck.isEmpty()) {
+                    showProgress(requireActivity(), "잠시만 기다려주세요")
+                    newPassword = passwordCheck
+                    //Log.d(TAG, "${newPassword}+${user}")
+                    hideProgress()
+                    user!!.updatePassword(newPassword).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "User password updated.")
+                            Toast.makeText(requireContext(), "비밀번호가 변경되었습니다", Toast.LENGTH_SHORT)
+                                .show()
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        } else {
+                            Log.d(TAG, "Can't updated User password.")
+                            Toast.makeText(requireContext(), "비밀번호 변경 실패", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 }
-                if(password != passwordCheck){
-                    Toast.makeText(requireContext(), "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
-                }
-                if(password.isEmpty() || passwordCheck.isEmpty()){
-                    Toast.makeText(requireContext(), "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-                }
-
             }
+            if (password != passwordCheck) {
+                Toast.makeText(requireContext(), "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
+            }
+            if (password.isEmpty() || passwordCheck.isEmpty()) {
+                Toast.makeText(requireContext(), "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+
+        }
 
     }
 
@@ -334,35 +352,17 @@ class MyPageFragment : ParentFragment() {
                 .await()
         userModel = userModelResult.toObject()
         binding.tvProfileNickname.text = userModel!!.nickname
-
-//        fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get()
-//            .addOnCompleteListener { task ->
-//                if(task.isSuccessful) {
-//                    userModel = task.result.toObject<UserModel>()!!
-//                    binding.tvProfileNickname.text = userModel!!.nickname
-//                } else {
-//                    showShortToast(requireContext(), "유저 모델 가져오기 실패")
-//                }
-//            }.await()
     }
 
-    private suspend fun getUserProfilePhoto() {
+    private fun getUserProfilePhoto() {
 
         if (userModel!!.imageName != null && userModel!!.imageName != "") {
             val gsReference =
                 storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
 
-            gsReference.getBytes(FirebaseConstants.TEN_MEGABYTE).addOnCompleteListener {
-                val bmp = BitmapFactory.decodeByteArray(it.result, 0, it.result.size)
-                binding.ivProfile.setImageBitmap(
-                    Bitmap.createScaledBitmap(
-                        bmp,
-                        binding.ivProfile.width,
-                        binding.ivProfile.height,
-                        false
-                    )
-                )
-            }.await()
+            gsReference.downloadUrl.addOnSuccessListener {
+                Glide.with(requireContext()).load(it).centerCrop().into(binding.ivProfile)
+            }
         }
     }
 
