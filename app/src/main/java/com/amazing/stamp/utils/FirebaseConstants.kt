@@ -26,7 +26,7 @@ object FirebaseConstants {
     const val COLLECTION_POSTS = "posts"
     const val POSTS_FIELD_IMAGE_NAME = "imageNames"
     const val POSTS_FIELD_WRITER = "writer"
-
+    const val POSTS_FIELD_CREATED_AT = "createdAt"
 
 
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
