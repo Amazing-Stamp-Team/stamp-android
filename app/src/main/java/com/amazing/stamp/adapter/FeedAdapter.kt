@@ -1,18 +1,15 @@
 package com.amazing.stamp.adapter
 
 import android.content.Context
-import android.net.Uri
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.amazing.stamp.models.FeedModel
+import com.amazing.stamp.models.PostAddModel
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemFeedBinding
 
-class FeedAdapter(val context: Context, private val feedModels: ArrayList<FeedModel>) :
+class FeedAdapter(val context: Context, private val feedModels: ArrayList<PostAddModel>) :
     RecyclerView.Adapter<FeedAdapter.Holder>() {
 
 
@@ -26,14 +23,14 @@ class FeedAdapter(val context: Context, private val feedModels: ArrayList<FeedMo
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
             val model = feedModels[position]
-            val feedImageAdapter = FeedImageAdapter(context, model.imageUris)
+            val feedImageAdapter = FeedImageAdapter(context, model.imageNames)
 
             rvFeedImage.adapter = feedImageAdapter
             feedImageAdapter.notifyDataSetChanged()
 
 
 
-            tvItemFeedLocation.text = model.place
+            tvItemFeedLocation.text = model.location
             tvItemFeedContent.text = model.content
             tvItemFeedFootCount.text = "1"
             tvItemFeedNickname.text = model.writer
