@@ -1,17 +1,24 @@
 package com.amazing.stamp.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.amazing.stamp.models.PostAddModel
+import com.amazing.stamp.utils.FirebaseConstants
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemFeedBinding
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
-class FeedAdapter(val context: Context, private val feedModels: ArrayList<PostAddModel>) :
+class FeedAdapter(val context: Context, private val postIds:ArrayList<String>, private val feedModels: ArrayList<PostAddModel>) :
     RecyclerView.Adapter<FeedAdapter.Holder>() {
 
+    private val storage by lazy { Firebase.storage }
+    private val TAG = "FeedAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -23,8 +30,7 @@ class FeedAdapter(val context: Context, private val feedModels: ArrayList<PostAd
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
             val model = feedModels[position]
-            val feedImageAdapter = FeedImageAdapter(context, model.imageNames)
-
+            val feedImageAdapter = FeedImageAdapter(context, postIds[position], model.imageNames)
             rvFeedImage.adapter = feedImageAdapter
             feedImageAdapter.notifyDataSetChanged()
 

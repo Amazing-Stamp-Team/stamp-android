@@ -39,6 +39,11 @@
             tools:text="부산, 광안리" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iv_test"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="300dp"

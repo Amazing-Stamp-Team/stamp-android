@@ -30,7 +30,8 @@ import kotlinx.coroutines.tasks.await
 class FeedFragment : Fragment() {
     private val binding by lazy { FragmentFeedBinding.inflate(layoutInflater) }
     private val postModels = ArrayList<PostAddModel>()
-    private val feedAdapter by lazy { FeedAdapter(requireActivity(), postModels) }
+    private val postIds = ArrayList<String>()
+    private val feedAdapter by lazy { FeedAdapter(requireActivity(), postIds,  postModels) }
     private val storage by lazy { Firebase.storage }
     private val fireStore by lazy { Firebase.firestore }
     private val auth by lazy { Firebase.auth }
@@ -109,6 +110,7 @@ class FeedFragment : Fragment() {
                     if (dc.type == DocumentChange.Type.ADDED) {
                         val postModel = dc.document.toObject<PostAddModel>()
                         postModels.add(postModel)
+                        postIds.add(dc.document.id)
                     }
                     feedAdapter.notifyDataSetChanged()
                 }
