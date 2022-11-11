@@ -10,5 +10,5 @@ data class FeedModel(
     val endTime: String,
     val friends: ArrayList<String>,
     val createdAt: String,
-    val place: String // GPS 기능 구현후에
+    val place: String
 )

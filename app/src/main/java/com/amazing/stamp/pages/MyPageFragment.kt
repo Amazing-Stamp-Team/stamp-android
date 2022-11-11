@@ -15,12 +15,15 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.amazing.stamp.adapter.FeedAdapter
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.MyPageTripModel
+import com.amazing.stamp.models.PostAddModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.pages.session.LoginActivity
+import com.amazing.stamp.pages.sns.PostAddActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
@@ -33,9 +36,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -50,6 +56,9 @@ import java.io.FileInputStream
 class MyPageFragment : ParentFragment() {
     val TAG = "MyPageFragment"
     private val binding by lazy { FragmentMyPageBinding.inflate(layoutInflater) }
+    private val myPageTripModel = ArrayList<MyPageTripModel>()
+    private val postIDs = ArrayList<String>()
+    private val myPageTripAdapter by lazy { MyPageTripAdapter(requireActivity(),postIDs, myPageTripModel) }
     private var auth: FirebaseAuth? = null
     private var storage: FirebaseStorage? = null
     private var fireStore: FirebaseFirestore? = null
@@ -75,17 +84,22 @@ class MyPageFragment : ParentFragment() {
         fireStore = Firebase.firestore
 
         countFollow()
+        setUpFeedRecyclerView()
 
         binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
 
         binding.run {
+            btnMyPageAllAttractions.setOnClickListener {
+                val intent = Intent(requireActivity(), MyPageAttractions::class.java)
+                startActivity(intent)
+            }
             btnWithdrawal.setOnClickListener { withdrawal() }
             btnChangePw.setOnClickListener { changepw() }
             btnChangeNickname.setOnClickListener { changeNickname() }
             btnChangeProfilepicture.setOnClickListener { changephoto() }
         }
 
-        setUpTripSampleRecyclerView()
+        //setUpTripSampleRecyclerView()
         //showProgress(requireActivity(), "잠시만 기다려주세요")
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -99,6 +113,27 @@ class MyPageFragment : ParentFragment() {
 
         return binding.root
     }
+
+    private fun setUpFeedRecyclerView() {
+        binding.rvMyPageTrip.adapter = myPageTripAdapter
+        Log.d(TAG, "setUpFeedRecyclerView: ${auth!!.uid}")
+        fireStore!!.collection(FirebaseConstants.COLLECTION_POSTS)
+            .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.uid)
+            .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.DESCENDING)
+            .get().addOnSuccessListener {
+                it.toObjects<MyPageTripModel>()
+                val myPageModels = it.toObjects<MyPageTripModel>()
+                it.documents.forEach {
+                    postIDs.add(it.id)
+                }
+                myPageModels.forEach { model ->
+                    myPageTripModel.add(model)
+                }
+                myPageTripAdapter.notifyDataSetChanged()
+            }
+
+    }
+
 
     private fun countFollow() {
         val uid = auth!!.currentUser!!.uid
@@ -367,15 +402,15 @@ class MyPageFragment : ParentFragment() {
     }
 
     private fun setUpTripSampleRecyclerView() {
-        val myPageTripModels = ArrayList<MyPageTripModel>()
-        myPageTripModels.add(MyPageTripModel("", "서울, 남산타워", "2022년 01월 01일"))
-        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
-        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
-        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
-
-        val tripSampleAdapter = MyPageTripAdapter(requireContext(), myPageTripModels)
-        binding.rvMyPageTrip.addItemDecoration(VerticalGapDecoration(30))
-        binding.rvMyPageTrip.adapter = tripSampleAdapter
-        tripSampleAdapter.notifyDataSetChanged()
+//        val myPageTripModels = ArrayList<MyPageTripModel>()
+//        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
+//        myPageTripModels.add(MyPageTripModel("", "서울, 남산타워", "2022년 01월 01일"))
+//        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
+//        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
+//
+//        val tripSampleAdapter = MyPageTripAdapter(requireContext(), myPageTripModels)
+//        binding.rvMyPageTrip.addItemDecoration(VerticalGapDecoration(30))
+//        binding.rvMyPageTrip.adapter = tripSampleAdapter
+//        tripSampleAdapter.notifyDataSetChanged()
     }
 }

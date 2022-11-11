@@ -11,14 +11,29 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amazing.stamp.models.MyPageTripModel
+import com.amazing.stamp.utils.FirebaseConstants
+import com.amazing.stamp.utils.Utils
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemMyPageTripBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class MyPageTripAdapter(
     val context: Context,
-    val myPageTripModels: ArrayList<MyPageTripModel>,
+    val postIDs:ArrayList<String>,
+    val myPageTripModels: ArrayList<MyPageTripModel>
+    //private val imageUri: String?
 ) :
     RecyclerView.Adapter<MyPageTripAdapter.Holder>() {
+
+    private val storage by lazy { Firebase.storage }
+    val auth: FirebaseAuth? = Firebase.auth
+    val uid: String = auth!!.currentUser!!.uid
+    val firestore = Firebase.firestore
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -29,8 +44,18 @@ class MyPageTripAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
-            tvItemTripTitle.text = myPageTripModels[position].title
-            tvItemTripDay.text = myPageTripModels[position].day
+            val model = myPageTripModels[position]
+            val postID = postIDs[position]
+
+
+            if (model.imageNames != null && model.imageNames.isNotEmpty()) {
+                storage.getReference("${FirebaseConstants.STORAGE_POST}/$postID/${model.imageNames[0]}").downloadUrl.addOnSuccessListener {
+                    Glide.with(context).load(it).into(ivItemTripImage)
+                }
+            }
+
+            tvItemTripTitle.text = myPageTripModels[position].location
+            tvItemTripDay.text = Utils.sliderDateFormat.format(myPageTripModels[position].startDate!!.toDate().time)
             ivItemTripImage.clipToOutline = true
         }
     }
