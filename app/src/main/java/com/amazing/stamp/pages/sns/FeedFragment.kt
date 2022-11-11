@@ -31,7 +31,7 @@ class FeedFragment : Fragment() {
     private val binding by lazy { FragmentFeedBinding.inflate(layoutInflater) }
     private val postModels = ArrayList<PostAddModel>()
     private val postIds = ArrayList<String>()
-    private val feedAdapter by lazy { FeedAdapter(requireActivity(), postIds,  postModels) }
+    private val feedAdapter by lazy { FeedAdapter(requireActivity(), postIds, postModels) }
     private val storage by lazy { Firebase.storage }
     private val fireStore by lazy { Firebase.firestore }
     private val auth by lazy { Firebase.auth }
@@ -79,7 +79,6 @@ class FeedFragment : Fragment() {
 
             CoroutineScope(Dispatchers.Main).launch {
                 getUserFriends()
-                getFeeds()
             }
 
 
@@ -114,7 +113,6 @@ class FeedFragment : Fragment() {
                     }
                     feedAdapter.notifyDataSetChanged()
                 }
-
             }
 
     }
@@ -124,52 +122,6 @@ class FeedFragment : Fragment() {
             .document(auth.uid!!).get().await()
 
         friendModel = getFriendResult.toObject<FriendModel>()
-    }
-
-    private suspend fun getFeeds() {
-//        val uid = ArrayList<String>()
-//
-//        friendModel!!.followers?.forEach { uid.add(it) }
-//        friendModel!!.followings?.forEach { uid.add(it) }
-//
-//        uid.forEach {
-//            val postResult = fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
-//                .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, it)
-//                .get().await()
-//
-//            postResult.forEach {
-//                val postAddModel = it.toObject<PostAddModel>()
-//
-//                postModels.add(
-//                    FeedModel(
-//                        getUserNickname(postAddModel.writer),
-//                        ArrayList(),
-//                        postAddModel.content.toString(),
-//                        postAddModel.startDate.toString(),
-//                        postAddModel.endDate.toString(),
-//                        ArrayList(),
-//                        "",
-//                        postAddModel.location.toString()
-//                    )
-//                )
-//            }
-//
-//            feedAdapter.notifyDataSetChanged()
-//
-////            val gsReference =
-////                storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/IMG_PROFILE_1kaofPc9DReZJJ1TqqR0wJr2IMg2_1667401347534.png")
-////                    .downloadUrl.addOnSuccessListener {
-////                        val uris = ArrayList<Uri>()
-////                        uris.add(it)
-////                        uris.add(it)
-////                        uris.add(it)
-////                        feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-////                        feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-////                        feedModes.add(FeedModel("너굴맨", uris, "광안리 여행을 다녀왔습니다", "", "", ArrayList(), "", "부산 광안리"))
-////
-////                        feedAdapter.notifyDataSetChanged()
-////                    }
-//        }
     }
 
     private suspend fun getUserNickname(userUid: String): String {
