@@ -28,6 +28,12 @@ object FirebaseConstants {
     const val POSTS_FIELD_WRITER = "writer"
     const val POSTS_FIELD_CREATED_AT = "createdAt"
 
+    /*
+        PostLikes
+     */
+    const val COLLECTION_POST_LIKES = "postLikes"
+    const val POST_LIKES_FIELD_USER_ID = "users"
+
 
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
     const val STORAGE_PROFILE = "profile"
