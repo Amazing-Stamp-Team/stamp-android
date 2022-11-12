@@ -1,16 +1,20 @@
 package com.amazing.stamp.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.amazing.stamp.models.PostLikeModel
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemFeedBinding
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -23,10 +27,18 @@ import kotlinx.coroutines.tasks.await
 class FeedAdapter(
     val context: Context,
     private val postIds: ArrayList<String>,
-    private val feedModels: ArrayList<PostModel>
+    private val feedModels: ArrayList<PostModel>,
+    private val isLikeClickeds: ArrayList<Boolean>
 ) :
     RecyclerView.Adapter<FeedAdapter.Holder>() {
 
+
+    interface OnLikeClickListener {
+        fun onLikeClick(binding: ItemFeedBinding, postId: String, position: Int)
+    }
+
+    lateinit var onLikeClickListener: OnLikeClickListener
+    private val auth by lazy { Firebase.auth }
     private val storage by lazy { Firebase.storage }
     private val fireStore by lazy { Firebase.firestore }
     private val TAG = "FeedAdapter"
@@ -47,11 +59,12 @@ class FeedAdapter(
 
             tvItemFeedLocation.text = model.location
             tvItemFeedContent.text = model.content
-            tvItemFeedFootCount.text = "1"
+            tvItemFeedFootCount.text = ""
 
             CoroutineScope(Dispatchers.Main).launch {
                 val userModel = getUserModel(model.writer)
                 tvItemFeedNickname.text = userModel.nickname
+                tvItemFeedFootCount.text = getPostLike(holder.binding, position).toString()
 
                 if (userModel.imageName != null && userModel.imageName != "") {
                     storage.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel.imageName}").downloadUrl.addOnSuccessListener {
@@ -62,10 +75,29 @@ class FeedAdapter(
         }
     }
 
+    private suspend fun getPostLike(binding: ItemFeedBinding, position: Int): Int {
+        val queryResult = fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES)
+            .document(postIds[position]).get()
+
+        if (queryResult.isSuccessful) {
+            queryResult.result ?: return 0
+
+            val postLikeModel = queryResult.result?.toObject<PostLikeModel>()
+
+            if (auth.currentUser!!.uid in postLikeModel!!.users!!) {
+                isLikeClickeds[position] = true
+                binding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.RED)
+            }
+            return postLikeModel?.users?.size ?: 0
+        } else {
+            return 0
+        }
+    }
+
     override fun getItemCount(): Int {
         return feedModels.size
     }
-    
+
     private suspend fun getUserModel(userUid: String): UserModel {
         return fireStore.collection(FirebaseConstants.COLLECTION_USERS)
             .document(userUid)
@@ -74,5 +106,11 @@ class FeedAdapter(
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ItemFeedBinding.bind(itemView)
+
+        init {
+            binding.llItemFeedLike.setOnClickListener {
+                onLikeClickListener.onLikeClick(binding, postIds[bindingAdapterPosition], bindingAdapterPosition)
+            }
+        }
     }
 }

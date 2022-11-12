@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.amazing.stamp.adapter.PostImageAdapter
 import com.amazing.stamp.adapter.ProfileNicknameAdapter
+import com.amazing.stamp.models.PostLikeModel
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.ProfileNicknameModel
 import com.amazing.stamp.utils.FirebaseConstants
@@ -42,6 +43,7 @@ import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 class PostAddActivity : ParentActivity() {
 
@@ -333,6 +335,8 @@ class PostAddActivity : ParentActivity() {
         val startTimeStamp = Timestamp(Date(startDate.timeInMillis))
         val endTimeStamp = Timestamp(Date(endDate.timeInMillis))
 
+
+
         showProgress(this, "게시글 등록 중...")
 
         // 코틀린 코루틴의 Dispatchers 에는 여러 종류가 있음
@@ -346,6 +350,12 @@ class PostAddActivity : ParentActivity() {
             showProgress(this@PostAddActivity, "사진 업로드 중...")
 
             val postModelUploadResult = fireStore.collection(FirebaseConstants.COLLECTION_POSTS).add(postModel).await()
+
+            // PostLike 문서 만듬
+            fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES).document(postModelUploadResult.id)
+                .set(PostLikeModel(ArrayList()))
+
+
             imageUpload(postModelUploadResult.id)
         }
     }
