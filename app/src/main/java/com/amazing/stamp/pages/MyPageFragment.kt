@@ -387,7 +387,11 @@ class MyPageFragment : ParentFragment() {
                 storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
 
             gsReference.downloadUrl.addOnSuccessListener {
-                Glide.with(requireContext()).load(it).centerCrop().into(binding.ivProfile)
+                try {
+                    Glide.with(requireContext()).load(it).centerCrop().into(binding.ivProfile)
+                }catch (e:Exception){
+                    Log.d(TAG, "getUserProfilePhoto: ${e.message}")
+                }
             }
         }
     }
