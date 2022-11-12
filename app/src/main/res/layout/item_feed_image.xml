@@ -8,5 +8,6 @@
         android:id="@+id/iv_item_Feed_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray_bright"
         tools:src="@drawable/img_sample_1" />
 </FrameLayout>

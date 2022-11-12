@@ -7,7 +7,7 @@
             <stroke android:width="0dp" android:color="#5555FF" />
             <padding android:left="@dimen/gap_line" android:right="@dimen/gap_line" />
             <corners android:radius="10dp" />
-            <solid android:color="@color/gray_10" />
+            <solid android:color="@color/gray_light" />
         </shape>
 
     </item>
@@ -18,7 +18,7 @@
             <padding android:left="@dimen/gap_line" android:right="@dimen/gap_line" />
             <stroke android:width="0dp" android:color="#EEEEEE" />
             <corners android:radius="10dp" />
-            <solid android:color="@color/gray_10" />
+            <solid android:color="@color/gray_light" />
         </shape>
     </item>
 </selector>

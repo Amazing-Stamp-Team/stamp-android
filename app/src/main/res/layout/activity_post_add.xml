@@ -150,7 +150,7 @@
                 android:layout_marginTop="@dimen/gap_line"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/obj_post_add_friends"
-                android:textColor="@color/gray_50" />
+                android:textColor="@color/gray" />
 
             <TextView
                 android:layout_width="wrap_content"

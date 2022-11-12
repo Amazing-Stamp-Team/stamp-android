@@ -12,10 +12,10 @@
     <color name="main_color_100">#53BF9D</color>
     <color name="main_color_80">#ddf2eb</color>
 
-
-    <color name="gray_10">#EDEDED</color>
-    <color name="gray_50">#939393</color>
-    <color name="dark_gray">#b2b2b2</color>
+    <color name="gray_bright">#F5F5F5</color>
+    <color name="gray_light">#EDEDED</color>
+    <color name="gray">#939393</color>
+    <color name="gray_dark">#b2b2b2</color>
 
     <color name="clear">#00000000</color>
 
