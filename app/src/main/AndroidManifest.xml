@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
-        <activity android:name="com.amazing.stamp.pages.MyPageAttractions"/>
+        <activity android:name="com.amazing.stamp.pages.MyPageAttractionsActivity"/>
         <activity
             android:name="com.amazing.stamp.pages.sns.FriendsSearchActivity"
             android:exported="false" />
