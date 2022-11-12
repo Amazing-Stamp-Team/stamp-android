@@ -1,22 +1,10 @@
 package com.amazing.stamp.pages
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import com.amazing.stamp.adapter.FeedAdapter
 import com.amazing.stamp.adapter.MyPageTripAdapter
-import com.amazing.stamp.models.FriendModel
-import com.amazing.stamp.models.MyPageTripModel
-import com.amazing.stamp.models.PostAddModel
-import com.amazing.stamp.pages.sns.FriendsSearchActivity
-import com.amazing.stamp.pages.sns.PostAddActivity
+import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
-import com.amazing.stamp.utils.Utils
-import com.example.stamp.R
 import com.example.stamp.databinding.ActivityMyPageAttractionsBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentChange
@@ -25,13 +13,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MyPageAttractionsActivity : ParentActivity() {
     private val binding by lazy { ActivityMyPageAttractionsBinding.inflate(layoutInflater) }
-    private val myPageTripModel = ArrayList<MyPageTripModel>()
+    private val myPageTripModel = ArrayList<PostModel>()
     private val postIDs = ArrayList<String>()
     private val myPageTripAdapter by lazy {
         MyPageTripAdapter(
@@ -68,9 +53,9 @@ class MyPageAttractionsActivity : ParentActivity() {
             .addSnapshotListener { value, error ->
                 value?.documentChanges?.forEach { dc ->
                     if (dc.type == DocumentChange.Type.ADDED) {
-                        val myPageModel = dc.document.toObject<MyPageTripModel>()
+                        val postModel = dc.document.toObject<PostModel>()
                         postIDs.add(dc.document.id)
-                        myPageTripModel.add(myPageModel)
+                        myPageTripModel.add(postModel)
                     }
                     myPageTripAdapter.notifyDataSetChanged()
                 }

@@ -1,16 +1,11 @@
 package com.amazing.stamp.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.amazing.stamp.models.MyPageTripModel
+import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.Utils
 import com.bumptech.glide.Glide
@@ -24,14 +19,14 @@ import com.google.firebase.storage.ktx.storage
 
 class MyPageTripAdapter(
     val context: Context,
-    val postIDs:ArrayList<String>,
-    val myPageTripModels: ArrayList<MyPageTripModel>
+    private val postIDs:ArrayList<String>,
+    private val myPageTripModels: ArrayList<PostModel>
     //private val imageUri: String?
 ) :
     RecyclerView.Adapter<MyPageTripAdapter.Holder>() {
 
     private val storage by lazy { Firebase.storage }
-    val auth: FirebaseAuth? = Firebase.auth
+    private val auth: FirebaseAuth? = Firebase.auth
     val uid: String = auth!!.currentUser!!.uid
     val firestore = Firebase.firestore
 

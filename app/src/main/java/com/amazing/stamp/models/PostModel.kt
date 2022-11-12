@@ -3,7 +3,7 @@ package com.amazing.stamp.models
 import com.google.firebase.Timestamp
 import java.time.LocalDate
 
-data class PostAddModel(
+data class PostModel(
     val writer: String,
     val friends: ArrayList<String>?,
     val content: String?,

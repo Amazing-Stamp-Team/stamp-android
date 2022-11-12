@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.amazing.stamp.models.PostAddModel
+import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.bumptech.glide.Glide
@@ -23,7 +23,7 @@ import kotlinx.coroutines.tasks.await
 class FeedAdapter(
     val context: Context,
     private val postIds: ArrayList<String>,
-    private val feedModels: ArrayList<PostAddModel>
+    private val feedModels: ArrayList<PostModel>
 ) :
     RecyclerView.Adapter<FeedAdapter.Holder>() {
 

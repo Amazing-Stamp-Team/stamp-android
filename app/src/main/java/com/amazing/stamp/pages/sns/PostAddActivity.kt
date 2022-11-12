@@ -19,7 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.amazing.stamp.adapter.PostImageAdapter
 import com.amazing.stamp.adapter.ProfileNicknameAdapter
-import com.amazing.stamp.models.PostAddModel
+import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.ProfileNicknameModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
@@ -340,7 +340,7 @@ class PostAddActivity : ParentActivity() {
         // Main - UI와 상호작용
         // Default - CPU를 많이 사용하는 작업
         CoroutineScope(Dispatchers.Main).launch {
-            val postModel = PostAddModel(auth.uid!!, friendsUID, binding.etPostWritePost.text.toString(), location, startTimeStamp, endTimeStamp, createdAt, null)
+            val postModel = PostModel(auth.uid!!, friendsUID, binding.etPostWritePost.text.toString(), location, startTimeStamp, endTimeStamp, createdAt, null)
 
             hideProgress()
             showProgress(this@PostAddActivity, "사진 업로드 중...")

@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.amazing.stamp.adapter.FeedAdapter
-import com.amazing.stamp.models.FeedModel
 import com.amazing.stamp.models.FriendModel
-import com.amazing.stamp.models.PostAddModel
+import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.R
@@ -29,7 +28,7 @@ import kotlinx.coroutines.tasks.await
 
 class FeedFragment : Fragment() {
     private val binding by lazy { FragmentFeedBinding.inflate(layoutInflater) }
-    private val postModels = ArrayList<PostAddModel>()
+    private val postModels = ArrayList<PostModel>()
     private val postIds = ArrayList<String>()
     private val feedAdapter by lazy { FeedAdapter(requireActivity(), postIds, postModels) }
     private val storage by lazy { Firebase.storage }
@@ -107,7 +106,7 @@ class FeedFragment : Fragment() {
             .addSnapshotListener { value, error ->
                 value?.documentChanges?.forEach { dc ->
                     if (dc.type == DocumentChange.Type.ADDED) {
-                        val postModel = dc.document.toObject<PostAddModel>()
+                        val postModel = dc.document.toObject<PostModel>()
                         postModels.add(postModel)
                         postIds.add(dc.document.id)
                     }

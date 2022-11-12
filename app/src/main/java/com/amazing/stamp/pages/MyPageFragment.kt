@@ -1,8 +1,6 @@
 package com.amazing.stamp.pages
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,15 +13,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.amazing.stamp.adapter.FeedAdapter
 import com.amazing.stamp.adapter.MyPageTripAdapter
-import com.amazing.stamp.adapter.decoration.VerticalGapDecoration
 import com.amazing.stamp.models.FriendModel
-import com.amazing.stamp.models.MyPageTripModel
-import com.amazing.stamp.models.PostAddModel
+import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.pages.session.LoginActivity
-import com.amazing.stamp.pages.sns.PostAddActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.amazing.stamp.utils.SecretConstants
@@ -36,12 +30,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -56,7 +47,7 @@ import java.io.FileInputStream
 class MyPageFragment : ParentFragment() {
     val TAG = "MyPageFragment"
     private val binding by lazy { FragmentMyPageBinding.inflate(layoutInflater) }
-    private val myPageTripModel = ArrayList<MyPageTripModel>()
+    private val myPageTripModel = ArrayList<PostModel>()
     private val postIDs = ArrayList<String>()
     private val myPageTripAdapter by lazy {
         MyPageTripAdapter(
@@ -125,9 +116,9 @@ class MyPageFragment : ParentFragment() {
             .limit(3)
             .get().addOnSuccessListener { value ->
                 value.documents.forEach { dc ->
-                    val myPageModel = dc.toObject<MyPageTripModel>()
+                    val postModel = dc.toObject<PostModel>()
                     postIDs.add(dc.id)
-                    myPageTripModel.add(myPageModel!!)
+                    myPageTripModel.add(postModel!!)
                 }
 
                 myPageTripAdapter.notifyDataSetChanged()

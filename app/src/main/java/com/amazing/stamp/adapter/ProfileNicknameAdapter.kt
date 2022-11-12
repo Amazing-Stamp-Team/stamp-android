@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.amazing.stamp.models.MyPageTripModel
 import com.amazing.stamp.models.ProfileNicknameModel
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemProfileNicknameBinding
