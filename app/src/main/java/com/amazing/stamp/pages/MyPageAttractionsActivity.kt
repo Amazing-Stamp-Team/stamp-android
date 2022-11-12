@@ -1,6 +1,7 @@
 package com.amazing.stamp.pages
 
 import android.os.Bundle
+import android.view.MenuItem
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.utils.FirebaseConstants
@@ -35,10 +36,13 @@ class MyPageAttractionsActivity : ParentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbarMyPageAttractions)
+        supportActionBar?.run {
+            // 앱 바 뒤로가기 버튼 설정
+            setDisplayHomeAsUpEnabled(true)
+        }
+
         binding.run {
-            binding.ibMyPageAttractionsBack.setOnClickListener {  //뒤로가기 버튼을 눌렀을때
-                finish()
-            }
             setUpFeedRecyclerView()
         }
     }
@@ -60,6 +64,17 @@ class MyPageAttractionsActivity : ParentActivity() {
                     myPageTripAdapter.notifyDataSetChanged()
                 }
             }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // 앱 바 클릭 이벤트
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 
