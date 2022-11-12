@@ -58,10 +58,16 @@ class MyPageFragment : ParentFragment() {
     private val binding by lazy { FragmentMyPageBinding.inflate(layoutInflater) }
     private val myPageTripModel = ArrayList<MyPageTripModel>()
     private val postIDs = ArrayList<String>()
-    private val myPageTripAdapter by lazy { MyPageTripAdapter(requireActivity(),postIDs, myPageTripModel) }
+    private val myPageTripAdapter by lazy {
+        MyPageTripAdapter(
+            requireActivity(),
+            postIDs,
+            myPageTripModel
+        )
+    }
     private var auth: FirebaseAuth? = null
     private var storage: FirebaseStorage? = null
-    private var fireStore: FirebaseFirestore? = null
+    private val fireStore by lazy { Firebase.firestore }
     private var userModel: UserModel? = null
     private var imageUri: Uri? = null
     private var pathUri: String? = null
@@ -81,7 +87,6 @@ class MyPageFragment : ParentFragment() {
 
         auth = FirebaseAuth.getInstance()
         storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
-        fireStore = Firebase.firestore
 
         countFollow()
         setUpFeedRecyclerView()
@@ -90,7 +95,7 @@ class MyPageFragment : ParentFragment() {
 
         binding.run {
             btnMyPageAllAttractions.setOnClickListener {
-                val intent = Intent(requireActivity(), MyPageAttractions::class.java)
+                val intent = Intent(requireActivity(), MyPageAttractionsActivity::class.java)
                 startActivity(intent)
             }
             btnWithdrawal.setOnClickListener { withdrawal() }
@@ -98,9 +103,6 @@ class MyPageFragment : ParentFragment() {
             btnChangeNickname.setOnClickListener { changeNickname() }
             btnChangeProfilepicture.setOnClickListener { changephoto() }
         }
-
-        //setUpTripSampleRecyclerView()
-        //showProgress(requireActivity(), "잠시만 기다려주세요")
 
         CoroutineScope(Dispatchers.Main).launch {
 
@@ -116,22 +118,20 @@ class MyPageFragment : ParentFragment() {
 
     private fun setUpFeedRecyclerView() {
         binding.rvMyPageTrip.adapter = myPageTripAdapter
-        Log.d(TAG, "setUpFeedRecyclerView: ${auth!!.uid}")
-        fireStore!!.collection(FirebaseConstants.COLLECTION_POSTS)
-            .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.uid)
+
+        fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
+            .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.currentUser?.uid)
             .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.DESCENDING)
-            .get().addOnSuccessListener {
-                it.toObjects<MyPageTripModel>()
-                val myPageModels = it.toObjects<MyPageTripModel>()
-                it.documents.forEach {
-                    postIDs.add(it.id)
+            .limit(3)
+            .get().addOnSuccessListener { value ->
+                value.documents.forEach { dc ->
+                    val myPageModel = dc.toObject<MyPageTripModel>()
+                    postIDs.add(dc.id)
+                    myPageTripModel.add(myPageModel!!)
                 }
-                myPageModels.forEach { model ->
-                    myPageTripModel.add(model)
-                }
+
                 myPageTripAdapter.notifyDataSetChanged()
             }
-
     }
 
 
@@ -175,7 +175,7 @@ class MyPageFragment : ParentFragment() {
                     bottomSheetDialog.findViewById<EditText>(R.id.et_change_nickname!!)?.text.toString()
 
                 //닉네임 중복체크
-                fireStore!!.collection(FirebaseConstants.COLLECTION_USERS)
+                fireStore.collection(FirebaseConstants.COLLECTION_USERS)
                     .whereEqualTo(FirebaseConstants.USER_FIELD_NICKNAME, newNickname)
                     .get()
                     .addOnCompleteListener {
@@ -187,7 +187,7 @@ class MyPageFragment : ParentFragment() {
 
                         if (!newNickname.isEmpty() && nicknameDuplicateCheck) {
                             val uid = auth!!.currentUser!!.uid
-                            val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)
+                            val ref = fireStore.collection(FirebaseConstants.COLLECTION_USERS)
                                 ?.document(uid)
 
                             //ex)db.collection에서 db는 firestore로 지정해줘야함
@@ -399,18 +399,5 @@ class MyPageFragment : ParentFragment() {
                 Glide.with(requireContext()).load(it).centerCrop().into(binding.ivProfile)
             }
         }
-    }
-
-    private fun setUpTripSampleRecyclerView() {
-//        val myPageTripModels = ArrayList<MyPageTripModel>()
-//        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
-//        myPageTripModels.add(MyPageTripModel("", "서울, 남산타워", "2022년 01월 01일"))
-//        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
-//        myPageTripModels.add(MyPageTripModel("", "부산, 마린시티", "2022년 10월 01일"))
-//
-//        val tripSampleAdapter = MyPageTripAdapter(requireContext(), myPageTripModels)
-//        binding.rvMyPageTrip.addItemDecoration(VerticalGapDecoration(30))
-//        binding.rvMyPageTrip.adapter = tripSampleAdapter
-//        tripSampleAdapter.notifyDataSetChanged()
     }
 }

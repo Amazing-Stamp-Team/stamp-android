@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.amazing.stamp.pages.MyPageAttractions">
+    tools:context="com.amazing.stamp.pages.MyPageAttractionsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

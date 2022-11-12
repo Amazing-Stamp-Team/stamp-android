@@ -103,7 +103,7 @@ class FeedFragment : Fragment() {
 
 
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
-            .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.ASCENDING)
+            .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 value?.documentChanges?.forEach { dc ->
                     if (dc.type == DocumentChange.Type.ADDED) {
