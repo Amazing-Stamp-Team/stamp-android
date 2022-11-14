@@ -118,10 +118,6 @@ class FeedFragment : Fragment() {
             myFriends.add(it)
         }
 
-        myFriends.forEach {
-            Log.d(TAG, "setUpFeedRecyclerView: $it")
-        }
-
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
             .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
@@ -146,21 +142,16 @@ class FeedFragment : Fragment() {
                 if (isLikeClickeds[position]) {
                     feedBinding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.BLACK)
 
-                    fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES)
-                        .document(postId).update(
-                            FirebaseConstants.POST_LIKES_FIELD_USER_ID,
-                            FieldValue.arrayUnion(auth.currentUser!!.uid)
-                        )
+                    fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES).document(postId).update(FirebaseConstants.POST_LIKES_FIELD_USER_ID, FieldValue.arrayRemove(auth.currentUser!!.uid))
 
-                    feedBinding.tvItemFeedFootCount.text =
-                        (feedBinding.tvItemFeedFootCount.text.toString().toInt() - 1).toString()
+                    feedBinding.tvItemFeedFootCount.text = (feedBinding.tvItemFeedFootCount.text.toString().toInt() - 1).toString()
                 } else {
                     feedBinding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.RED)
 
                     fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES)
                         .document(postId).update(
                             FirebaseConstants.POST_LIKES_FIELD_USER_ID,
-                            FieldValue.arrayRemove(auth.currentUser!!.uid)
+                            FieldValue.arrayUnion(auth.currentUser!!.uid)
                         )
 
                     feedBinding.tvItemFeedFootCount.text =

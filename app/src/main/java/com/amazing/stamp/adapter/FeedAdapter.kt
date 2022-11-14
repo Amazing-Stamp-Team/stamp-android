@@ -3,6 +3,7 @@ package com.amazing.stamp.adapter
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,12 +60,12 @@ class FeedAdapter(
 
             tvItemFeedLocation.text = model.location
             tvItemFeedContent.text = model.content
-            tvItemFeedFootCount.text = ""
+            tvItemFeedFootCount.text = "0"
 
             CoroutineScope(Dispatchers.Main).launch {
                 val userModel = getUserModel(model.writer)
                 tvItemFeedNickname.text = userModel.nickname
-                tvItemFeedFootCount.text = getPostLike(holder.binding, position).toString()
+                getPostLike(holder.binding, position).toString()
 
                 if (userModel.imageName != null && userModel.imageName != "") {
                     storage.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel.imageName}").downloadUrl.addOnSuccessListener {
@@ -75,23 +76,18 @@ class FeedAdapter(
         }
     }
 
-    private suspend fun getPostLike(binding: ItemFeedBinding, position: Int): Int {
+    private fun getPostLike(binding: ItemFeedBinding, position: Int) {
         val queryResult = fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES)
-            .document(postIds[position]).get()
+            .document(postIds[position]).get().addOnCompleteListener {
 
-        if (queryResult.isSuccessful) {
-            queryResult.result ?: return 0
+                val postLikeModel = it.result.toObject<PostLikeModel>()
 
-            val postLikeModel = queryResult.result?.toObject<PostLikeModel>()
-
-            if (auth.currentUser!!.uid in postLikeModel!!.users!!) {
-                isLikeClickeds[position] = true
-                binding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.RED)
+                if (auth.currentUser!!.uid in postLikeModel!!.users!!) {
+                    isLikeClickeds[position] = true
+                    binding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.RED)
+                    binding.tvItemFeedFootCount.text = postLikeModel.users!!.size.toString()
+                }
             }
-            return postLikeModel?.users?.size ?: 0
-        } else {
-            return 0
-        }
     }
 
     override fun getItemCount(): Int {
