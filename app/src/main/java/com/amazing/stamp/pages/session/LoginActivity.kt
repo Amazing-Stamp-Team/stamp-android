@@ -60,8 +60,7 @@ class LoginActivity : ParentActivity() {
 
             // dev
             btnDev.setOnClickListener {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                finish()
+                onLogin("aaa@aaa.aaa","aaaaaa")
             }
         }
     }
