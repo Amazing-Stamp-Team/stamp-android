@@ -25,6 +25,9 @@ class MyPageTripAdapter(
 ) :
     RecyclerView.Adapter<MyPageTripAdapter.Holder>() {
 
+    interface OnItemClickListener { fun onItemClick(view: View, position: Int) }
+    var onItemClickListener: OnItemClickListener? = null
+
     private val storage by lazy { Firebase.storage }
     private val auth: FirebaseAuth? = Firebase.auth
     val uid: String = auth!!.currentUser!!.uid
@@ -61,5 +64,11 @@ class MyPageTripAdapter(
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ItemMyPageTripBinding.bind(itemView)
+
+        init {
+            itemView.setOnClickListener {
+                onItemClickListener?.onItemClick(it, bindingAdapterPosition)
+            }
+        }
     }
 }

@@ -18,10 +18,8 @@ import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.pages.session.LoginActivity
-import com.amazing.stamp.utils.FirebaseConstants
-import com.amazing.stamp.utils.ParentFragment
-import com.amazing.stamp.utils.SecretConstants
-import com.amazing.stamp.utils.Utils
+import com.amazing.stamp.pages.sns.PostActivity
+import com.amazing.stamp.utils.*
 import com.amazing.stamp.utils.Utils.showShortToast
 import com.bumptech.glide.Glide
 import com.example.stamp.R
@@ -109,6 +107,14 @@ class MyPageFragment : ParentFragment() {
 
     private fun setUpFeedRecyclerView() {
         binding.rvMyPageTrip.adapter = myPageTripAdapter
+
+        myPageTripAdapter.onItemClickListener= object :MyPageTripAdapter.OnItemClickListener {
+            override fun onItemClick(v: View, position: Int) {
+                val intent = Intent(requireActivity(), PostActivity::class.java)
+                intent.putExtra(Constants.INTENT_EXTRA_POST_ID, postIDs[position])
+                startActivity(intent)
+            }
+        }
 
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
             .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.currentUser?.uid)

@@ -21,12 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
-        <activity android:name="com.amazing.stamp.pages.MyPageAttractionsActivity"/>
         <activity
-            android:name="com.amazing.stamp.pages.sns.FriendsSearchActivity"
+            android:name="com.amazing.stamp.pages.sns.PostActivity"
+            android:exported="false" />
+        <activity android:name="com.amazing.stamp.pages.MyPageAttractionsActivity" />
+        <activity
+            android:name=".FriendsSearchActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.sns.FriendsTagActivity"
+            android:name=".FriendsTagActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.utils.ParentActivity"
