@@ -1,18 +1,17 @@
 package com.amazing.stamp.pages.sns
 
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.content.ClipData.newIntent
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.amazing.stamp.adapter.FeedImageAdapter
-import com.amazing.stamp.adapter.ImageSliderAdapter
-import com.amazing.stamp.adapter.PostImageAdapter
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.bumptech.glide.Glide
+import com.example.stamp.R
 import com.example.stamp.databinding.ActivityPostBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -51,6 +50,21 @@ class PostActivity : AppCompatActivity() {
 
         postId = intent.getStringExtra(Constants.INTENT_EXTRA_POST_ID)
 
+
+        binding.toolbarPost.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_post_delete -> {
+                    deletePost()
+                    true
+                }
+
+                R.id.menu_post_edit -> {
+                    editPost()
+                    true
+                }
+                else -> false
+            }
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             val postTask = fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
@@ -91,6 +105,19 @@ class PostActivity : AppCompatActivity() {
                         .into(binding.includedFeed.ivItemFeedProfile)
                 }
         }
+    }
+
+    private fun editPost() {
+        val intent = Intent(applicationContext, PostActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun deletePost() {
+        fireStore.collection(FirebaseConstants.COLLECTION_POSTS).document(postId!!)
+            .delete()
+            .addOnSuccessListener {
+                finish()
+            }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

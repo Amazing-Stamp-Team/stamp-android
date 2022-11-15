@@ -45,7 +45,7 @@ import java.io.FileInputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PostAddActivity : ParentActivity() {
+open class PostAddActivity : ParentActivity() {
 
     companion object {
         const val FRIEND_SEARCH_REQUEST_CODE = 1001
@@ -57,20 +57,20 @@ class PostAddActivity : ParentActivity() {
         const val INTENT_EXTRA_NAME = "INTENT_EXTRA_NAME"
     }
 
-    private val binding by lazy { ActivityPostAddBinding.inflate(layoutInflater) }
-    private val TAG = "PostAddActivity"
+    protected val binding by lazy { ActivityPostAddBinding.inflate(layoutInflater) }
+    protected val TAG = "PostAddActivity"
 
     // 이미지 관련
-    private var imageUriList = ArrayList<Uri>()
-    private val pathUri = ArrayList<String?>()
+    protected var imageUriList = ArrayList<Uri>()
+    protected val pathUri = ArrayList<String?>()
 
-    private val imageAdapter by lazy { PostImageAdapter(applicationContext, imageUriList) }
+    protected val imageAdapter by lazy { PostImageAdapter(applicationContext, imageUriList) }
     private val MAX_IMAGE_COUNT = 10
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent> // 이미지 선택 후 돌아올때 사용
 
     // 날짜 관련
-    val startDate = Calendar.getInstance()
-    val endDate = Calendar.getInstance()
+    protected val startDate = Calendar.getInstance()
+    protected val endDate = Calendar.getInstance()
 
     // 친구 태그 관련
     private val taggedFriends = ArrayList<ProfileNicknameModel>()
@@ -86,19 +86,30 @@ class PostAddActivity : ParentActivity() {
 
 
     // 위치 관련
-    var location: String? = null
+    protected var location: String? = null
 
 
     //파이어베이스 관련
-    private val auth by lazy { Firebase.auth }
-    private val storage by lazy { Firebase.storage }
-    private val fireStore by lazy { Firebase.firestore }
+    protected val auth by lazy { Firebase.auth }
+    protected val storage by lazy { Firebase.storage }
+    protected val fireStore by lazy { Firebase.firestore }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+
+
+        // 등록하기 버튼
+        binding.btnPostAddFinish.setOnClickListener { onPostAdd() }
+
+        // 디폴트 세팅
+        onDefaultSetting()
+    }
+
+    // PostEditActivity 에서 onCreate() 를 오버라이딩 하기 위함
+    protected fun onDefaultSetting() {
         setSupportActionBar(binding.toolbarPostAdd)
         supportActionBar?.run {
             // 앱 바 뒤로가기 버튼 설정
@@ -157,15 +168,15 @@ class PostAddActivity : ParentActivity() {
                 startActivityForResult(intent, FRIEND_SEARCH_REQUEST_CODE)
             }
 
-            // 등록하기 버튼
-            btnPostAddFinish.setOnClickListener { onPostAdd() }
+
 
             tvPostLocationSet.setOnClickListener { currentLocationSet() }
         }
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == RESULT_CANCELED) return
+        if (resultCode == RESULT_CANCELED) return
 
         when (requestCode) {
             // 친구 태그 RequestCode 일때
@@ -344,15 +355,26 @@ class PostAddActivity : ParentActivity() {
         // Main - UI와 상호작용
         // Default - CPU를 많이 사용하는 작업
         CoroutineScope(Dispatchers.Main).launch {
-            val postModel = PostModel(auth.uid!!, friendsUID, binding.etPostWritePost.text.toString(), location, startTimeStamp, endTimeStamp, createdAt, null)
+            val postModel = PostModel(
+                auth.uid!!,
+                friendsUID,
+                binding.etPostWritePost.text.toString(),
+                location,
+                startTimeStamp,
+                endTimeStamp,
+                createdAt,
+                null
+            )
 
             hideProgress()
             showProgress(this@PostAddActivity, "사진 업로드 중...")
 
-            val postModelUploadResult = fireStore.collection(FirebaseConstants.COLLECTION_POSTS).add(postModel).await()
+            val postModelUploadResult =
+                fireStore.collection(FirebaseConstants.COLLECTION_POSTS).add(postModel).await()
 
             // PostLike 문서 만듬
-            fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES).document(postModelUploadResult.id)
+            fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES)
+                .document(postModelUploadResult.id)
                 .set(PostLikeModel(ArrayList()))
 
 
@@ -360,16 +382,17 @@ class PostAddActivity : ParentActivity() {
         }
     }
 
-    private suspend fun imageUpload(id:String) {
+    private suspend fun imageUpload(id: String) {
         val imageName = ArrayList<String>()
 
-        for(i in 0 until imageUriList.size) {
+        for (i in 0 until imageUriList.size) {
             imageName.add("IMG_POST_${id}_${i}")
 
             Log.d(TAG, "imageUpload: $i   ${imageUriList[i]}  ${pathUri[i]}")
 
-            if(pathUri[i] == null) continue
-            val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_POST).child(id).child(imageName[i])
+            if (pathUri[i] == null) continue
+            val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_POST).child(id)
+                .child(imageName[i])
             val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri[i])))
             val uploadResult = uploadTask.await()
         }

@@ -1,0 +1,47 @@
+package com.amazing.stamp.pages.sns
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.amazing.stamp.models.PostModel
+import com.amazing.stamp.utils.Constants
+import com.amazing.stamp.utils.FirebaseConstants
+import com.example.stamp.R
+import com.example.stamp.databinding.ActivityPostAddBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
+class PostEditActivity : PostAddActivity() {
+    private lateinit var postId: String
+    private lateinit var postModel: PostModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+
+        postId = intent.getStringExtra(Constants.INTENT_EXTRA_POST_ID)!!
+
+        binding.toolbarPostAdd.title = "게시물 수정"
+
+        onDefaultSetting()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            getPostData()
+            setPostData()
+        }
+    }
+
+    private suspend fun getPostData() {
+        // 게시물 데이터 가져오기
+        postModel = fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
+            .document(postId).get().await().toObject(PostModel::class.java)!!
+
+    }
+
+    private fun setPostData() {
+        // 게시물 데이터 세팅
+        binding.etPostWritePost.setText(postModel.content)
+        binding.tvPostLocation.text = postModel.location
+    }
+}

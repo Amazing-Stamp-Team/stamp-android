@@ -22,7 +22,10 @@
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
         <activity
-            android:name="com.amazing.stamp.pages.sns.PostActivity"
+            android:name="com.amazing.stamp.pages.sns.PostEditActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.PostAddActivity"
             android:exported="false" />
         <activity android:name="com.amazing.stamp.pages.MyPageAttractionsActivity" />
         <activity
@@ -35,7 +38,7 @@
             android:name="com.amazing.stamp.utils.ParentActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.sns.PostAddActivity"
+            android:name="com.amazing.stamp.pages.sns.PostActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.session.RegisterActivity"
