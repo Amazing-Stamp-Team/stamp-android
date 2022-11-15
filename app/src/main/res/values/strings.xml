@@ -86,6 +86,7 @@
     <string name="tv_Change_value_change_name">변경하려는 닉네임을 입력하세요</string>
     <string name="obj_Change_nickname">닉네임 변경</string>
     <string name="obj_Change_profile_picture">프로필 사진 변경</string>
+    <string name="obj_post_title">게시글 보기</string>
 
 
 </resources>

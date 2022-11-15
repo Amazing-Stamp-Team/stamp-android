@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context="com.amazing.stamp.pages.sns.PostActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="3dp"
+        app:title="@string/obj_post_title" />
+
     <include
         android:id="@+id/included_feed"
         layout="@layout/item_feed" />
