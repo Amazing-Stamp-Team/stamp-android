@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.amazing.stamp.models.ProfileNicknameModel
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemProfileNicknameBinding
 
@@ -33,6 +34,12 @@ class ProfileNicknameAdapter(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
             tvItemFriendName.text = models[position].nickname
+
+            try {
+                Glide.with(context).load("models[position].uid).into(ivItemFriendProfile)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             if(models[position].image != null) {
                 val bmp = BitmapFactory.decodeByteArray(models[position].image, 0, models[position].image!!.size)

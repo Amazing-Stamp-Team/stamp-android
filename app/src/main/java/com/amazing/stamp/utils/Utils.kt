@@ -8,6 +8,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.loader.content.CursorLoader
+import com.google.firebase.Timestamp
 
 
 object Utils {
@@ -15,6 +16,11 @@ object Utils {
 
     fun showShortToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun parseTimeStampToStringDate(timestamp: Timestamp?): String {
+        return if (timestamp == null) ""
+        else SimpleDateFormat("yyyy/MM/dd").format(timestamp.seconds * 1000)
     }
 
     // uri 절대경로 가져오기

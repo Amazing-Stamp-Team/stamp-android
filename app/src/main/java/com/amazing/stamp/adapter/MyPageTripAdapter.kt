@@ -1,6 +1,7 @@
 package com.amazing.stamp.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ class MyPageTripAdapter(
     private val auth: FirebaseAuth? = Firebase.auth
     val uid: String = auth!!.currentUser!!.uid
     val firestore = Firebase.firestore
+    val TAG =  "TAG_MYPAGEATTRACTIONS"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -53,7 +55,8 @@ class MyPageTripAdapter(
             }
 
             tvItemTripTitle.text = myPageTripModels[position].location
-            tvItemTripDay.text = Utils.sliderDateFormat.format(myPageTripModels[position].startDate!!.toDate().time)
+            Log.d(TAG, "onBindViewHolder: ${myPageTripModels[position].startDate}")
+            tvItemTripDay.text = Utils.parseTimeStampToStringDate(myPageTripModels[position].startDate)
             ivItemTripImage.clipToOutline = true
         }
     }

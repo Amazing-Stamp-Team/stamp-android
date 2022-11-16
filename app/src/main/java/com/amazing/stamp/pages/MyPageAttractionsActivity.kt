@@ -1,9 +1,13 @@
 package com.amazing.stamp.pages
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import com.amazing.stamp.adapter.MyPageTripAdapter
 import com.amazing.stamp.models.PostModel
+import com.amazing.stamp.pages.sns.PostActivity
+import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.example.stamp.databinding.ActivityMyPageAttractionsBinding
@@ -42,14 +46,32 @@ class MyPageAttractionsActivity : ParentActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        binding.run {
-            setUpFeedRecyclerView()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        setUpFeedRecyclerView()
+        setUpRecyclerViewClickEvent()
+    }
+
+    private fun setUpRecyclerViewClickEvent() {
+        myPageTripAdapter.onItemClickListener = object : MyPageTripAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                val postID = postIDs[position]
+                val intent = Intent(applicationContext, PostActivity::class.java)
+                intent.putExtra(Constants.INTENT_EXTRA_POST_ID, postID)
+                startActivity(intent)
+            }
         }
     }
 
 
     private fun setUpFeedRecyclerView() {
         binding.rvMyAttractions.adapter = myPageTripAdapter
+        postIDs.clear()
+        myPageTripModel.clear()
 
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
             .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth.currentUser?.uid)

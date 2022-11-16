@@ -3,6 +3,7 @@ package com.amazing.stamp.pages.sns
 import android.content.ClipData.newIntent
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.amazing.stamp.adapter.FeedImageAdapter
@@ -50,7 +51,6 @@ class PostActivity : AppCompatActivity() {
 
         postId = intent.getStringExtra(Constants.INTENT_EXTRA_POST_ID)
 
-
         binding.toolbarPost.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menu_post_delete -> {
@@ -71,6 +71,8 @@ class PostActivity : AppCompatActivity() {
                 .document(postId!!)
                 .get()
                 .await()
+
+
             postModel = postTask.toObject<PostModel>()
             val postId = postTask.id
 
@@ -108,8 +110,10 @@ class PostActivity : AppCompatActivity() {
     }
 
     private fun editPost() {
-        val intent = Intent(applicationContext, PostActivity::class.java)
+        val intent = Intent(applicationContext, PostEditActivity::class.java)
+        intent.putExtra(Constants.INTENT_EXTRA_POST_ID, postId)
         startActivity(intent)
+        finish()
     }
 
     private fun deletePost() {
