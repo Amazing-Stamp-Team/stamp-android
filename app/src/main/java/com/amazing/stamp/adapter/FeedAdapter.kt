@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.lang.Exception
 
 class FeedAdapter(
     val context: Context,
@@ -67,10 +68,13 @@ class FeedAdapter(
                 tvItemFeedNickname.text = userModel.nickname
                 getPostLike(holder.binding, position).toString()
 
-                if (userModel.imageName != null && userModel.imageName != "") {
-                    storage.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel.imageName}").downloadUrl.addOnSuccessListener {
-                        Glide.with(context).load(it).into(ivItemFeedProfile)
-                    }
+                try {
+                    storage.getReference(FirebaseConstants.STORAGE_PROFILE)
+                        .child("${model.writer}.png").downloadUrl.addOnSuccessListener {
+                            Glide.with(context).load(it).into(ivItemFeedProfile)
+                        }
+                } catch (e: Exception) {
+                    Glide.with(context).load(R.drawable.ic_default_profile).into(ivItemFeedProfile)
                 }
             }
         }
@@ -105,7 +109,11 @@ class FeedAdapter(
 
         init {
             binding.llItemFeedLike.setOnClickListener {
-                onLikeClickListener.onLikeClick(binding, postIds[bindingAdapterPosition], bindingAdapterPosition)
+                onLikeClickListener.onLikeClick(
+                    binding,
+                    postIds[bindingAdapterPosition],
+                    bindingAdapterPosition
+                )
             }
         }
     }

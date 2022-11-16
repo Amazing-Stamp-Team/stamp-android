@@ -25,14 +25,12 @@ import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.FragmentMyPageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,9 +83,9 @@ class MyPageFragment : ParentFragment() {
                 startActivity(intent)
             }
             btnWithdrawal.setOnClickListener { withdrawal() }
-            btnChangePw.setOnClickListener { changepw() }
+            btnChangePw.setOnClickListener { changePassword() }
             btnChangeNickname.setOnClickListener { changeNickname() }
-            btnChangeProfilepicture.setOnClickListener { changephoto() }
+            btnChangeProfilepicture.setOnClickListener { changePhoto() }
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -223,10 +221,7 @@ class MyPageFragment : ParentFragment() {
             }
     }
 
-    private fun changephoto() { //프로필 사진 변경하기
-        val uid = auth!!.currentUser!!.uid
-        val user = Firebase.auth.currentUser
-        val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)
+    private fun changePhoto() {
         //0. 기존에 사용하던 프로필의 imageName을 받아 변수에 저장한다.
 
 
@@ -246,8 +241,7 @@ class MyPageFragment : ParentFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // 갤러리에서 선택한 이미지의 경로를 추출, 마이페이지의 프로필 사진을 변경하고 파이어베이스 storage에 업로드한다.
-        val uid = auth!!.currentUser!!.uid
-        val ref = fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)
+        val uid = auth.currentUser!!.uid
 
         if (resultCode != AppCompatActivity.RESULT_OK) return
 
@@ -255,42 +249,24 @@ class MyPageFragment : ParentFragment() {
             PICK_FROM_ALBUM -> {
                 imageUri = data?.data
                 pathUri = Utils.getPath(requireContext(), data!!.data!!)
-                Log.d(TAG, "${pathUri} 사진 경로")
-                binding.ivProfile.setImageURI(imageUri)
-                binding.ivProfile.background =
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.bg_for_rounding_10)
-                binding.ivProfile.clipToOutline = true
 
-                var profilePhotoFileName: String? = null
+                binding.ivProfile.setImageURI(imageUri)
+                binding.ivProfile.background = ContextCompat.getDrawable(requireActivity(), R.drawable.bg_for_rounding_10)
+                binding.ivProfile.clipToOutline = true
 
                 //Log.d(TAG,"${pathUri} 사진 업로드 과정")
                 if (pathUri != null) {
-                    profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
-                    Log.d(TAG, "${pathUri} 파이어베이스에 들어갈 파일 경로")
-                    val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_PROFILE)
-                        .child(profilePhotoFileName)
+                    val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_PROFILE).child("${auth.uid}.png")
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask
                 }
-
-                //프로필의 이미지 경로를 바뀐 프로필 이미지의 경로로 수정(update)한다
-                ref?.update(
-                    FirebaseConstants.USER_FIELD_IMAGE_NAME,
-                    profilePhotoFileName //해당 컬렉션, 필드의 값을 update(변경) 한다
-                )?.addOnSuccessListener {
-                    Toast.makeText(requireContext(), "프로필 사진이 변경되었습니다.", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, "DocumentSnapshot successfully updated!")
-                }
-                    ?.addOnFailureListener { e ->
-                        Log.w(TAG, "Error updating document", e)
-                    }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
 
-    private fun changepw() {
+    private fun changePassword() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_changepassword, null)
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(bottomSheetView)
@@ -381,7 +357,7 @@ class MyPageFragment : ParentFragment() {
     }
 
     private fun getUserProfilePhoto() {
-        storage.getReference(FirebaseConstants.STORAGE_PROFILE).child(auth.uid!!).downloadUrl.addOnSuccessListener {
+        storage.getReference(FirebaseConstants.STORAGE_PROFILE).child("${auth.uid!!}.png").downloadUrl.addOnSuccessListener {
             try {
                 Glide.with(requireContext()).load(it).into(binding.ivProfile)
             } catch (e: Exception) {

@@ -14,12 +14,11 @@ class FriendsTagActivity : FriendsSearchActivity() {
     // UID와 닉네임을 return 해줌
     override fun setUpItemClickEvent() {
         friendAdapter.itemClickListener = object : FriendAddAdapter.ItemClickListener {
-            override fun onItemClick(profile: ByteArray?, followingUserModel: UserModel) {
+            override fun onItemClick(followingUserModel: UserModel) {
 
                 val returnIntent = Intent().apply {
                     putExtra(PostAddActivity.INTENT_EXTRA_NAME, followingUserModel.nickname)
                     putExtra(PostAddActivity.INTENT_EXTRA_UID, followingUserModel.uid)
-                    putExtra(PostAddActivity.INTENT_EXTRA_PROFILE, profile)
                 }
 
                 setResult(PostAddActivity.FRIEND_SEARCH_REQUEST_CODE, returnIntent)

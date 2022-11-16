@@ -50,7 +50,7 @@ open class FriendsSearchActivity : ParentActivity() {
 
 
     private fun setUpFriendRecyclerView() {
-        friendAdapter = FriendAddAdapter(applicationContext, storage, fireStore, friendsList)
+        friendAdapter = FriendAddAdapter(applicationContext, friendsList)
         binding.rvFriends.adapter = friendAdapter
         friendAdapter.notifyDataSetChanged()
     }
@@ -63,7 +63,7 @@ open class FriendsSearchActivity : ParentActivity() {
 
     protected open fun setUpItemClickEvent() {
         friendAdapter.itemClickListener = object : FriendAddAdapter.ItemClickListener {
-            override fun onItemClick(profile: ByteArray?, followingUserModel: UserModel) {
+            override fun onItemClick(followingUserModel: UserModel) {
                 addMyFollowing(followingUserModel.uid)
                 addMeTheirFollower(followingUserModel.uid)
 
@@ -73,13 +73,16 @@ open class FriendsSearchActivity : ParentActivity() {
     }
 
     // 내 팔로잉 리스트에 해당 유저 추가
-    private fun addMyFollowing(targetUid :String) {
+    private fun addMyFollowing(targetUid: String) {
         // ArrayUnion -> 배열에 요소 추가, ArrayRemove -> 배열 요소 삭제
         // 단, 배열이 파이어베이스에 존재하지 않으면 업데이트가 되지 않음. 현재 회원가입을 할때 Friend 콜렉션과 팔로잉, 팔로워 배열 같이 생성해놓음
 
         fireStore.collection(FirebaseConstants.COLLECTION_FRIENDS) // 친구 컬렉션에서
             .document(auth.uid!!) // 나의 문서를 찾아
-            .update(FirebaseConstants.FRIENDS_FIELD_FOLLOWINGS, FieldValue.arrayUnion(targetUid)) // 팔로잉에 상대방 추가
+            .update(
+                FirebaseConstants.FRIENDS_FIELD_FOLLOWINGS,
+                FieldValue.arrayUnion(targetUid)
+            ) // 팔로잉에 상대방 추가
     }
 
     // 해당 유저 팔로워에 나 추가
@@ -88,7 +91,10 @@ open class FriendsSearchActivity : ParentActivity() {
 
         fireStore.collection(FirebaseConstants.COLLECTION_FRIENDS) // 친구 콜렉션에서
             .document(targetUid) // 상대방의 친구 문서를 찾아서
-            .update(FirebaseConstants.FRIENDS_FIELD_FOLLOWERS, FieldValue.arrayUnion(auth.uid)) // 나 추가
+            .update(
+                FirebaseConstants.FRIENDS_FIELD_FOLLOWERS,
+                FieldValue.arrayUnion(auth.uid)
+            ) // 나 추가
     }
 
 

@@ -179,7 +179,7 @@ class RegisterActivity : ParentActivity() {
                 if (pathUri != null) {
                     //profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
 
-                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE).child(uid)
+                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE).child("$uid.png")
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask.await()
                 }

@@ -29,10 +29,10 @@
             android:exported="false" />
         <activity android:name="com.amazing.stamp.pages.MyPageAttractionsActivity" />
         <activity
-            android:name=".FriendsSearchActivity"
+            android:name="com.amazing.stamp.pages.sns.FriendsSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".FriendsTagActivity"
+            android:name="com.amazing.stamp.pages.sns.FriendsTagActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.utils.ParentActivity"

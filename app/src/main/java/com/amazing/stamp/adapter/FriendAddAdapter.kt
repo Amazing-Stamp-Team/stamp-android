@@ -3,31 +3,36 @@ package com.amazing.stamp.adapter
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemFriendsAddBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 class FriendAddAdapter(
     val context: Context,
-    private val storage: FirebaseStorage?,
-    private val fireStore: FirebaseFirestore?,
     private val models: ArrayList<UserModel>
 ) :
     RecyclerView.Adapter<FriendAddAdapter.Holder>() {
 
-    var idx = 0
+    private val fireStore by lazy { Firebase.firestore }
+    private val storage by lazy { Firebase.storage }
+    private var idx = 0
     private var profileArrayList = ArrayList<ByteArray?>()
 
     interface ItemClickListener {
-        fun onItemClick(profile:ByteArray?, userModel: UserModel)
+        fun onItemClick(userModel: UserModel)
     }
 
     lateinit var itemClickListener: ItemClickListener
@@ -35,8 +40,8 @@ class FriendAddAdapter(
     fun fireStoreSearch(keyword: String) {
         idx++
 
-        fireStore?.collection(FirebaseConstants.COLLECTION_USERS)
-            ?.addSnapshotListener { value, error ->
+        fireStore.collection(FirebaseConstants.COLLECTION_USERS)
+            .addSnapshotListener { value, error ->
                 models.clear()
                 profileArrayList.clear()
 
@@ -60,20 +65,29 @@ class FriendAddAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.run {
+            Glide.with(context).load(R.drawable.ic_default_profile).into(binding.ivFriendsProfile)
+
             binding.tvFriendsName.text = models[position].nickname
             binding.tvFriendsEmail.text = models[position].email
 
-            if (models[position].imageName != null && models[position].imageName != "") {
-                setUserImage(binding, idx, models[position], position)
-                //binding.ivFriendsProfile.setImageBitmap(models[position].image)
-            } else {
-                binding.ivFriendsProfile.setImageBitmap(null)
+            try {
+                storage.getReference(FirebaseConstants.STORAGE_PROFILE).child("${models[position].uid}.png").downloadUrl.addOnSuccessListener {
+                    Glide.with(context).load(it).into(binding.ivFriendsProfile)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+
+//            if (models[position].imageName != null && models[position].imageName != "") {
+//                setUserImage(binding, idx, models[position], position)
+//            } else {
+//                binding.ivFriendsProfile.setImageBitmap(null)
+//            }
         }
     }
 
     private fun setUserImage(binding: ItemFriendsAddBinding, idx:Int, userModel: UserModel, position: Int) {
-        val gsReference = storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
+        val gsReference = storage.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel.imageName!!}")
 
         gsReference.getBytes(FirebaseConstants.TEN_MEGABYTE).addOnCompleteListener {
             if(it.isSuccessful) {
@@ -103,7 +117,7 @@ class FriendAddAdapter(
         val binding = ItemFriendsAddBinding.bind(itemView)
         init {
             itemView.setOnClickListener {
-                itemClickListener.onItemClick(profileArrayList[adapterPosition], models[adapterPosition])
+                itemClickListener.onItemClick(models[bindingAdapterPosition])
             }
         }
     }

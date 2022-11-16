@@ -10,8 +10,7 @@
         android:id="@+id/iv_item_friend_profile"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:civ_border_width="1dp"
-        tools:src="@drawable/img_sample_2" />
+        android:src="@drawable/ic_default_profile" />
 
     <TextView
         android:id="@+id/tv_item_friend_name"

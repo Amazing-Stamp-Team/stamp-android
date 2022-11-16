@@ -8,8 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.amazing.stamp.models.ProfileNicknameModel
+import com.amazing.stamp.utils.FirebaseConstants
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 import com.example.stamp.databinding.ItemProfileNicknameBinding
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class ProfileNicknameAdapter(
     val context: Context,
@@ -17,6 +21,7 @@ class ProfileNicknameAdapter(
 ) :
     RecyclerView.Adapter<ProfileNicknameAdapter.Holder>() {
 
+    private val storage by lazy { Firebase.storage }
     interface OnItemRemoveClickListener {
         fun onItemRemoved(model: ProfileNicknameModel, position: Int)
     }
@@ -34,9 +39,13 @@ class ProfileNicknameAdapter(
         holder.binding.run {
             tvItemFriendName.text = models[position].nickname
 
-            if (models[position].image != null) {
-                val bmp = BitmapFactory.decodeByteArray(models[position].image, 0, models[position].image!!.size)
-                ivItemFriendProfile.setImageBitmap(Bitmap.createScaledBitmap(bmp, 50, 50, false))
+            try {
+                storage.getReference(FirebaseConstants.STORAGE_PROFILE)
+                    .child("${models[position].uid}.png").downloadUrl.addOnSuccessListener {
+                    Glide.with(context).load(it).into(ivItemFriendProfile)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

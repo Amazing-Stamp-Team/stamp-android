@@ -183,9 +183,8 @@ open class PostAddActivity : ParentActivity() {
             FRIEND_SEARCH_REQUEST_CODE -> {
                 val uid = data?.getStringExtra(INTENT_EXTRA_UID)
                 val nickname = data?.getStringExtra(INTENT_EXTRA_NAME)
-                val profile = data?.getByteArrayExtra(INTENT_EXTRA_PROFILE)
                 if (uid != null && nickname != null) {
-                    tagFriend(profile, uid, nickname)
+                    tagFriend(uid, nickname)
                 }
             }
 
@@ -208,7 +207,7 @@ open class PostAddActivity : ParentActivity() {
         override fun onLocationResult(p0: LocationResult) {
             val lastLocation = p0.lastLocation
             val lat = lastLocation!!.latitude
-            val long = lastLocation!!.longitude
+            val long = lastLocation.longitude
 
             // 위도와 경도를 이용하여 주소로 변환
 
@@ -249,10 +248,11 @@ open class PostAddActivity : ParentActivity() {
         )
     }
 
-    private fun tagFriend(profile: ByteArray?, uid: String, nickname: String) {
-        // 존재하지 않을 경우 (idx == -1) 추가
+    private fun tagFriend(uid: String, nickname: String) {
+        // 태그된 사용자 리스트에 존재하지 않을 경우 (idx == -1) 사용자를 추가
+        // 태그된 사용자 리스트에 있으면 이미 태그된 사용자입니다 메시지 출력
         if (taggedFriends.indexOfFirst { it.uid == uid } == -1) {
-            taggedFriends.add(ProfileNicknameModel(profile, uid, nickname))
+            taggedFriends.add(ProfileNicknameModel(uid, nickname))
             taggedFriendAdapter.notifyDataSetChanged()
         } else {
             showShortToast("이미 태그된 사용자입니다")
