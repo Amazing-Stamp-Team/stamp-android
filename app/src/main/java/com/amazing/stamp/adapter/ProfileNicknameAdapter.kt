@@ -34,7 +34,7 @@ class ProfileNicknameAdapter(
         holder.binding.run {
             tvItemFriendName.text = models[position].nickname
 
-            if(models[position].image != null) {
+            if (models[position].image != null) {
                 val bmp = BitmapFactory.decodeByteArray(models[position].image, 0, models[position].image!!.size)
                 ivItemFriendProfile.setImageBitmap(Bitmap.createScaledBitmap(bmp, 50, 50, false))
             }
@@ -50,9 +50,7 @@ class ProfileNicknameAdapter(
 
         init {
             binding.ivFriendRemove.setOnClickListener {
-                onItemRemoveClickListener.onItemRemoved(
-                    models[adapterPosition], adapterPosition
-                )
+                onItemRemoveClickListener.onItemRemoved(models[adapterPosition], adapterPosition)
             }
         }
     }

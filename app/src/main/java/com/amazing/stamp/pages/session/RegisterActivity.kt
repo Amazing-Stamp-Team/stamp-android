@@ -177,16 +177,16 @@ class RegisterActivity : ParentActivity() {
                 var profilePhotoFileName: String? = null
 
                 if (pathUri != null) {
-                    profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
+                    //profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
 
-                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE).child(profilePhotoFileName)
+                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE).child(uid)
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask.await()
                 }
 
 
                 // Step 3. UserModel 객체 업로드
-                val userModel = UserModel(uid!!, email, nickname, profilePhotoFileName, null, null)
+                val userModel = UserModel(uid, email, nickname, profilePhotoFileName)
                 fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid)?.set(userModel)?.await()
 
 //                fireStore?.collection(FirebaseConstants.COLLECTION_USERS)?.document(uid!!)?.set(userModel)

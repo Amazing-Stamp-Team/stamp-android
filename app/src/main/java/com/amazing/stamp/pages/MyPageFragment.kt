@@ -54,8 +54,8 @@ class MyPageFragment : ParentFragment() {
             myPageTripModel
         )
     }
-    private var auth: FirebaseAuth? = null
-    private var storage: FirebaseStorage? = null
+    private val auth by lazy { Firebase.auth }
+    private val storage by lazy { Firebase.storage }
     private val fireStore by lazy { Firebase.firestore }
     private var userModel: UserModel? = null
     private var imageUri: Uri? = null
@@ -74,13 +74,10 @@ class MyPageFragment : ParentFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        auth = FirebaseAuth.getInstance()
-        storage = Firebase.storage(SecretConstants.FIREBASE_STORAGE_URL)
-
         countFollow()
         setUpFeedRecyclerView()
 
-        binding.tvProfileNickname.text = auth!!.currentUser!!.displayName
+        binding.tvProfileNickname.text = auth.currentUser!!.displayName
 
         binding.run {
             btnMyPageAllAttractions.setOnClickListener {
@@ -140,8 +137,7 @@ class MyPageFragment : ParentFragment() {
         followRef?.get()
             ?.addOnSuccessListener { document ->
                 if (document != null) {
-                    val model =
-                        document.toObject<FriendModel>() // 다큐먼트.toObject<모델>()을 변수로 받아와 접근 가능하게 한다
+                    val model = document.toObject<FriendModel>() // 다큐먼트.toObject<모델>()을 변수로 받아와 접근 가능하게 한다
 //                    Log.d(TAG,model!!.followers!!.size.toString()) 해당 유저 모델의 followers 변수의 길이를 받는다
 //                    Log.d(TAG, model!!.followings!!.size.toString())
 
@@ -271,7 +267,7 @@ class MyPageFragment : ParentFragment() {
                 if (pathUri != null) {
                     profilePhotoFileName = "IMG_PROFILE_${uid}_${System.currentTimeMillis()}.png"
                     Log.d(TAG, "${pathUri} 파이어베이스에 들어갈 파일 경로")
-                    val photoFileRef = storage!!.reference.child(FirebaseConstants.STORAGE_PROFILE)
+                    val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_PROFILE)
                         .child(profilePhotoFileName)
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask
@@ -379,25 +375,17 @@ class MyPageFragment : ParentFragment() {
 
     private suspend fun getUserModel() {
         // 한 번만 필요할 경우 get() 으로 호출
-        val userModelResult =
-            fireStore!!.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get()
-                .await()
+        val userModelResult = fireStore.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get().await()
         userModel = userModelResult.toObject()
         binding.tvProfileNickname.text = userModel!!.nickname
     }
 
     private fun getUserProfilePhoto() {
-
-        if (userModel!!.imageName != null && userModel!!.imageName != "") {
-            val gsReference =
-                storage!!.getReference("${FirebaseConstants.STORAGE_PROFILE}/${userModel!!.imageName!!}")
-
-            gsReference.downloadUrl.addOnSuccessListener {
-                try {
-                    Glide.with(requireContext()).load(it).centerCrop().into(binding.ivProfile)
-                }catch (e:Exception){
-                    Log.d(TAG, "getUserProfilePhoto: ${e.message}")
-                }
+        storage.getReference(FirebaseConstants.STORAGE_PROFILE).child(auth.uid!!).downloadUrl.addOnSuccessListener {
+            try {
+                Glide.with(requireContext()).load(it).into(binding.ivProfile)
+            } catch (e: Exception) {
+                Glide.with(requireContext()).load(R.drawable.ic_default_profile).into(binding.ivProfile)
             }
         }
     }

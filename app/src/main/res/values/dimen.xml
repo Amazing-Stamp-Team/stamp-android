@@ -14,4 +14,6 @@
 
     <dimen name="btn_small_height">30dp</dimen>
 
+    <dimen name="civ_profile_width">1dp</dimen>
+
 </resources>
