@@ -8,11 +8,11 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:elevation="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/gap_vertical"
         android:background="@color/white"
+        android:elevation="1dp"
         android:orientation="vertical"
         android:paddingTop="@dimen/gap_line_double"
         android:paddingBottom="@dimen/gap_line_double">
@@ -27,8 +27,7 @@
                 android:id="@+id/iv_item_feed_profile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                app:civ_border_width="1dp"
-                tools:src="@drawable/img_sample_2" />
+                android:src="@drawable/ic_default_profile" />
 
             <TextView
                 android:id="@+id/tv_item_feed_nickname"

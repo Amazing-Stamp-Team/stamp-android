@@ -69,15 +69,15 @@ open class PostAddActivity : ParentActivity() {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent> // 이미지 선택 후 돌아올때 사용
 
     // 날짜 관련
-    protected val startDate = Calendar.getInstance().apply { timeInMillis = -1 }
-    protected val endDate = Calendar.getInstance().apply { timeInMillis = -1 }
+    protected val startDate = Calendar.getInstance()
+    protected val endDate = Calendar.getInstance()
 
     // 친구 태그 관련
     protected val taggedFriends = ArrayList<ProfileNicknameModel>()
 
     // 액티비티가 다 로딩되지 않았을 때 applicationContext 를 넘겨주려 하면 에러를 일으키기 때문에,
     // lazy (늦은 초기화, 해당 변수가 처음 언급, 실행될때 초기화됨)로 applicationContext 를 넘겨줌
-    private val taggedFriendAdapter by lazy {
+    protected val taggedFriendAdapter by lazy {
         ProfileNicknameAdapter(
             applicationContext,
             taggedFriends
@@ -98,7 +98,6 @@ open class PostAddActivity : ParentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
 
 
         // 등록하기 버튼
@@ -343,8 +342,8 @@ open class PostAddActivity : ParentActivity() {
 
         // 구글 파이어베이스의 Timestamp 타입 사용
         val createdAt = Timestamp.now()
-        val startTimeStamp = if(startDate.timeInMillis == -1L ) null else Timestamp(Date(startDate.timeInMillis))
-        val endTimeStamp = if(endDate.timeInMillis == -1L) null else Timestamp(Date(endDate.timeInMillis))
+        val startTimeStamp = if (binding.etPostDurationStart.text.isEmpty()) null else Timestamp(Date(startDate.timeInMillis))
+        val endTimeStamp = if (binding.etPostDurationEnd.text.isEmpty()) null else Timestamp(Date(endDate.timeInMillis))
 
 
 

@@ -37,6 +37,7 @@ class ProfileNicknameAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
+            Glide.with(context).load(R.drawable.ic_default_profile).into(ivItemFriendProfile)
             tvItemFriendName.text = models[position].nickname
 
             try {

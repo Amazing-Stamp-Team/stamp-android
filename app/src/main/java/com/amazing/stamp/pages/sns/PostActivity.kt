@@ -43,26 +43,27 @@ class PostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-//        setSupportActionBar(binding.toolbarPost)
-        supportActionBar?.run {
-            // 앱 바 뒤로가기 버튼 설정
-            setDisplayHomeAsUpEnabled(true)
-        }
-
         postId = intent.getStringExtra(Constants.INTENT_EXTRA_POST_ID)
 
-        binding.toolbarPost.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.menu_post_delete -> {
-                    deletePost()
-                    true
-                }
 
-                R.id.menu_post_edit -> {
-                    editPost()
-                    true
+        binding.toolbarPost.run {
+            navigationIcon = getDrawable(R.drawable.ic_arrow_back)
+
+            setNavigationOnClickListener { finish() }
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_post_delete -> {
+                        deletePost()
+                        true
+                    }
+
+                    R.id.menu_post_edit -> {
+                        editPost()
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
             }
         }
 

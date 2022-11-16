@@ -54,6 +54,8 @@ class FeedAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
+            Glide.with(context).load(R.drawable.ic_default_profile).into(ivItemFeedProfile)
+
             val model = feedModels[position]
             val feedImageAdapter = FeedImageAdapter(context, postIds[position], model.imageNames)
             rvFeedImage.adapter = feedImageAdapter
@@ -74,7 +76,7 @@ class FeedAdapter(
                             Glide.with(context).load(it).into(ivItemFeedProfile)
                         }
                 } catch (e: Exception) {
-                    Glide.with(context).load(R.drawable.ic_default_profile).into(ivItemFeedProfile)
+                    e.printStackTrace()
                 }
             }
         }
