@@ -75,7 +75,7 @@ class MyPageAttractionsActivity : ParentActivity() {
 
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
             .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth.currentUser?.uid)
-            .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.ASCENDING)
+            .orderBy(FirebaseConstants.POSTS_FIELD_START_DATE, Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 value?.documentChanges?.forEach { dc ->
                     if (dc.type == DocumentChange.Type.ADDED) {

@@ -103,7 +103,7 @@ class PostActivity : AppCompatActivity() {
     private fun getUserProfile() {
         if (userModel != null) {
             storage.getReference(FirebaseConstants.STORAGE_PROFILE)
-                .child(userModel?.imageName!!).downloadUrl.addOnSuccessListener {
+                .child("${auth.uid!!}.png").downloadUrl.addOnSuccessListener {
                     Glide.with(applicationContext).load(it)
                         .into(binding.includedFeed.ivItemFeedProfile)
                 }

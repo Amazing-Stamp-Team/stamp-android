@@ -113,7 +113,7 @@ class MyPageFragment : ParentFragment() {
 
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
             .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.currentUser?.uid)
-            .orderBy(FirebaseConstants.POSTS_FIELD_CREATED_AT, Query.Direction.DESCENDING)
+            .orderBy(FirebaseConstants.POSTS_FIELD_START_DATE, Query.Direction.DESCENDING)
             .limit(3)
             .get().addOnSuccessListener { value ->
                 value.documents.forEach { dc ->

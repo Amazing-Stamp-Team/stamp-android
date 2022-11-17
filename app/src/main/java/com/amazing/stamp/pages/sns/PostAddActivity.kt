@@ -403,7 +403,6 @@ open class PostAddActivity : ParentActivity() {
                 uploadTask.await()
             }
         }
-        imageName.forEach { Log.d(TAG, "imageUpload: ${it}") }
 
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS).document(id)
             .update(FirebaseConstants.POSTS_FIELD_IMAGE_NAME, imageName)

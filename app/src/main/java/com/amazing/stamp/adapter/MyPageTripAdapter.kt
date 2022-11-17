@@ -44,6 +44,7 @@ class MyPageTripAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.run {
+            Glide.with(context).load(context.getDrawable(R.drawable.ic_default_stamp)).into(ivItemTripImage)
             val model = myPageTripModels[position]
             val postID = postIDs[position]
 
