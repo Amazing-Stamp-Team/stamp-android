@@ -44,6 +44,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.max
 
 open class PostAddActivity : ParentActivity() {
 
@@ -139,7 +140,6 @@ open class PostAddActivity : ParentActivity() {
                 object : PostImageAdapter.OnImageRemoveClickListener {
                     override fun onRemove(position: Int) {
                         imageUriList.removeAt(position)
-                        pathUri.removeAt(position)
                         refreshImage()
                     }
                 }
@@ -190,6 +190,7 @@ open class PostAddActivity : ParentActivity() {
             PHOTO_ADD_REQUEST_CODE -> {
                 val currentImageUri = data?.data!!
                 imageUriList.add(currentImageUri)
+                Log.d(TAG, "dev1: $currentImageUri")
                 val currentPathUri = Utils.getPath(applicationContext, currentImageUri)
                 pathUri.add(currentPathUri)
                 refreshImage()
@@ -295,7 +296,7 @@ open class PostAddActivity : ParentActivity() {
         }
     }
 
-    private fun refreshImage() {
+    protected fun refreshImage() {
         imageAdapter.notifyDataSetChanged()
 
         binding.rvPostPhoto.visibility = if (imageUriList.size == 0) View.GONE else View.VISIBLE
@@ -313,10 +314,6 @@ open class PostAddActivity : ParentActivity() {
                     val currentImageUri = it.data?.data
                     try {
                         imageUriList.add(currentImageUri!!)
-                        val currentPathUri = getPath(currentImageUri)
-                        Log.d(TAG, "initGetImage: $currentImageUri")
-                        Log.d(TAG, "initGetImage: $currentPathUri")
-                        pathUri.add(currentPathUri)
                         refreshImage()
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -342,8 +339,10 @@ open class PostAddActivity : ParentActivity() {
 
         // 구글 파이어베이스의 Timestamp 타입 사용
         val createdAt = Timestamp.now()
-        val startTimeStamp = if (binding.etPostDurationStart.text.isEmpty()) null else Timestamp(Date(startDate.timeInMillis))
-        val endTimeStamp = if (binding.etPostDurationEnd.text.isEmpty()) null else Timestamp(Date(endDate.timeInMillis))
+        val startTimeStamp =
+            if (binding.etPostDurationStart.text.isEmpty()) null else Timestamp(Date(startDate.timeInMillis))
+        val endTimeStamp =
+            if (binding.etPostDurationEnd.text.isEmpty()) null else Timestamp(Date(endDate.timeInMillis))
 
 
 
@@ -377,28 +376,43 @@ open class PostAddActivity : ParentActivity() {
                 .set(PostLikeModel(ArrayList()))
 
 
-            imageUpload(postModelUploadResult.id)
+            imageUpload(postModelUploadResult.id, false)
         }
     }
 
-    private suspend fun imageUpload(id: String) {
+    protected suspend fun imageUpload(id: String, isEdit:Boolean) {
         val imageName = ArrayList<String>()
 
-        for (i in 0 until imageUriList.size) {
-            imageName.add("IMG_POST_${id}_${i}")
+        imageUriList.forEach {  uri ->
 
-            Log.d(TAG, "imageUpload: $i   ${imageUriList[i]}  ${pathUri[i]}")
+            val strUri = uri.toString()
 
-            if (pathUri[i] == null) continue
-            val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_POST).child(id)
-                .child(imageName[i])
-            val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri[i])))
-            val uploadResult = uploadTask.await()
+            if(strUri.contains("firebasestorage")) {
+                val start = strUri.indexOf("IMG_POST_")
+                val end = strUri.indexOf("?", start)
+                val name = strUri.substring(start, end)
+                imageName.add(name)
+            } else {
+                val pathUri = Utils.getPath(applicationContext, uri)
+
+                val photoName = "IMG_POST_${id}_${UUID.randomUUID()}.png"
+                imageName.add(photoName)
+                val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_POST).child(id)
+                    .child(photoName)
+                val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
+                uploadTask.await()
+            }
         }
+        imageName.forEach { Log.d(TAG, "imageUpload: ${it}") }
 
-        fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
-            .document(id)
+        fireStore.collection(FirebaseConstants.COLLECTION_POSTS).document(id)
             .update(FirebaseConstants.POSTS_FIELD_IMAGE_NAME, imageName)
+
+        if(!isEdit) {
+            fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
+                .document(id)
+                .update(FirebaseConstants.POSTS_FIELD_IMAGE_NAME, imageName)
+        }
 
         hideProgress()
         finish()

@@ -27,6 +27,11 @@ object FirebaseConstants {
     const val POSTS_FIELD_IMAGE_NAME = "imageNames"
     const val POSTS_FIELD_WRITER = "writer"
     const val POSTS_FIELD_CREATED_AT = "createdAt"
+    const val POSTS_FIELD_CONTENT = "content"
+    const val POSTS_FIELD_LOCATION = "location"
+    const val POSTS_FIELD_START_DATE = "startDate"
+    const val POSTS_FIELD_END_DATE = "endDate"
+    const val POSTS_FIELD_FRIENDS = "friends"
 
     /*
         PostLikes
