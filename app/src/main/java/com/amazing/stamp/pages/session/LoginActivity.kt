@@ -1,27 +1,36 @@
 package com.amazing.stamp.pages.session
 
+import android.Manifest
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.amazing.stamp.pages.MainActivity
+import com.amazing.stamp.pages.RequireAuthorityActivity
+import com.amazing.stamp.utils.ParentActivity
+import com.amazing.stamp.utils.Utils
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityLoginBinding
-import com.amazing.stamp.pages.MainActivity
-import com.amazing.stamp.utils.ParentActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
+
 
 class LoginActivity : ParentActivity() {
     private lateinit var auth: FirebaseAuth
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        checkPermission() //앱 구동시, 권한 체크
 
         auth = Firebase.auth
 
@@ -63,6 +72,38 @@ class LoginActivity : ParentActivity() {
                 onLogin("aaa@aaa.aaa","aaaaaa")
             }
         }
+    }
+
+    private fun checkPermission(){
+        val permissionCheckStorage =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) // 외부 저장소 권한 확인
+        val permissionCheckLocation =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) // GPS 권한 확인
+
+        if (permissionCheckStorage == PackageManager.PERMISSION_DENIED || permissionCheckLocation == PackageManager.PERMISSION_DENIED) {
+            val intent = Intent(applicationContext, RequireAuthorityActivity::class.java)
+            startActivity(intent)
+            // 권한 없을 때 권한 획득 페이지 이동
+        }
+    }
+
+    private val permissionListener = object : PermissionListener {
+        override fun onPermissionGranted() {
+            Utils.showShortToast(applicationContext, "권한이 승인되었습니다")
+        }
+
+        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+            Utils.showShortToast(applicationContext, "권한이 없으면 기능을 사용할 수 없습니다.")
+
+        }
+    }
+
+    private fun permissionCheck() {
+        TedPermission.create()
+            .setPermissionListener(permissionListener)
+            .setDeniedMessage("[설정] > [권한] 에서 권한 허용을 할 수 있습니다")
+            .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .check()
     }
     
 

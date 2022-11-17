@@ -88,5 +88,14 @@
     <string name="obj_Change_profile_picture">프로필 사진 변경</string>
     <string name="obj_post_title">게시글 보기</string>
 
+    <!-- 권한 허가하기 -->
+    <string name="obj_require_authority_finish">권한 허가하기</string>
+    <string name="tv_require_authority_title">원활한 Stamp 앱 사용을 위한\n사용 권한 안내</string>
+    <string name="tv_require_authority_necessary">필수 접근 권한</string>
+    <string name="obj_require_authority_location">위치</string>
+    <string name="tv_require_authority_location">현 위치 파악</string>
+    <string name="tv_require_authority_storage">저장공간</string>
+    <string name="tv_require_authority_download">사진 저장 및 불러오기</string>
+
 
 </resources>
