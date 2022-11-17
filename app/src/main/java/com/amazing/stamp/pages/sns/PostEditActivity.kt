@@ -2,6 +2,7 @@ package com.amazing.stamp.pages.sns
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.ProfileNicknameModel
@@ -71,11 +72,16 @@ class PostEditActivity : PostAddActivity() {
                 fireStore.collection(FirebaseConstants.COLLECTION_USERS).document(friend).get().addOnSuccessListener { document ->
                     val userModel = document.toObject<UserModel>()
                     if (userModel != null) {
+                        Log.d(TAG, "setPostData: ${userModel.uid} ${userModel.nickname}")
                         taggedFriends.add(ProfileNicknameModel(userModel.uid, userModel.nickname))
+                        taggedFriendAdapter.notifyItemInserted(taggedFriends.size - 1)
                     }
                 }
             }
-            taggedFriendAdapter.notifyDataSetChanged()
         }
+
+
+        // 이미지 세팅
+
     }
 }

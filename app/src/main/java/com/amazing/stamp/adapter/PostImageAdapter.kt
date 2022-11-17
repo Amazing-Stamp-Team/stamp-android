@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.stamp.R
 
 class PostImageAdapter(val context: Context, private val imageUris: ArrayList<Uri>) :
@@ -28,12 +29,23 @@ class PostImageAdapter(val context: Context, private val imageUris: ArrayList<Ur
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.run {
-            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris[position])
-            iv_item_post_image.setImageBitmap(bitmap)
-            iv_item_post_image.clipToOutline = true
+            try {
+                Glide.with(context).load(imageUris[position]).into(iv_item_post_image)
+                iv_item_post_image.clipToOutline = true
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             iv_item_post_remove.setOnClickListener {
                 onImageRemoveClickListener.onRemove(position)
             }
+
+//            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUris[position])
+//            iv_item_post_image.setImageBitmap(bitmap)
+//            iv_item_post_image.clipToOutline = true
+//            iv_item_post_remove.setOnClickListener {
+//                onImageRemoveClickListener.onRemove(position)
+//            }
         }
     }
 

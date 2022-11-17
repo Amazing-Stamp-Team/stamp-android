@@ -361,7 +361,11 @@ class MyPageFragment : ParentFragment() {
             try {
                 Glide.with(requireContext()).load(it).into(binding.ivProfile)
             } catch (e: Exception) {
-                Glide.with(requireContext()).load(R.drawable.ic_default_profile).into(binding.ivProfile)
+                try {
+                    Glide.with(requireContext()).load(R.drawable.ic_default_profile).into(binding.ivProfile)
+                } catch (e: Exception) {
+                    Log.d(TAG, "Glide Error")
+                }
             }
         }
     }
