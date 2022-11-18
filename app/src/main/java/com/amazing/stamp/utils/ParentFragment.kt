@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.example.stamp.R
 
 open class ParentFragment : Fragment() {
@@ -35,5 +36,9 @@ open class ParentFragment : Fragment() {
             progressDialog?.dismiss()
         }
         progressDialog = null
+    }
+
+    fun showShortToast(msg: String) {
+        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
     }
 }

@@ -2,6 +2,7 @@ package com.amazing.stamp.pages
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.amazing.stamp.pages.map.MapFragment
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityMainBinding
 import com.amazing.stamp.pages.sns.FeedFragment

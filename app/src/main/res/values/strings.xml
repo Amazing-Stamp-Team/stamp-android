@@ -96,6 +96,9 @@
     <string name="tv_require_authority_location">현 위치 파악</string>
     <string name="tv_require_authority_storage">저장공간</string>
     <string name="tv_require_authority_download">사진 저장 및 불러오기</string>
+    <string name="obj_map_location_register">현재 위치 등록하기</string>
+    <string name="obj_current_location">현재 위치</string>
+    <string name="obj_current_location_register">위치 등록하기</string>
 
 
 </resources>
