@@ -48,14 +48,20 @@
                 tools:text="부산, 광안리" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_feed_image"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_home"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="@dimen/gap_line_double"
+            android:layout_marginTop="@dimen/gap_line_double" />
+
+        <LinearLayout
+            android:id="@+id/layoutIndicators"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_feed_image" />
+            android:paddingVertical="@dimen/gap_line"
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/tv_item_feed_content"

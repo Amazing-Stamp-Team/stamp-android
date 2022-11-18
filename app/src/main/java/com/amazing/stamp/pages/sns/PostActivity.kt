@@ -5,8 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.amazing.stamp.adapter.FeedImageAdapter
+import com.amazing.stamp.adapter.FeedImageViewPagerAdapter
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.Constants
@@ -77,13 +83,23 @@ class PostActivity : AppCompatActivity() {
             postModel = postTask.toObject<PostModel>()
             val postId = postTask.id
 
-            val postImageAdapter = FeedImageAdapter(applicationContext, postId, imageUris)
-            binding.includedFeed.rvFeedImage.adapter = postImageAdapter
 
-            postModel?.imageNames?.forEach {
-                imageUris.add(it)
+
+            if(postModel!!.imageNames != null) {
+                binding.includedFeed.vpHome.offscreenPageLimit = 1
+                binding.includedFeed.vpHome.adapter = FeedImageViewPagerAdapter(applicationContext, postId, postModel!!.imageNames!!)
+
+                binding.includedFeed.vpHome.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        super.onPageSelected(position)
+                        setCurrentIndicator(position)
+                    }
+                })
+
+                setupIndicators(0)
             }
-            postImageAdapter.notifyDataSetChanged()
+
+
 
             fireStore.collection(FirebaseConstants.COLLECTION_USERS).document(postModel!!.writer)
                 .get()
@@ -134,5 +150,47 @@ class PostActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupIndicators(count: Int) {
+        val indicators: Array<ImageView?> = arrayOfNulls<ImageView>(count)
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        params.setMargins(16, 8, 16, 8)
+        for (i in indicators.indices) {
+            indicators[i] = ImageView(applicationContext)
+            indicators[i]!!.setImageDrawable(
+                ContextCompat.getDrawable(
+                    applicationContext,
+                    R.drawable.bg_indicator_inactive
+                )
+            )
+            indicators[i]!!.setLayoutParams(params)
+            binding.includedFeed.layoutIndicators.addView(indicators[i])
+        }
+        setCurrentIndicator(0)
+    }
+
+    private fun setCurrentIndicator(position: Int) {
+        val childCount: Int = binding.includedFeed.layoutIndicators.childCount
+        for (i in 0 until childCount) {
+            val imageView: ImageView = binding.includedFeed.layoutIndicators.getChildAt(i) as ImageView
+            if (i == position) {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        applicationContext,
+                        R.drawable.bg_indicator_active
+                    )
+                )
+            } else {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        applicationContext,
+                        R.drawable.bg_indicator_inactive
+                    )
+                )
+            }
+        }
     }
 }
