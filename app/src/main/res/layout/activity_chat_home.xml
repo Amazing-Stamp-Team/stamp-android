@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.amazing.stamp.pages.chat.ChatHomeActivity">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_chat_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/gap_line_double"
+        android:elevation="0dp"
+        android:foregroundTint="@color/main_color_100"
+        android:src="@drawable/ic_chat_plus"
+        app:backgroundTint="@color/main_color_30"
+        app:tint="@color/main_color_100" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_chat_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="3dp"
+            app:title="@string/obj_chat_home" />
+
+        <EditText
+            android:id="@+id/et_chat_home_search"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_full_height"
+            android:layout_marginHorizontal="@dimen/gap_horizontal"
+            android:layout_marginVertical="@dimen/gap_line_double"
+            android:background="@drawable/et_gray_10"
+            android:drawableLeft="@drawable/ic_search" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/gap_horizontal"
+            android:text="@string/obj_chat_home_location_label" />
+
+        <EditText
+            android:id="@+id/tv_chat_home_location"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_full_height"
+            android:layout_marginHorizontal="@dimen/gap_horizontal"
+            android:layout_marginTop="@dimen/gap_line"
+            android:background="@drawable/btn_main_light_10"
+            android:paddingHorizontal="@dimen/gap_line"
+            tools:text="충청남도 천안시 서북구" />
+
+    </LinearLayout>
+</FrameLayout>

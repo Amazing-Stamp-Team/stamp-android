@@ -99,6 +99,14 @@
     <string name="obj_map_location_register">현재 위치 등록하기</string>
     <string name="obj_current_location">현재 위치</string>
     <string name="obj_current_location_register">위치 등록하기</string>
+    <string name="obj_chat_home">STAMP 채팅방</string>
+    <string name="obj_chat_home_location_label">현재 내 위치</string>
+    <string name="obj_chat_add_title">채팅방 이름</string>
+    <string name="obj_chat_add_introduce">채팅방 소개</string>
+    <string name="obj_chat_add_title_hint">채팅방 이름을 입력해주세요</string>
+    <string name="obj_chat_add_introduce_hint">채팅방에 대해 소개하는 글을 작성해주세요</string>
+    <string name="obj_chat_add_location">위치</string>
+    <string name="obj_chat_add_finish">채팅방 만들기</string>
 
 
 </resources>
