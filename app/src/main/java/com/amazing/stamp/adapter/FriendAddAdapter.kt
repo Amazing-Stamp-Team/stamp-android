@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,15 +45,19 @@ class FriendAddAdapter(
             .addSnapshotListener { value, error ->
                 models.clear()
                 profileArrayList.clear()
-
-                for (snapshot in value!!.documents) {
-                    if (snapshot.getString(FirebaseConstants.USER_FIELD_NICKNAME)!!.contains(keyword)) {
-                        val item = snapshot.toObject<UserModel>()
-                        models.add(item!!)
-                        profileArrayList.add(null)
+                if(value != null) {
+                    for (snapshot in value.documents) {
+                        val nickname = snapshot.getString(FirebaseConstants.USER_FIELD_NICKNAME)
+                        if(nickname != null) {
+                            if (snapshot.getString(FirebaseConstants.USER_FIELD_NICKNAME)!!.contains(keyword)) {
+                                val item = snapshot.toObject<UserModel>()
+                                models.add(item!!)
+                                profileArrayList.add(null)
+                            }
+                        }
                     }
+                    notifyDataSetChanged()
                 }
-                notifyDataSetChanged()
             }
     }
 
