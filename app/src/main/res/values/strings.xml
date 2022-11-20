@@ -109,4 +109,9 @@
     <string name="obj_chat_add_finish">채팅방 만들기</string>
 
 
+    <!-- 팔로잉/팔로워 목록 -->
+    <string name="obj_my_page_follower_list">팔로워</string>
+    <string name="obj_my_page_following_list">팔로잉</string>
+
+
 </resources>

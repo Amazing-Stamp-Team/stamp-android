@@ -18,6 +18,8 @@ import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.pages.session.LoginActivity
+import com.amazing.stamp.pages.sns.FollowerListActivity
+import com.amazing.stamp.pages.sns.FollowingListActivity
 import com.amazing.stamp.pages.sns.PostActivity
 import com.amazing.stamp.utils.*
 import com.amazing.stamp.utils.Utils.showShortToast
@@ -63,6 +65,11 @@ class MyPageFragment : ParentFragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        countFollow() // FollowingListActivity에서 언팔로우 후, 다시 팔로잉 카운트를 해서 현 팔로우 수를 출력
+    }
+
     companion object {
         const val PICK_FROM_ALBUM = 1
     }
@@ -86,6 +93,14 @@ class MyPageFragment : ParentFragment() {
             btnChangePw.setOnClickListener { changePassword() }
             btnChangeNickname.setOnClickListener { changeNickname() }
             btnChangeProfilepicture.setOnClickListener { changePhoto() }
+            tvProfileFollowingCount.setOnClickListener {
+                val intent = Intent(requireActivity(), FollowingListActivity::class.java)
+                startActivity(intent)
+            }
+            tvProfileFollowerCount.setOnClickListener {
+                val intent = Intent(requireActivity(), FollowerListActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -222,14 +237,8 @@ class MyPageFragment : ParentFragment() {
     }
 
     private fun changePhoto() {
-        //0. 기존에 사용하던 프로필의 imageName을 받아 변수에 저장한다.
-
-
-        //1. 갤러리를 실행하고 프로필 업로드할 사진을 고른 후, 파이어베이스 storage에 업로드하고 프로필의 이미지 주소를 update.
         selectProfile()
-
         // 2.새로운 프로필 사진이 업로드되면, 기존 프로필 사진은 삭제한다.
-
 
     }
 
