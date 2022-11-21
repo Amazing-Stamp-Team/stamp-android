@@ -56,6 +56,11 @@ object FirebaseConstants {
     const val COLLECTION_MESSAGE_LOG = "messageLog"
 
 
+    /*
+        TripLocation
+     */
+    const val COLLECTION_TRIP_LOCATION = "tripLocation"
+    const val TRIP_LOCATION_FIELD_VISITED = "visited"
 
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
     const val STORAGE_PROFILE = "profile"
