@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.devs.vectorchildfinder.VectorChildFinder
 import com.example.stamp.R
@@ -24,12 +25,18 @@ import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.richpath.RichPathView
 
 
 class MapFragment : ParentFragment() {
     private lateinit var binding: FragmentMapBinding
     private var currentLocation: String? = null
+    private val auth by lazy { Firebase.auth }
+    private val fireStore by lazy { Firebase.firestore }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +50,8 @@ class MapFragment : ParentFragment() {
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
 
-        val vector = VectorChildFinder(requireContext(), R.drawable.ic_img_korea_detail, binding.ivKorea)
+        val vector =
+            VectorChildFinder(requireContext(), R.drawable.ic_img_korea_detail, binding.ivKorea)
         val seoul = vector.findPathByName("충남 천안")
         seoul.fillColor = Color.RED
 
@@ -59,7 +67,6 @@ class MapFragment : ParentFragment() {
     }
 
 
-
     private fun showLocationPopup() {
 
         val dialog = Dialog(requireActivity())
@@ -69,16 +76,28 @@ class MapFragment : ParentFragment() {
 
         dialog.show()
         dialog.findViewById<Button>(R.id.btn_register_current_location).setOnClickListener {
-            Toast.makeText(requireContext(), "현재 위치가 $currentLocation 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+
+            if(currentLocation == null || currentLocation!!.isEmpty()) return@setOnClickListener
+
+            val currentLocationSplit = currentLocation?.split(" ")
+            fireStore.collection(FirebaseConstants.COLLECTION_TRIP_LOCATION)
+                .document(auth.currentUser!!.uid)
+                .update(
+                    FirebaseConstants.TRIP_LOCATION_FIELD_VISITED,
+                    FieldValue.arrayUnion(
+                        "${currentLocationSplit?.get(0)} ${currentLocationSplit?.get(1)}"
+                    )
+                )
+
             dialog.dismiss()
         }
     }
 
 
-
     private fun currentLocationSet() {
 
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
