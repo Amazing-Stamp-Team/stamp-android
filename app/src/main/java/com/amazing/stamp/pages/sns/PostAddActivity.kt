@@ -22,6 +22,8 @@ import com.amazing.stamp.adapter.ProfileNicknameAdapter
 import com.amazing.stamp.models.PostLikeModel
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.models.ProfileNicknameModel
+import com.amazing.stamp.pages.map.MapSearchActivity
+import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.Utils
@@ -168,8 +170,12 @@ open class PostAddActivity : ParentActivity() {
             }
 
 
-
-            tvPostLocationSet.setOnClickListener { currentLocationSet() }
+            tvPostLocationSet.setOnClickListener {
+                // 위치 설정
+                val intent = Intent(applicationContext, MapSearchActivity::class.java)
+                startActivityForResult(intent, Constants.EXTRA_MAP_SEARCH_REQUEST_CODE)
+            }
+            //tvPostLocationSet.setOnClickListener { currentLocationSet() }
         }
     }
 
@@ -194,6 +200,12 @@ open class PostAddActivity : ParentActivity() {
                 val currentPathUri = Utils.getPath(applicationContext, currentImageUri)
                 pathUri.add(currentPathUri)
                 refreshImage()
+            }
+
+            // 위치 설정 RequestCode 일때
+            Constants.EXTRA_MAP_SEARCH_REQUEST_CODE -> {
+                location = data?.getStringExtra(Constants.INTENT_EXTRA_MAP_TITLE)
+                binding.tvPostLocationSet.text = location
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
