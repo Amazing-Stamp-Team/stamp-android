@@ -80,6 +80,9 @@ class ChatAddActivity : ParentActivity() {
 
             val visitors = ArrayList<String>()
             visitors.add(auth.currentUser!!.uid)
+
+            val addressSplit = address?.split(" ")
+
             friends.forEach { visitors.add(it.uid) }
 
             val chatRoomModel =
@@ -88,6 +91,8 @@ class ChatAddActivity : ParentActivity() {
                     chatRoomIntroduce,
                     addressTitle,
                     address,
+                    if(addressSplit != null)addressSplit[0] else null,
+                    if(addressSplit != null)addressSplit[1] else null,
                     auth.currentUser!!.uid,
                     visitors
                 )
