@@ -1,6 +1,7 @@
 package com.amazing.stamp.pages.chat
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
@@ -11,20 +12,25 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.amazing.stamp.adapter.ChatRoomAdapter
 import com.amazing.stamp.models.ChatRoomModel
+import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.example.stamp.databinding.ActivityChatSearchBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
 class ChatSearchActivity : ParentActivity() {
     private val binding by lazy { ActivityChatSearchBinding.inflate(layoutInflater) }
+    private val auth by lazy { Firebase.auth }
     private val fireStore by lazy { Firebase.firestore }
     private val chatRoomModels = ArrayList<ChatRoomModel>()
     private val chatRoomAdapter by lazy { ChatRoomAdapter(applicationContext, chatRoomModels) }
+    private val chatIds = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +51,19 @@ class ChatSearchActivity : ParentActivity() {
             etChatHomeSearch.addTextChangedListener {
                 searchChatRooms(it.toString())
             }
+
+            chatRoomAdapter.onChatClickListener = object : ChatRoomAdapter.OnChatClickListener {
+                override fun onChatClick(position: Int) {
+                    fireStore.collection(FirebaseConstants.COLLECTION_CHAT).document(chatIds[position])
+                        .update(FirebaseConstants.CHAT_FIELD_USERS, FieldValue.arrayUnion(auth.currentUser?.uid))
+
+
+                    val intent = Intent(this@ChatSearchActivity, ChatActivity::class.java)
+                    intent.putExtra(Constants.INTENT_EXTRA_CHAT_ID, chatIds[position])
+                    startActivity(intent)
+                    finish()
+                }
+            }
         }
     }
 
@@ -57,9 +76,11 @@ class ChatSearchActivity : ParentActivity() {
         fireStore.collection(FirebaseConstants.COLLECTION_CHAT)
             .get().addOnSuccessListener {
                 chatRoomModels.clear()
+                chatIds.clear()
                 for (document in it) {
                     val chatRoomModel = document.toObject(ChatRoomModel::class.java)
-                    if (chatRoomModel.title.contains(keyword)) {
+                    if (chatRoomModel.title.contains(keyword) && auth.currentUser!!.uid !in chatRoomModel.users) {
+                        chatIds.add(document.id)
                         chatRoomModels.add(chatRoomModel)
                     }
                 }
@@ -110,9 +131,13 @@ class ChatSearchActivity : ParentActivity() {
                     .whereEqualTo(FirebaseConstants.CHAT_FIELD_CITY, city)
                     .get().addOnSuccessListener {
                         chatRoomModels.clear()
+                        chatIds.clear()
                         for (document in it) {
+                            chatIds.add(document.id)
                             val chatRoomModel = document.toObject(ChatRoomModel::class.java)
-                            chatRoomModels.add(chatRoomModel)
+                            if(auth.currentUser!!.uid !in chatRoomModel.users) {
+                                chatRoomModels.add(chatRoomModel)
+                            }
                         }
                         chatRoomAdapter.notifyDataSetChanged()
 
