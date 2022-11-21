@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
@@ -31,6 +32,7 @@ class ChatSearchActivity : ParentActivity() {
     private val chatRoomModels = ArrayList<ChatRoomModel>()
     private val chatRoomAdapter by lazy { ChatRoomAdapter(applicationContext, chatRoomModels) }
     private val chatIds = ArrayList<String>()
+    private val TAG = "ChatSearchActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,6 @@ class ChatSearchActivity : ParentActivity() {
                 override fun onChatClick(position: Int) {
                     fireStore.collection(FirebaseConstants.COLLECTION_CHAT).document(chatIds[position])
                         .update(FirebaseConstants.CHAT_FIELD_USERS, FieldValue.arrayUnion(auth.currentUser?.uid))
-
 
                     val intent = Intent(this@ChatSearchActivity, ChatActivity::class.java)
                     intent.putExtra(Constants.INTENT_EXTRA_CHAT_ID, chatIds[position])
@@ -132,9 +133,11 @@ class ChatSearchActivity : ParentActivity() {
                     .get().addOnSuccessListener {
                         chatRoomModels.clear()
                         chatIds.clear()
+                        Log.d(TAG, "currentLocationSet: ${city}")
                         for (document in it) {
                             chatIds.add(document.id)
                             val chatRoomModel = document.toObject(ChatRoomModel::class.java)
+
                             if(auth.currentUser!!.uid !in chatRoomModel.users) {
                                 chatRoomModels.add(chatRoomModel)
                             }

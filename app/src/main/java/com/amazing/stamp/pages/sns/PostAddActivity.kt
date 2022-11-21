@@ -49,17 +49,6 @@ import kotlin.collections.ArrayList
 import kotlin.math.max
 
 open class PostAddActivity : ParentActivity() {
-
-    companion object {
-        const val FRIEND_SEARCH_REQUEST_CODE = 1001
-        const val PHOTO_ADD_REQUEST_CODE = 1002
-
-        // 액티비티간 값 전달을 위한 Intent Extra
-        const val INTENT_EXTRA_PROFILE = "INTENT_EXTRA_PROFILE"
-        const val INTENT_EXTRA_UID = "INTENT_EXTRA_UID"
-        const val INTENT_EXTRA_NAME = "INTENT_EXTRA_NAME"
-    }
-
     protected val binding by lazy { ActivityPostAddBinding.inflate(layoutInflater) }
     protected val TAG = "PostAddActivity"
 
@@ -160,13 +149,13 @@ open class PostAddActivity : ParentActivity() {
 
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = MediaStore.Images.Media.CONTENT_TYPE
-                startActivityForResult(intent, PHOTO_ADD_REQUEST_CODE)
+                startActivityForResult(intent, Constants.PHOTO_ADD_REQUEST_CODE)
             }
 
             // 친구 언급 버튼
             btnPostAddFriends.setOnClickListener {
                 val intent = Intent(applicationContext, FriendsTagActivity::class.java)
-                startActivityForResult(intent, FRIEND_SEARCH_REQUEST_CODE)
+                startActivityForResult(intent, Constants.FRIEND_SEARCH_REQUEST_CODE)
             }
 
 
@@ -185,15 +174,15 @@ open class PostAddActivity : ParentActivity() {
 
         when (requestCode) {
             // 친구 태그 RequestCode 일때
-            FRIEND_SEARCH_REQUEST_CODE -> {
-                val uid = data?.getStringExtra(INTENT_EXTRA_UID)
-                val nickname = data?.getStringExtra(INTENT_EXTRA_NAME)
+            Constants.FRIEND_SEARCH_REQUEST_CODE -> {
+                val uid = data?.getStringExtra(Constants.INTENT_EXTRA_UID)
+                val nickname = data?.getStringExtra(Constants.INTENT_EXTRA_NAME)
                 if (uid != null && nickname != null) {
                     tagFriend(uid, nickname)
                 }
             }
 
-            PHOTO_ADD_REQUEST_CODE -> {
+            Constants.PHOTO_ADD_REQUEST_CODE -> {
                 val currentImageUri = data?.data!!
                 imageUriList.add(currentImageUri)
                 Log.d(TAG, "dev1: $currentImageUri")

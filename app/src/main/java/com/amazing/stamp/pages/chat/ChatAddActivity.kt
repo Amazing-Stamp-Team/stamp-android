@@ -53,7 +53,7 @@ class ChatAddActivity : ParentActivity() {
             btnChatVisitorAdd.setOnClickListener {
                 // 친구 언급 버튼
                 val intent = Intent(applicationContext, FriendsTagActivity::class.java)
-                startActivityForResult(intent, PostAddActivity.FRIEND_SEARCH_REQUEST_CODE)
+                startActivityForResult(intent, Constants.FRIEND_SEARCH_REQUEST_CODE)
             }
 
             setUpFriendVisit()
@@ -124,9 +124,9 @@ class ChatAddActivity : ParentActivity() {
 
         when (requestCode) {
             // 친구 태그 RequestCode 일때
-            PostAddActivity.FRIEND_SEARCH_REQUEST_CODE -> {
-                val uid = data?.getStringExtra(PostAddActivity.INTENT_EXTRA_UID)
-                val nickname = data?.getStringExtra(PostAddActivity.INTENT_EXTRA_NAME)
+            Constants.FRIEND_SEARCH_REQUEST_CODE -> {
+                val uid = data?.getStringExtra(Constants.INTENT_EXTRA_UID)
+                val nickname = data?.getStringExtra(Constants.INTENT_EXTRA_NAME)
                 if (uid != null && nickname != null) {
                     tagFriend(uid, nickname)
                 }
