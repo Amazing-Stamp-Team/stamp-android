@@ -50,6 +50,9 @@ object FirebaseConstants {
     const val CHAT_FIELD_LOCATION = "location"
     const val CHAT_FIELD_USERS = "users"
 
+    const val COLLECTION_MESSAGE_LOG = "messageLog"
+
+
 
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
     const val STORAGE_PROFILE = "profile"

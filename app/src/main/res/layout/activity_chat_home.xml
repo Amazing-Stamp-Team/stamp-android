@@ -24,37 +24,21 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_chat_home"
+            android:id="@+id/toolbar_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:elevation="3dp"
-            app:title="@string/obj_chat_home" />
+            app:title="@string/obj_toolbar_chat" />
 
-        <EditText
-            android:id="@+id/et_chat_home_search"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_full_height"
-            android:layout_marginHorizontal="@dimen/gap_horizontal"
-            android:layout_marginVertical="@dimen/gap_line_double"
-            android:background="@drawable/et_gray_10"
-            android:drawableLeft="@drawable/ic_search" />
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/gap_horizontal"
-            android:text="@string/obj_chat_home_location_label" />
-
-        <EditText
-            android:id="@+id/tv_chat_home_location"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_full_height"
-            android:layout_marginHorizontal="@dimen/gap_horizontal"
-            android:layout_marginTop="@dimen/gap_line"
-            android:background="@drawable/btn_main_light_10"
-            android:paddingHorizontal="@dimen/gap_line"
-            tools:text="충청남도 천안시 서북구" />
+            android:layout_height="match_parent"
+            android:id="@+id/rv_chat_rooms"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_chat_room" />
 
     </LinearLayout>
 </FrameLayout>
