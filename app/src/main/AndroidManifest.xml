@@ -22,6 +22,9 @@
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
         <activity
+            android:name="com.amazing.stamp.pages.map.MapSearchActivity"
+            android:exported="false" />
+        <activity
             android:name="com.amazing.stamp.pages.chat.ChatActivity"
             android:exported="false" />
         <activity

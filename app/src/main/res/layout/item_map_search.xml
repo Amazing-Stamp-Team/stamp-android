@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/gap_line_double">
+
+    <TextView
+        android:id="@+id/tv_item_map_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/semi_title_size"
+        android:textStyle="bold"
+        tools:text="서울시청" />
+
+    <TextView
+        android:id="@+id/tv_item_map_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_line"
+        tools:text="서울특별시 xx구 xx동 xx역길" />
+
+    <TextView
+        android:id="@+id/tv_item_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="행정 > 시청" />
+
+</LinearLayout>

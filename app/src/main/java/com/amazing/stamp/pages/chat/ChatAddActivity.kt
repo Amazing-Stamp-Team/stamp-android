@@ -1,15 +1,18 @@
 package com.amazing.stamp.pages.chat
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import com.amazing.stamp.adapter.ProfileNicknameAdapter
+import com.amazing.stamp.api.NaverAPI
+import com.amazing.stamp.api.dto.NaverMapSearchResponseDTO
 import com.amazing.stamp.models.ChatRoomModel
 import com.amazing.stamp.models.ProfileNicknameModel
+import com.amazing.stamp.pages.map.MapSearchActivity
 import com.amazing.stamp.pages.sns.FriendsTagActivity
 import com.amazing.stamp.pages.sns.PostAddActivity
+import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.Utils
@@ -17,6 +20,9 @@ import com.example.stamp.databinding.ActivityChatAddBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ChatAddActivity : ParentActivity() {
     private val binding by lazy { ActivityChatAddBinding.inflate(layoutInflater) }
@@ -24,6 +30,9 @@ class ChatAddActivity : ParentActivity() {
     private val fireStore by lazy { Firebase.firestore }
     private val friends = ArrayList<ProfileNicknameModel>()
     private val visitorAdapter by lazy { ProfileNicknameAdapter(applicationContext, friends) }
+    private var address: String? = null
+    private var addressTitle: String? = null
+    private var category: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +45,11 @@ class ChatAddActivity : ParentActivity() {
         }
 
         binding.run {
+            etChatAddLocation.setOnClickListener {
+                val intent = Intent(applicationContext, MapSearchActivity::class.java)
+                startActivityForResult(intent, Constants.EXTRA_MAP_SEARCH_REQUEST_CODE)
+            }
+
             btnChatVisitorAdd.setOnClickListener {
                 // 친구 언급 버튼
                 val intent = Intent(applicationContext, FriendsTagActivity::class.java)
@@ -63,7 +77,6 @@ class ChatAddActivity : ParentActivity() {
         binding.run {
             val chatRoomName = etChatAddTitle.text.toString()
             val chatRoomIntroduce = etChatAddIntroduce.text.toString()
-            val chatRoomLocation = etChatAddLocation.text.toString()
 
             val visitors = ArrayList<String>()
             visitors.add(auth.currentUser!!.uid)
@@ -73,7 +86,8 @@ class ChatAddActivity : ParentActivity() {
                 ChatRoomModel(
                     chatRoomName,
                     chatRoomIntroduce,
-                    chatRoomLocation,
+                    addressTitle,
+                    address,
                     auth.currentUser!!.uid,
                     visitors
                 )
@@ -112,7 +126,15 @@ class ChatAddActivity : ParentActivity() {
                     tagFriend(uid, nickname)
                 }
             }
+            Constants.EXTRA_MAP_SEARCH_REQUEST_CODE -> {
+                addressTitle = data?.getStringExtra(Constants.INTENT_EXTRA_MAP_TITLE)
+                address = data?.getStringExtra(Constants.INTENT_EXTRA_ADDRESS)
+                category = data?.getStringExtra(Constants.INTENT_EXTRA_MAP_CATEGORY)
+
+                binding.etChatAddLocation.setText(addressTitle)
+            }
         }
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 

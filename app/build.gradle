@@ -85,4 +85,12 @@ dependencies {
 
     // Location Service
     implementation 'com.google.android.gms:play-services-location:21.0.0'
+
+    // Retrofit2, GSON converter, okhttp3
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+
+    // json 변환 라이브러리
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 }
