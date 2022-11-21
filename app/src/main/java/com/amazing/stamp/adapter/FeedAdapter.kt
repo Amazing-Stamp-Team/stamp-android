@@ -135,6 +135,8 @@ class FeedAdapter(
                     isLikeClickeds[position] = true
                     binding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.RED)
                     binding.tvItemFeedFootCount.text = postLikeModel.users!!.size.toString()
+                } else {
+                    binding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.BLACK)
                 }
             }
     }
