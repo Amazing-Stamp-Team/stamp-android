@@ -1,21 +1,24 @@
 package com.amazing.stamp.pages.chat
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
+import androidx.core.widget.addTextChangedListener
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.amazing.stamp.adapter.ChatRoomAdapter
 import com.amazing.stamp.models.ChatRoomModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.example.stamp.databinding.ActivityChatSearchBinding
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
 
 class ChatSearchActivity : ParentActivity() {
     private val binding by lazy { ActivityChatSearchBinding.inflate(layoutInflater) }
@@ -36,7 +39,32 @@ class ChatSearchActivity : ParentActivity() {
 
         binding.run {
             rvNewChatRooms.adapter = chatRoomAdapter
+
+            val dividerItemDecoration = DividerItemDecoration(applicationContext, LinearLayoutManager(applicationContext).orientation)
+            rvNewChatRooms.addItemDecoration(dividerItemDecoration)
+            etChatHomeSearch.addTextChangedListener {
+                searchChatRooms(it.toString())
+            }
         }
+    }
+
+    private fun searchChatRooms(keyword:String) {
+        if(keyword.isEmpty()) {
+            chatRoomModels.clear()
+            chatRoomAdapter.notifyDataSetChanged()
+            return
+        }
+        fireStore.collection(FirebaseConstants.COLLECTION_CHAT)
+            .get().addOnSuccessListener {
+                chatRoomModels.clear()
+                for (document in it) {
+                    val chatRoomModel = document.toObject(ChatRoomModel::class.java)
+                    if (chatRoomModel.title.contains(keyword)) {
+                        chatRoomModels.add(chatRoomModel)
+                    }
+                }
+                chatRoomAdapter.notifyDataSetChanged()
+            }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -52,7 +80,8 @@ class ChatSearchActivity : ParentActivity() {
 
     private fun currentLocationSet() {
 
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+        val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(applicationContext)
         if (ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -72,12 +101,23 @@ class ChatSearchActivity : ParentActivity() {
             else {
                 // 반환 예시) 대한민국 충청남도 천안시 서북구 두정역동0길 00
                 val currentLocation = address[0].getAddressLine(0).replaceFirst("대한민국 ", "")
+                binding.tvChatHomeLocation.setText(currentLocation)
+
+                val province = currentLocation.split(" ")[0]
                 val city = currentLocation.split(" ")[1]
 
                 fireStore.collection(FirebaseConstants.COLLECTION_CHAT)
+                    .whereEqualTo(FirebaseConstants.CHAT_FIELD_CITY, city)
+                    .get().addOnSuccessListener {
+                        chatRoomModels.clear()
+                        for (document in it) {
+                            val chatRoomModel = document.toObject(ChatRoomModel::class.java)
+                            chatRoomModels.add(chatRoomModel)
+                        }
+                        chatRoomAdapter.notifyDataSetChanged()
 
-
-                chatRoomAdapter.notifyDataSetChanged()
+                        Snackbar.make(binding.root, "현재 위치 근처에서 활동하는 채팅방들을 찾았어요", Snackbar.LENGTH_LONG).show()
+                    }
             }
         }
     }

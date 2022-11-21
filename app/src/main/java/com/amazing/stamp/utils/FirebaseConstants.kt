@@ -50,6 +50,8 @@ object FirebaseConstants {
     const val CHAT_FIELD_ADDRESS = "address"
     const val CHAT_FIELD_ADDRESS_TITLE = "addressTitle"
     const val CHAT_FIELD_USERS = "users"
+    const val CHAT_FIELD_PROVINCE = "province"
+    const val CHAT_FIELD_CITY = "city"
 
     const val COLLECTION_MESSAGE_LOG = "messageLog"
 

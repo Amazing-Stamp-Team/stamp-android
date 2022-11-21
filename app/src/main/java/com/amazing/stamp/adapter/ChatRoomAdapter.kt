@@ -41,7 +41,6 @@ class ChatRoomAdapter(
 ) :
     RecyclerView.Adapter<ChatRoomAdapter.Holder>() {
 
-
     interface OnChatClickListener {
         fun onChatClick(position: Int)
     }
@@ -63,6 +62,7 @@ class ChatRoomAdapter(
         holder.binding.run {
             tvItemChatRoomTitle.text = chatRoomModels[position].title
             tvItemChatRoomIntroduce.text = chatRoomModels[position].introduce
+            tvItemChatRoomAddressTitle.text = chatRoomModels[position].addressTitle
         }
     }
 

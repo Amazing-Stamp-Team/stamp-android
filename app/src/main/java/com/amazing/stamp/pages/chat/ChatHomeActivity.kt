@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.amazing.stamp.adapter.ChatRoomAdapter
 import com.amazing.stamp.models.ChatRoomModel
 import com.amazing.stamp.utils.Constants
@@ -72,6 +74,8 @@ class ChatHomeActivity : AppCompatActivity() {
             chatRoomIds.add(it.id)
             chatRoomModels.add(it.toObject())
         }
+        val dividerItemDecoration = DividerItemDecoration(applicationContext, LinearLayoutManager(applicationContext).orientation)
+        binding.rvChatRooms.addItemDecoration(dividerItemDecoration)
         binding.rvChatRooms.adapter = chatRoomAdapter
         chatRoomAdapter.notifyDataSetChanged()
 
