@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.amazing.stamp.adapter.FeedAdapter
 import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.PostModel
+import com.amazing.stamp.pages.chat.ChatHomeActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.Utils.showShortToast
 import com.example.stamp.R
@@ -84,7 +85,8 @@ class FeedFragment : Fragment() {
                         return@setOnMenuItemClickListener true
                     }
                     R.id.toolbar_action_dm -> {
-                        showShortToast(requireActivity(), "DM Click")
+                        val intent = Intent(requireContext(), ChatHomeActivity::class.java)
+                        startActivity(intent)
                         return@setOnMenuItemClickListener true
                     }
                 }
@@ -142,9 +144,14 @@ class FeedFragment : Fragment() {
                 if (isLikeClickeds[position]) {
                     feedBinding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.BLACK)
 
-                    fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES).document(postId).update(FirebaseConstants.POST_LIKES_FIELD_USER_ID, FieldValue.arrayRemove(auth.currentUser!!.uid))
+                    fireStore.collection(FirebaseConstants.COLLECTION_POST_LIKES).document(postId)
+                        .update(
+                            FirebaseConstants.POST_LIKES_FIELD_USER_ID,
+                            FieldValue.arrayRemove(auth.currentUser!!.uid)
+                        )
 
-                    feedBinding.tvItemFeedFootCount.text = (feedBinding.tvItemFeedFootCount.text.toString().toInt() - 1).toString()
+                    feedBinding.tvItemFeedFootCount.text =
+                        (feedBinding.tvItemFeedFootCount.text.toString().toInt() - 1).toString()
                 } else {
                     feedBinding.ivItemFeedFoot.imageTintList = ColorStateList.valueOf(Color.RED)
 

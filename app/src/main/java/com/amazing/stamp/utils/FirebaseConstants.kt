@@ -40,6 +40,17 @@ object FirebaseConstants {
     const val POST_LIKES_FIELD_USER_ID = "users"
 
 
+    /*
+        Chat
+     */
+    const val COLLECTION_CHAT = "chat"
+    const val CHAT_FIELD_TITLE = "title"
+    const val CHAT_FIELD_HEAD = "head"
+    const val CHAT_FIELD_INTRODUCE = "introduce"
+    const val CHAT_FIELD_LOCATION = "location"
+    const val CHAT_FIELD_USERS = "users"
+
+
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
     const val STORAGE_PROFILE = "profile"
     const val STORAGE_POST = "posts"
