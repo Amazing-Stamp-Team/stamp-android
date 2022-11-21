@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.amazing.stamp.models.FriendModel
+import com.amazing.stamp.models.TripLocationModel
 import com.amazing.stamp.models.UserModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
@@ -200,9 +201,16 @@ class RegisterActivity : ParentActivity() {
                 // Step 4. Friend Collection 생성
                 val friendModel = FriendModel(ArrayList(), ArrayList())
                 fireStore?.collection(FirebaseConstants.COLLECTION_FRIENDS)?.document(uid)?.set(friendModel)?.await()
+
+
+                // Step 5. tripLocation Collection 생성
+                val tripLocationModel = TripLocationModel(ArrayList())
+                fireStore?.collection(FirebaseConstants.COLLECTION_TRIP_LOCATION)?.document(uid)?.set(tripLocationModel)?.await()
+
+
+                // Step 6. 종료
                 hideProgress()
                 finish()
-
             }
         }
     }
