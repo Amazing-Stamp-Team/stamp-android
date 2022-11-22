@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.values
 import com.amazing.stamp.models.TripLocationModel
+import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.devs.vectorchildfinder.VectorChildFinder
@@ -60,10 +61,6 @@ class MapFragment : ParentFragment() {
         }
         mapRefresh()
 
-//        val vector = VectorChildFinder(requireContext(), R.drawable.ic_korea_map_merged, binding.ivKorea)
-//        vector.findPathByName("경기도 용인시").fillColor = Color.RED
-//        vector.findPathByName("경기도 김포시").fillColor = Color.RED
-
         return binding.root
     }
 
@@ -100,14 +97,20 @@ class MapFragment : ParentFragment() {
 
             if (currentLocation == null || currentLocation!!.isEmpty()) return@setOnClickListener
 
-            val currentLocationSplit = currentLocation?.split(" ")
+            val currentLocationSplit = currentLocation?.split(" ")!!
+
+            // 광역시, 특별시일 경우 이름만
+            val locationArgument = if(currentLocationSplit[0] in Constants.METROPLITAN_CITY) {
+                currentLocationSplit[0]
+            } else {
+                "${currentLocationSplit[0]} ${currentLocationSplit[1]}"
+            }
+
             fireStore.collection(FirebaseConstants.COLLECTION_TRIP_LOCATION)
                 .document(auth.currentUser!!.uid)
                 .update(
                     FirebaseConstants.TRIP_LOCATION_FIELD_VISITED,
-                    FieldValue.arrayUnion(
-                        "${currentLocationSplit?.get(0)} ${currentLocationSplit?.get(1)}"
-                    )
+                    FieldValue.arrayUnion(locationArgument)
                 ).addOnSuccessListener { mapRefresh() }
 
             dialog.dismiss()

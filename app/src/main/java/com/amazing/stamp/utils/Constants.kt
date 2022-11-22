@@ -21,4 +21,14 @@ object Constants {
     const val INTENT_EXTRA_UID = "INTENT_EXTRA_UID"
     const val INTENT_EXTRA_NAME = "INTENT_EXTRA_NAME"
 
+
+    val METROPLITAN_CITY = arrayOf(
+        "서울특별시",
+        "부산광역시",
+        "대구광역시",
+        "인천광역시",
+        "광주광역시",
+        "대전광역시",
+        "울산광역시"
+    )
 }
