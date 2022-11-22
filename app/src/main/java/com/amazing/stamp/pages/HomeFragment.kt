@@ -1,5 +1,6 @@
 package com.amazing.stamp.pages
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,11 @@ class HomeFragment : Fragment() {
         descriptions[1] = "Page2"
 
         binding.run {
+
+            tvHomePopularAttractions.setOnClickListener {
+                val intent = Intent(requireActivity(), HomeFestivalsActivity::class.java)
+                startActivity(intent)
+            }
 
             vpHome.offscreenPageLimit = 1
             vpHome.adapter = ImageSliderAdapter(requireContext(), images, descriptions)

@@ -68,6 +68,9 @@
             android:name="com.amazing.stamp.pages.sns.FollowingListActivity"
             android:exported="false" />
         <activity
+            android:name="com.amazing.stamp.pages.HomeFestivalsActivity"
+            android:exported="false" />
+        <activity
             android:name="com.amazing.stamp.pages.session.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
