@@ -1,8 +1,13 @@
 package com.amazing.stamp.pages
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
+import com.amazing.stamp.adapter.FestivalAdapter
+import com.amazing.stamp.models.FestivalModel
+import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityLocalFestivalsBinding
@@ -35,8 +40,9 @@ class HomeFestivalsActivity : ParentActivity() {
         "제주"
     )
     private val regionCheck by lazy { Array(region.size) { false } }
-
     private val TAG = "TAG_HOMEFESTIVALS"
+    private val festivalModels = ArrayList<FestivalModel>()
+    private val festivalAdapter by lazy { FestivalAdapter(applicationContext, festivalModels) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,15 +53,43 @@ class HomeFestivalsActivity : ParentActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
+        setUpBtnEvent()
+        setUpFestival()
 
+        festivalAdapter.itemClickListener = object : FestivalAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                val uri: Uri = Uri.parse("http://www.naver.com")
+                intent.data = uri
+                startActivity(intent)
+            }
+        }
+
+        binding.rvLocalAttractions.adapter = festivalAdapter
+    }
+
+    private fun setUpFestival() {
+        fireStore.collection(FirebaseConstants.COLLECTION_FESTIVAL)
+            .get().addOnSuccessListener {
+                for (document in it) {
+                    val festivalModel = document.toObject(FestivalModel::class.java)
+                    festivalModels.add(festivalModel)
+                }
+                festivalAdapter.notifyDataSetChanged()
+            }
+    }
+
+
+    private fun setUpBtnEvent() {
         // 지역 버튼 클릭 이벤트
         regionBtn = Array<Button?>(region.size) { null }
-        for(i in region.indices) {
-            regionBtn[i] = findViewById(resources.getIdentifier("btn_attraction_region_$i", "id", packageName))
+        for (i in region.indices) {
+            regionBtn[i] =
+                findViewById(resources.getIdentifier("btn_attraction_region_$i", "id", packageName))
             regionBtn[i]?.setOnClickListener {
-                if(i == 0) {
+                if (i == 0) {
                     regionCheck[0] = !regionCheck[0]
-                    for(j in 1 until region.size) {
+                    for (j in 1 until region.size) {
                         regionCheck[j] = regionCheck[0]
                     }
                 } else {
@@ -98,7 +132,7 @@ class HomeFestivalsActivity : ParentActivity() {
     }
 
     private fun btnRefresh() {
-        for(i in region.indices) {
+        for (i in region.indices) {
             if (regionCheck[i]) {
                 regionBtn[i]?.setBackgroundResource(R.drawable.btn_main_10)
             } else {

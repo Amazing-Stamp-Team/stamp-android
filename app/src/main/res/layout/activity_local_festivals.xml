@@ -281,6 +281,6 @@
         android:layout_marginVertical="@dimen/gap_line_double"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_local_attractions_festival" />
+        tools:listitem="@layout/item_festival" />
 
 </LinearLayout>
