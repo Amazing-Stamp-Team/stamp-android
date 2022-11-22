@@ -21,4 +21,6 @@
     <color name="clear">#00000000</color>
 
     <color name="civ_profile_border_color">#50000000</color>
+
+    <color name="default_map_color">@color/main_color_80</color>
 </resources>

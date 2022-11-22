@@ -53,7 +53,7 @@ class MapFragment : ParentFragment() {
         val vector =
             VectorChildFinder(requireContext(), R.drawable.ic_img_korea_detail, binding.ivKorea)
         val seoul = vector.findPathByName("충남 천안")
-        seoul.fillColor = Color.RED
+        seoul.fillColor = requireActivity().getColor(R.color.main_color_100)
 
         binding.ivKorea.invalidate()
 
