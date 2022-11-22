@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_img_korea_detail" />
+        android:src="@drawable/ic_korea_map_merged" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_map_location"

@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.values
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.devs.vectorchildfinder.VectorChildFinder
@@ -51,9 +52,10 @@ class MapFragment : ParentFragment() {
 
 
         val vector =
-            VectorChildFinder(requireContext(), R.drawable.ic_img_korea_detail, binding.ivKorea)
-        val seoul = vector.findPathByName("충남 천안")
-        seoul.fillColor = requireActivity().getColor(R.color.main_color_100)
+            VectorChildFinder(requireContext(), R.drawable.ic_korea_map_merged, binding.ivKorea)
+        val cheonan = vector.findPathByName("충청남도 천안시")
+
+        cheonan.fillColor = requireActivity().getColor(R.color.main_color_100)
 
         binding.ivKorea.invalidate()
 
