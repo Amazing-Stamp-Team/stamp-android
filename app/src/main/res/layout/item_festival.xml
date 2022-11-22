@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/semi_title_size"
+            android:textColor="@color/black"
             android:textStyle="bold"
             tools:text="보령 머드 축제" />
 

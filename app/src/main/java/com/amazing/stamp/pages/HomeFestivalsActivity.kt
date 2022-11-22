@@ -41,8 +41,9 @@ class HomeFestivalsActivity : ParentActivity() {
     )
     private val regionCheck by lazy { Array(region.size) { false } }
     private val TAG = "TAG_HOMEFESTIVALS"
+    private val festivalIds = ArrayList<String>()
     private val festivalModels = ArrayList<FestivalModel>()
-    private val festivalAdapter by lazy { FestivalAdapter(applicationContext, festivalModels) }
+    private val festivalAdapter by lazy { FestivalAdapter(applicationContext, festivalIds, festivalModels) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,9 +72,12 @@ class HomeFestivalsActivity : ParentActivity() {
     private fun setUpFestival() {
         fireStore.collection(FirebaseConstants.COLLECTION_FESTIVAL)
             .get().addOnSuccessListener {
+                festivalIds.clear()
+                festivalModels.clear()
                 for (document in it) {
                     val festivalModel = document.toObject(FestivalModel::class.java)
                     festivalModels.add(festivalModel)
+                    festivalIds.add(document.id)
                 }
                 festivalAdapter.notifyDataSetChanged()
             }
