@@ -3,6 +3,7 @@ package com.amazing.stamp.pages
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import com.amazing.stamp.adapter.FestivalAdapter
@@ -23,27 +24,35 @@ class HomeFestivalsActivity : ParentActivity() {
     private val storage by lazy { Firebase.storage }
     private val fireStore by lazy { Firebase.firestore }
     private val auth by lazy { Firebase.auth }
-    private val seasonCheck by lazy { Array(12) { false } }
+    private val seasonCheck by lazy { Array(12) { true } }
     private var regionBtn = arrayOf<Button?>()
-    private val region = arrayOf(
-        "전국",
-        "서울",
-        "경기",
-        "강원",
-        "충북",
-        "충남",
-        "전북",
-        "전남",
-        "경북",
-        "경남",
-        "부산",
-        "제주"
-    )
-    private val regionCheck by lazy { Array(region.size) { false } }
+    private var seasonBtn = arrayOf<Button?>()
+    private val region =
+        arrayOf(
+            "전국",
+            "서울특별시",
+            "경기도",
+            "강원도",
+            "충청북도",
+            "충청남도",
+            "전라북도",
+            "전라남도",
+            "경상북도",
+            "경상남도",
+            "부산광역시",
+            "제주특별자치도"
+        )
+    private val regionCheck by lazy { Array(region.size) { true } }
     private val TAG = "TAG_HOMEFESTIVALS"
     private val festivalIds = ArrayList<String>()
     private val festivalModels = ArrayList<FestivalModel>()
-    private val festivalAdapter by lazy { FestivalAdapter(applicationContext, festivalIds, festivalModels) }
+    private val festivalAdapter by lazy {
+        FestivalAdapter(
+            applicationContext,
+            festivalIds,
+            festivalModels
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +64,8 @@ class HomeFestivalsActivity : ParentActivity() {
         }
 
         setUpBtnEvent()
-        setUpFestival()
+        btnRefresh()
+        getFestival()
 
         festivalAdapter.itemClickListener = object : FestivalAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
@@ -69,15 +79,43 @@ class HomeFestivalsActivity : ParentActivity() {
         binding.rvLocalAttractions.adapter = festivalAdapter
     }
 
-    private fun setUpFestival() {
+    private fun getFestival() {
         fireStore.collection(FirebaseConstants.COLLECTION_FESTIVAL)
             .get().addOnSuccessListener {
                 festivalIds.clear()
                 festivalModels.clear()
                 for (document in it) {
                     val festivalModel = document.toObject(FestivalModel::class.java)
-                    festivalModels.add(festivalModel)
-                    festivalIds.add(document.id)
+
+                    try {
+                        val regionIdx = region.indexOf(festivalModel.location!!.split(" ")[0])
+
+                        if(regionIdx == -1) {
+                            showShortToast("지역 정보 에러 1")
+                            showShortToast("에러 지역 : ${festivalModel.location}")
+                            continue
+                        }
+                        if(!regionCheck[regionIdx]) {
+                            continue
+                        }
+
+                        val startDuration = festivalModel.durationStart!!.toDate()
+                        val endDuration = festivalModel.durationEnd!!.toDate()
+
+                        val startMonth = startDuration.month
+                        val endMonth = endDuration.month
+
+                        for(i in startMonth..endMonth) {
+                            if(seasonCheck[i]) {
+                                festivalModels.add(festivalModel)
+                                festivalIds.add(document.id)
+                                break
+                            }
+                        }
+
+                    } catch (e: Exception) {
+                        Log.d(TAG, "getFestival: ${e.message}")
+                    }
                 }
                 festivalAdapter.notifyDataSetChanged()
             }
@@ -107,12 +145,13 @@ class HomeFestivalsActivity : ParentActivity() {
                     regionCheck[0] = checkCnt == region.size - 1
                 }
                 btnRefresh()
+                getFestival()
             }
         }
 
 
         // 시즌 버튼 클릭 리스너 설정
-        val seasonBtn = Array<Button?>(12) { null }
+        seasonBtn = Array<Button?>(12) { null }
 
         for (i in 0..11) {
             seasonBtn[i] = findViewById(
@@ -131,6 +170,8 @@ class HomeFestivalsActivity : ParentActivity() {
                     seasonCheck[i] = true
                     seasonBtn[i]?.setBackgroundResource(R.drawable.btn_main_10)
                 }
+                btnRefresh()
+                getFestival()
             }
         }
     }
@@ -143,6 +184,15 @@ class HomeFestivalsActivity : ParentActivity() {
                 regionBtn[i]?.setBackgroundResource(R.drawable.btn_dark_gray_10)
             }
         }
+
+        for (i in seasonCheck.indices) {
+            if (seasonCheck[i]) {
+                seasonBtn[i]?.setBackgroundResource(R.drawable.btn_main_10)
+            } else {
+                seasonBtn[i]?.setBackgroundResource(R.drawable.btn_dark_gray_10)
+            }
+        }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
