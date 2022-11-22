@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.values
+import com.amazing.stamp.models.TripLocationModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentFragment
 import com.devs.vectorchildfinder.VectorChildFinder
@@ -29,6 +30,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.richpath.RichPathView
 
@@ -38,6 +40,7 @@ class MapFragment : ParentFragment() {
     private var currentLocation: String? = null
     private val auth by lazy { Firebase.auth }
     private val fireStore by lazy { Firebase.firestore }
+    private val vector by lazy { VectorChildFinder(requireContext(), R.drawable.ic_korea_map_merged, binding.ivKorea) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,23 +53,38 @@ class MapFragment : ParentFragment() {
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
-
-        val vector =
-            VectorChildFinder(requireContext(), R.drawable.ic_korea_map_merged, binding.ivKorea)
-        val cheonan = vector.findPathByName("충청남도 천안시")
-        vector.findPathByName("서울특별시").fillColor = requireActivity().getColor(R.color.main_color_100)
-
-        cheonan.fillColor = requireActivity().getColor(R.color.main_color_100)
-
-        binding.ivKorea.invalidate()
-
         binding.run {
             btnMapLocation.setOnClickListener {
                 currentLocationSet()
             }
         }
+        mapRefresh()
+
+//        val vector = VectorChildFinder(requireContext(), R.drawable.ic_korea_map_merged, binding.ivKorea)
+//        vector.findPathByName("경기도 용인시").fillColor = Color.RED
+//        vector.findPathByName("경기도 김포시").fillColor = Color.RED
 
         return binding.root
+    }
+
+    private fun mapRefresh() {
+        fireStore.collection(FirebaseConstants.COLLECTION_TRIP_LOCATION)
+            .document(auth.currentUser!!.uid)
+            .get().addOnCompleteListener {
+                if(it.isSuccessful) {
+                    val model = it.result?.toObject<TripLocationModel>()
+                    model?.visited?.forEach {
+                        try {
+                            vector.findPathByName(it).fillColor = requireContext().getColor(R.color.main_color_100)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    binding.ivKorea.invalidate()
+                } else {
+                    showShortToast("여행다녀온 지역 가져오기 오류")
+                }
+            }
     }
 
 
@@ -80,7 +98,7 @@ class MapFragment : ParentFragment() {
         dialog.show()
         dialog.findViewById<Button>(R.id.btn_register_current_location).setOnClickListener {
 
-            if(currentLocation == null || currentLocation!!.isEmpty()) return@setOnClickListener
+            if (currentLocation == null || currentLocation!!.isEmpty()) return@setOnClickListener
 
             val currentLocationSplit = currentLocation?.split(" ")
             fireStore.collection(FirebaseConstants.COLLECTION_TRIP_LOCATION)
@@ -90,7 +108,7 @@ class MapFragment : ParentFragment() {
                     FieldValue.arrayUnion(
                         "${currentLocationSplit?.get(0)} ${currentLocationSplit?.get(1)}"
                     )
-                )
+                ).addOnSuccessListener { mapRefresh() }
 
             dialog.dismiss()
         }
