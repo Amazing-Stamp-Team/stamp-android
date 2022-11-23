@@ -93,4 +93,8 @@ dependencies {
 
     // json 변환 라이브러리
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    // Naver Map SDK
+    implementation 'com.naver.maps:map-sdk:3.15.0'
+
 }
