@@ -8,7 +8,7 @@ data class FestivalModel(
     val durationEnd: Timestamp?,
     val location: String?,
     val title: String?,
-    val uid: String?,
+    val url: String?,
 ) {
     constructor() : this(null, null, null, null, null, null)
 }

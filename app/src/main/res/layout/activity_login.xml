@@ -8,11 +8,19 @@
     tools:context="com.amazing.stamp.pages.session.LoginActivity">
 
     <Button
+        android:id="@+id/btn_dev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="DEV"
-        android:id="@+id/btn_dev"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test_studio"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

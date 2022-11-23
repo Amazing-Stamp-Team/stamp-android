@@ -29,6 +29,9 @@
         android:theme="@style/Theme.Stamp"
         tools:targetApi="31">
         <activity
+            android:name="com.amazing.stamp.pages.map.LocationBasedViewActivity"
+            android:exported="false" />
+        <activity
             android:name="com.amazing.stamp.pages.map.MapSearchActivity"
             android:exported="false" />
         <activity

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.amazing.stamp.pages.MainActivity
 import com.amazing.stamp.pages.RequireAuthorityActivity
+import com.amazing.stamp.pages.map.LocationBasedViewActivity
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.Utils
 import com.example.stamp.R
@@ -70,6 +71,9 @@ class LoginActivity : ParentActivity() {
             // dev
             btnDev.setOnClickListener {
                 onLogin("aaa@aaa.aaa","aaaaaa")
+            }
+            btnTest.setOnClickListener {
+                startActivity(Intent(applicationContext, LocationBasedViewActivity::class.java))
             }
         }
     }
