@@ -2,6 +2,7 @@ package com.amazing.stamp.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +43,7 @@ class Trip100Adapter(
 
             holder.itemView.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(model.url))
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
 
