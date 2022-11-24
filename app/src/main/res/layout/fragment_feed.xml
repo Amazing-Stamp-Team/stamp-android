@@ -23,6 +23,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_feed"
             android:layout_width="match_parent"
+            android:background="@color/gray_light"
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
