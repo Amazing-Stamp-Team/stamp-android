@@ -9,11 +9,6 @@
         app:showAsAction="always" />
 
     <item
-        android:icon="@drawable/ic_location_add"
-        android:title="주변 친구 추가"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/toolbar_action_dm"
         android:icon="@drawable/ic_send"
         android:title="DM"
