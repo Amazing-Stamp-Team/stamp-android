@@ -14,6 +14,7 @@ import com.example.stamp.R
 import com.amazing.stamp.adapter.ImageSliderAdapter
 import com.amazing.stamp.adapter.Trip100Adapter
 import com.amazing.stamp.models.KoreaTrip100
+import com.amazing.stamp.pages.map.LocationBasedViewActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.example.stamp.databinding.FragmentHomeBinding
 import com.google.firebase.firestore.ktx.firestore
@@ -57,9 +58,9 @@ class HomeFragment : Fragment() {
             setupIndicators(images.size)
 
 
-            btnKoreaTrip100AllView.setOnClickListener {
-                startActivity(Intent(requireContext(), KoreaTrip100Activity::class.java))
-            }
+            btnKoreaTrip100AllView.setOnClickListener { startActivity(Intent(requireContext(), KoreaTrip100Activity::class.java)) }
+
+            btnLocationBased.setOnClickListener { startActivity(Intent(requireContext(), LocationBasedViewActivity::class.java)) }
         }
 
         setUpTrip100RecyclerView()
