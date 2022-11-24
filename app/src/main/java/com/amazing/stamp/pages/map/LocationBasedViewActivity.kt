@@ -16,6 +16,7 @@ import com.amazing.stamp.api.KorTripInfoAPI
 import com.amazing.stamp.api.dto.korTripDTO.Item
 import com.amazing.stamp.api.dto.korTripDTO.KorTripDTO
 import com.amazing.stamp.models.LocationBaseInfoModel
+import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.SecretConstants
 import com.bumptech.glide.Glide
 import com.example.stamp.R
@@ -38,7 +39,7 @@ import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
-class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
+class LocationBasedViewActivity : ParentActivity(), OnMapReadyCallback {
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1007
     }
@@ -75,6 +76,7 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             tvRefresh.setOnClickListener {
+                showProgress(this@LocationBasedViewActivity, "관광지 검색 중...")
                 mapSearch()
             }
         }
@@ -117,13 +119,15 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
 
         locationBaseCall.enqueue(object : Callback<KorTripDTO> {
             override fun onResponse(call: Call<KorTripDTO>, response: Response<KorTripDTO>) {
+                hideProgress()
+
                 if (response.isSuccessful) {
                     val korTripDTO = response.body()!!
                     val items = korTripDTO.response.body.items.item
                     var idx = 0
                     for (item in items) {
                         Log.d(TAG, "onResponse: idx = ${idx}")
-                        if(item.readcount!!.toInt() < 10000) {
+                        if(item.readcount!!.toInt() < 20000) {
                             continue
                         }
                         korTripDTOs.add(item)
@@ -156,12 +160,11 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
                             true
                         }
                     }
-
-
                 }
             }
 
             override fun onFailure(call: Call<KorTripDTO>, t: Throwable) {
+                hideProgress()
                 Toast.makeText(
                     this@LocationBasedViewActivity,
                     "데이터를 불러오는데 실패했습니다.",
@@ -185,16 +188,16 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.isVisible = true
 
-        val infoWindow = InfoWindow()
-        infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
-            override fun getText(infoWindow: InfoWindow): CharSequence {
-                return when (infoWindow.marker?.tag) {
-                    1 -> "이순신 장군 동상"
-                    2 -> "경복궁"
-                    else -> ""
-                }
-            }
-        }
+//        val infoWindow = InfoWindow()
+//        infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
+//            override fun getText(infoWindow: InfoWindow): CharSequence {
+//                return when (infoWindow.marker?.tag) {
+//                    1 -> "이순신 장군 동상"
+//                    2 -> "경복궁"
+//                    else -> ""
+//                }
+//            }
+//        }
 
         // 내장 위치 추적 기능 사용
         naverMap.locationSource = fusedLocationSource
@@ -209,7 +212,6 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.map = naverMap
 
         // 카메라의 움직임에 대한 이벤트 리스너 인터페이스.
-        // 참고 : https://navermaps.github.io/android-map-sdk/reference/com/naver/maps/map/package-summary.html
         naverMap.addOnCameraChangeListener { reason, animated ->
             marker.position = LatLng(
                 // 현재 보이는 네이버맵의 정중앙 가운데로 마커 이동
@@ -221,11 +223,6 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
                 text = "위치 이동 중"
                 setTextColor(Color.parseColor("#c4c4c4"))
             }
-//            binding.btnConfirm.run {
-//                setBackgroundResource(R.drawable.rect_round_c4c4c4_radius_8)
-//                setTextColor(Color.parseColor("#ffffff"))
-//                isEnabled = false
-//            }
         }
 
         // 카메라의 움직임 종료에 대한 이벤트 리스너 인터페이스.
@@ -242,25 +239,10 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
                 setTextColor(Color.parseColor("#2d2d2d"))
             }
-//            binding.btnConfirm.run {
-//                setBackgroundResource(R.drawable.rect_round_ffd464_radius_8)
-//                setTextColor(Color.parseColor("#FF000000"))
-//                isEnabled = true
-//            }
         }
 
-        locationOverlay.setOnClickListener {
-            Toast.makeText(this, "현재 위치", Toast.LENGTH_SHORT).show()
-            true
-        }
-
-//        marker1.setOnClickListener {
-//            Toast.makeText(applicationContext, it.tag.toString(), Toast.LENGTH_SHORT).show()
-//            true
-//        }
-//
-//        marker2.setOnClickListener {
-//            Toast.makeText(applicationContext, it.tag.toString(), Toast.LENGTH_SHORT).show()
+//        locationOverlay.setOnClickListener {
+//            Toast.makeText(this, "현재 위치", Toast.LENGTH_SHORT).show()
 //            true
 //        }
 
@@ -278,20 +260,13 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return
         }
 
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 currentLocation = location
-                // 위치 오버레이의 가시성은 기본적으로 false로 지정되어 있습니다. 가시성을 true로 변경하면 지도에 위치 오버레이가 나타납니다.
                 // 파랑색 점, 현재 위치 표시
                 naverMap.locationOverlay.run {
                     isVisible = true
@@ -307,14 +282,11 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
                 naverMap.moveCamera(cameraUpdate)
 
-                // 빨간색 마커 현재위치로 변경
                 marker.position = LatLng(
                     naverMap.cameraPosition.target.latitude,
                     naverMap.cameraPosition.target.longitude
                 )
             }
-
-
     }
 
 
@@ -323,17 +295,12 @@ class LocationBasedViewActivity : AppCompatActivity(), OnMapReadyCallback {
         val address: ArrayList<Address>
         var addressResult = "주소를 가져 올 수 없습니다."
         try {
-            //세번째 파라미터는 좌표에 대해 주소를 리턴 받는 갯수로
-            //한좌표에 대해 두개이상의 이름이 존재할수있기에 주소배열을 리턴받기 위해 최대갯수 설정
             address = geoCoder.getFromLocation(lat, lng, 1) as ArrayList<Address>
             if (address.size > 0) {
-                // 주소 받아오기
                 val currentLocationAddress = address[0].getAddressLine(0)
                     .toString()
                 addressResult = currentLocationAddress
-
             }
-
         } catch (e: IOException) {
             e.printStackTrace()
         }
