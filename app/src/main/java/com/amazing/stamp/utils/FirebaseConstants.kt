@@ -68,6 +68,10 @@ object FirebaseConstants {
     const val COLLECTION_FESTIVAL = "festival"
 
 
+    /*
+        KoreaTrip100
+     */
+    const val COLLECTION_KOREA_TRIP_100 = "koreaTrip100"
 
 
 
@@ -75,6 +79,7 @@ object FirebaseConstants {
     const val STORAGE_PROFILE = "profile"
     const val STORAGE_POST = "posts"
     const val STORAGE_FESTIVAL = "festival"
+    const val STORAGE_KOREA_TRIP_100 = "koreaTrip100"
     const val TEN_MEGABYTE: Long = 1024 * 1024 * 10
 
 }

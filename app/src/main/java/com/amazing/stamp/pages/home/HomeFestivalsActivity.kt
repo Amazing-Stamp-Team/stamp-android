@@ -1,4 +1,4 @@
-package com.amazing.stamp.pages
+package com.amazing.stamp.pages.home
 
 import android.content.Intent
 import android.net.Uri

@@ -59,7 +59,7 @@
 
 
     <!-- MainPage -->
-    <string name="obj_trip_hot">지금 가장 HOT 한 여행지</string>
+    <string name="obj_festival">전국의 축제 및 행사</string>
 
 
     <!-- FeedFragment -->
@@ -118,6 +118,7 @@
 
     <!-- 지역 축제 목록 및  리스트-->
     <string name="obj_local_attractions_all">지역 축제 및 행사</string>
+    <string name="obj_title_korea_100">대한민국 관광 100선</string>
 
 
 </resources>

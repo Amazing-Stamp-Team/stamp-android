@@ -22,12 +22,17 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Stamp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name="com.amazing.stamp.pages.home.KoreaTrip100Activity"
+            android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.map.LocationBasedViewActivity"
             android:exported="false" />
@@ -78,7 +83,7 @@
             android:name="com.amazing.stamp.pages.sns.FollowingListActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.HomeFestivalsActivity"
+            android:name="com.amazing.stamp.pages.home.HomeFestivalsActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.session.LoginActivity"
