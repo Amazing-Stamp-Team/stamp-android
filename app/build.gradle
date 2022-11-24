@@ -47,6 +47,8 @@ dependencies {
 
     // CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
 
     // VectorChildFinder
     implementation 'com.github.devsideal:VectorChildFinder:1.0.0'
