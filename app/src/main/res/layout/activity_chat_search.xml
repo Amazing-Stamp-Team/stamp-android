@@ -37,9 +37,11 @@
         <EditText
             android:id="@+id/tv_chat_home_location"
             android:layout_width="match_parent"
+            android:focusable="false"
             android:layout_height="@dimen/btn_full_height"
             android:layout_marginHorizontal="@dimen/gap_horizontal"
             android:layout_marginTop="@dimen/gap_line"
+            android:editable="false"
             android:background="@drawable/btn_main_light_10"
             android:paddingHorizontal="@dimen/gap_line"
             android:textColor="@color/main_color_100"
