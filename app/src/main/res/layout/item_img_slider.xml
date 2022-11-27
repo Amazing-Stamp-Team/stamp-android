@@ -22,7 +22,7 @@
         android:layout_margin="@dimen/gap_vertical"
         android:text="STAMF Pick 관광지"
         android:textColor="@color/white"
-        android:textSize="@dimen/title_size"
+        android:textSize="@dimen/semi_title_size"
         android:textStyle="bold" />
 
     <LinearLayout
