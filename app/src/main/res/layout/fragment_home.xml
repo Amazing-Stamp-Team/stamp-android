@@ -27,7 +27,7 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_home"
                 android:layout_width="match_parent"
-                android:layout_height="400dp" />
+                android:layout_height="500dp" />
 
             <LinearLayout
                 android:id="@+id/layoutIndicators"
@@ -38,10 +38,10 @@
                 android:paddingVertical="@dimen/gap_line"
                 android:paddingBottom="8dp" />
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_vertical"
                 android:orientation="horizontal">
 
                 <TextView
@@ -70,10 +70,10 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="@dimen/gap_line_double"
                 android:id="@+id/rv_festival_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_line_double"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_festival_preview" />

@@ -10,20 +10,24 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.amazing.stamp.models.StamfPickModel
+import com.amazing.stamp.utils.FirebaseConstants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.stamp.R
+import com.example.stamp.databinding.ItemImgSliderBinding
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 
 class ImageSliderAdapter(
-    context: Context,
-    sliderImage: Array<Drawable>,
-    sliderDescription: Array<String>
+    val context: Context,
+    val models: ArrayList<StamfPickModel>
 ) :
     RecyclerView.Adapter<ImageSliderAdapter.MyViewHolder>() {
-    private val context: Context
-    private val sliderImage: Array<Drawable>
-    private val sliderDescription: Array<String>
+
+    private val storage by lazy { Firebase.storage }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_img_slider, parent, false)
@@ -31,40 +35,28 @@ class ImageSliderAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindSliderImage(sliderImage[position])
-        holder.bindText(sliderDescription[position])
+        val model = models[position]
+
+        holder.binding.run {
+            tvItemArea.text = model.area
+            tvItemName.text = model.name
+
+            try {
+                storage.getReference(FirebaseConstants.STORAGE_STAMF_PICK)
+                    .child("${model.name}.JPG").downloadUrl.addOnSuccessListener {
+                        Glide.with(context).load(it).into(ivItemSlider)
+                    }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-        return sliderImage.size
+        return models.size
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val mImageView: ImageView
-        private val mTextView: TextView
-
-        fun bindText(text: String) {
-            mTextView.text = text
-        }
-
-        fun bindSliderImage(drawable: Drawable?) {
-            // Glide.with(context).load(imageURL).into(mImageView)
-
-            // 검은색 박스 씌우기
-            mImageView.setColorFilter(Color.parseColor("#A5A5A5"), PorterDuff.Mode.MULTIPLY)
-
-            mImageView.setImageDrawable(drawable)
-        }
-
-        init {
-            mImageView = itemView.findViewById(R.id.iv_item_slider)
-            mTextView = itemView.findViewById(R.id.tv_item_slider)
-        }
-    }
-
-    init {
-        this.context = context
-        this.sliderDescription = sliderDescription
-        this.sliderImage = sliderImage
+        val binding = ItemImgSliderBinding.bind(itemView)
     }
 }

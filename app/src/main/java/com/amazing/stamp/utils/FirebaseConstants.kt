@@ -74,12 +74,20 @@ object FirebaseConstants {
     const val COLLECTION_KOREA_TRIP_100 = "koreaTrip100"
 
 
+    /*
+        StamfPick
+     */
+    const val COLLECTION_STAMF_PICK = "stamfPick"
+
+
+
 
     // Firebase storage - 이미지, 파일 등 구글드라이브 같은 저장소
     const val STORAGE_PROFILE = "profile"
     const val STORAGE_POST = "posts"
     const val STORAGE_FESTIVAL = "festival"
     const val STORAGE_KOREA_TRIP_100 = "koreaTrip100"
+    const val STORAGE_STAMF_PICK = "stamfPick"
     const val TEN_MEGABYTE: Long = 1024 * 1024 * 10
 
 }

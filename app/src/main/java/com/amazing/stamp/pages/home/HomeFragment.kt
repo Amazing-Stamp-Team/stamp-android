@@ -20,12 +20,15 @@ import com.amazing.stamp.api.dto.festivalDTO.FestivalDTO
 import com.amazing.stamp.api.dto.festivalDTO.Item
 import com.amazing.stamp.models.FestivalModel
 import com.amazing.stamp.models.KoreaTrip100
+import com.amazing.stamp.models.StamfPickModel
 import com.amazing.stamp.pages.map.LocationBasedViewActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.SecretConstants
 import com.example.stamp.databinding.FragmentHomeBinding
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,7 +40,9 @@ import kotlin.collections.ArrayList
 class HomeFragment : Fragment() {
     private val binding by lazy { FragmentHomeBinding.inflate(layoutInflater) }
     private val fireStore by lazy { Firebase.firestore }
+    private val storage by lazy { Firebase.storage }
     private val korTripInfoAPI by lazy { KorTripInfoAPI.create() }
+    private val stamfPickModels by lazy { ArrayList<StamfPickModel>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,19 +65,6 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
 
-            vpHome.offscreenPageLimit = 1
-            vpHome.adapter = ImageSliderAdapter(requireContext(), images, descriptions)
-
-            vpHome.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    setCurrentIndicator(position)
-                }
-            })
-
-            setupIndicators(images.size)
-
-
             btnKoreaTrip100AllView.setOnClickListener {
                 startActivity(
                     Intent(
@@ -92,12 +84,35 @@ class HomeFragment : Fragment() {
             }
         }
 
+        setUpStamfPick()
         setUpTrip100RecyclerView()
         setUpFestivalRecyclerView()
 
-
         return binding.root
     }
+
+    private fun setUpStamfPick() = with(binding) {
+        vpHome.offscreenPageLimit = 1
+
+        fireStore.collection(FirebaseConstants.COLLECTION_STAMF_PICK)
+            .get().addOnSuccessListener { querySnapshot ->
+                querySnapshot.documents.forEach {
+                    stamfPickModels.add(it.toObject<StamfPickModel>()!!)
+                }
+
+                vpHome.adapter = ImageSliderAdapter(requireContext(), stamfPickModels)
+                vpHome.adapter!!.notifyDataSetChanged()
+                setupIndicators(stamfPickModels.size)
+            }
+
+        vpHome.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                setCurrentIndicator(position)
+            }
+        })
+    }
+
 
     private fun setUpFestivalRecyclerView() {
         //     @Query("serviceKey", encoded = true) serviceKey: String,
@@ -125,7 +140,6 @@ class HomeFragment : Fragment() {
                 response.body()?.response?.body?.items?.item?.forEach {
                     festivalModel.add(it)
                 }
-
 
                 val festivalPreviewAdapter = FestivalPreviewAdapter(
                     requireContext(),
