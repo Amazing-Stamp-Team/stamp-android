@@ -1,5 +1,6 @@
 package com.amazing.stamp.api
 
+import com.amazing.stamp.api.dto.festivalDTO.FestivalDTO
 import com.amazing.stamp.api.dto.korTripDTO.KorTripDTO
 import com.amazing.stamp.utils.Utils
 import com.google.gson.GsonBuilder
@@ -8,9 +9,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.text.SimpleDateFormat
 
 interface KorTripInfoAPI {
     companion object {
+        val tripDateFormat = SimpleDateFormat("yyyyMMdd")
         private const val BASE_URL = "https://apis.data.go.kr/B551011/KorService/"
         val gson = GsonBuilder().setLenient().create()
 
@@ -37,6 +40,18 @@ interface KorTripInfoAPI {
         @Query("arrange") arrange: String,
         @Query("numOfRows") numOfRows: Int
     ): Call<KorTripDTO>
+
+
+    @GET("searchFestival")
+    fun getFestivalInfoCall(
+        @Query("serviceKey", encoded = true) serviceKey: String,
+        @Query("eventStartDate") eventStartDate: Int,
+        @Query("_type") _type: String,
+        @Query("MobileOS") MobileOS: String,
+        @Query("MobileApp") MobileApp: String,
+        @Query("arrange") arrange: String,
+        @Query("numOfRows") numOfRows: Int
+    ): Call<FestivalDTO>
 
 
 //    @GET("locationBasedList")
