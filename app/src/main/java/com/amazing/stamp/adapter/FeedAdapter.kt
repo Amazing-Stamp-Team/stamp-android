@@ -68,8 +68,12 @@ class FeedAdapter(
 
             val model = feedModels[position]
 
-
-            tvItemFeedLocation.text = model.location
+            tvItemFeedLocation.text = if(model.locationLabel == null || model.locationLabel.isEmpty()) {
+                model.locationLabel
+            } else {
+                model.location
+            }
+            tvItemFeedLocation.text = model.locationLabel
             tvItemFeedContent.text = model.content
             tvItemFeedFootCount.text = "0"
 

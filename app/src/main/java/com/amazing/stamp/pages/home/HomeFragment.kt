@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -18,7 +17,6 @@ import com.amazing.stamp.adapter.Trip100Adapter
 import com.amazing.stamp.api.KorTripInfoAPI
 import com.amazing.stamp.api.dto.festivalDTO.FestivalDTO
 import com.amazing.stamp.api.dto.festivalDTO.Item
-import com.amazing.stamp.models.FestivalModel
 import com.amazing.stamp.models.KoreaTrip100
 import com.amazing.stamp.models.StamfPickModel
 import com.amazing.stamp.pages.map.LocationBasedViewActivity
@@ -32,8 +30,6 @@ import com.google.firebase.storage.ktx.storage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import java.util.*
 import kotlin.collections.ArrayList
 
 

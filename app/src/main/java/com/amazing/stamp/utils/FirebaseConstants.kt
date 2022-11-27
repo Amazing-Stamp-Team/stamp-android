@@ -54,6 +54,7 @@ object FirebaseConstants {
     const val CHAT_FIELD_CITY = "city"
 
     const val COLLECTION_MESSAGE_LOG = "messageLog"
+    const val MESSAGE_LOG_FIELD_TIMESTAMP = "timestamp"
 
 
     /*

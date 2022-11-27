@@ -1,7 +1,5 @@
 package com.amazing.stamp.pages.home
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,20 +8,13 @@ import com.amazing.stamp.adapter.FestivalAdapter
 import com.amazing.stamp.api.KorTripInfoAPI
 import com.amazing.stamp.api.dto.festivalDTO.FestivalDTO
 import com.amazing.stamp.api.dto.festivalDTO.Item
-import com.amazing.stamp.models.FestivalModel
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.SecretConstants
 import com.example.stamp.R
 import com.example.stamp.databinding.ActivityLocalFestivalsBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.Query
-import java.util.*
 import kotlin.collections.ArrayList
 
 

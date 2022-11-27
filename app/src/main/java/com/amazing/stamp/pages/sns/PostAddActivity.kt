@@ -79,6 +79,7 @@ open class PostAddActivity : ParentActivity() {
 
     // 위치 관련
     protected var location: String? = null
+    protected var locationLabel: String? = null
 
 
     //파이어베이스 관련
@@ -193,8 +194,9 @@ open class PostAddActivity : ParentActivity() {
 
             // 위치 설정 RequestCode 일때
             Constants.EXTRA_MAP_SEARCH_REQUEST_CODE -> {
-                location = data?.getStringExtra(Constants.INTENT_EXTRA_MAP_TITLE)
-                binding.tvPostLocationSet.text = location
+                location = data?.getStringExtra(Constants.INTENT_EXTRA_ADDRESS)
+                locationLabel = data?.getStringExtra(Constants.INTENT_EXTRA_MAP_TITLE)
+                binding.tvPostLocationSet.text = locationLabel
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -359,6 +361,7 @@ open class PostAddActivity : ParentActivity() {
                 friendsUID,
                 binding.etPostWritePost.text.toString(),
                 location,
+                locationLabel,
                 startTimeStamp,
                 endTimeStamp,
                 createdAt,

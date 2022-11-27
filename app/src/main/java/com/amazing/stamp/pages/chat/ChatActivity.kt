@@ -13,6 +13,7 @@ import com.example.stamp.databinding.ActivityChatBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -89,6 +90,7 @@ class ChatActivity : AppCompatActivity() {
 
             fireStore.collection(FirebaseConstants.COLLECTION_CHAT)
                 .document(chatRoomID!!).collection(FirebaseConstants.COLLECTION_MESSAGE_LOG)
+                .orderBy(FirebaseConstants.MESSAGE_LOG_FIELD_TIMESTAMP, Query.Direction.ASCENDING)
                 .addSnapshotListener { value, error ->
                     value?.documentChanges?.forEach {
                         if (it.type == DocumentChange.Type.ADDED) {

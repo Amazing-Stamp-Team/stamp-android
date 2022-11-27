@@ -8,6 +8,7 @@ data class PostModel(
     val friends: ArrayList<String>?,
     val content: String?,
     val location: String?,
+    val locationLabel: String?,
     val startDate: Timestamp?,
     val endDate: Timestamp?,
     val createdAt: Timestamp?,
@@ -15,6 +16,7 @@ data class PostModel(
 ){
     constructor() : this(
         "",
+        null,
         null,
         null,
         null,
