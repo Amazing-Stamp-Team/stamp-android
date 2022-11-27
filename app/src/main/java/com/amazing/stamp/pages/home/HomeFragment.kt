@@ -5,25 +5,39 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.amazing.stamp.adapter.FestivalPreviewAdapter
 import com.example.stamp.R
 import com.amazing.stamp.adapter.ImageSliderAdapter
 import com.amazing.stamp.adapter.Trip100Adapter
+import com.amazing.stamp.api.KorTripInfoAPI
+import com.amazing.stamp.api.dto.festivalDTO.FestivalDTO
+import com.amazing.stamp.api.dto.festivalDTO.Item
+import com.amazing.stamp.models.FestivalModel
 import com.amazing.stamp.models.KoreaTrip100
 import com.amazing.stamp.pages.map.LocationBasedViewActivity
 import com.amazing.stamp.utils.FirebaseConstants
+import com.amazing.stamp.utils.SecretConstants
 import com.example.stamp.databinding.FragmentHomeBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
     private val binding by lazy { FragmentHomeBinding.inflate(layoutInflater) }
     private val fireStore by lazy { Firebase.firestore }
+    private val korTripInfoAPI by lazy { KorTripInfoAPI.create() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +49,7 @@ class HomeFragment : Fragment() {
     ): View? {
 
         val images = Array(5) { requireActivity().getDrawable(R.drawable.img_sample_3)!! }
+        images[1] = requireActivity().getDrawable(R.drawable.img_sample_2)!!
         val descriptions = Array(5) { " " }
         descriptions[0] = "전주, 한옥마을"
         descriptions[1] = "Page2"
@@ -58,15 +73,72 @@ class HomeFragment : Fragment() {
             setupIndicators(images.size)
 
 
-            btnKoreaTrip100AllView.setOnClickListener { startActivity(Intent(requireContext(), KoreaTrip100Activity::class.java)) }
+            btnKoreaTrip100AllView.setOnClickListener {
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        KoreaTrip100Activity::class.java
+                    )
+                )
+            }
 
-            btnLocationBased.setOnClickListener { startActivity(Intent(requireContext(), LocationBasedViewActivity::class.java)) }
+            btnLocationBased.setOnClickListener {
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        LocationBasedViewActivity::class.java
+                    )
+                )
+            }
         }
 
         setUpTrip100RecyclerView()
+        setUpFestivalRecyclerView()
 
 
         return binding.root
+    }
+
+    private fun setUpFestivalRecyclerView() {
+        //     @Query("serviceKey", encoded = true) serviceKey: String,
+        //        @Query("eventStartDate") eventStartDate: String,
+        //        @Query("_type") _type: String,
+        //        @Query("MobileOS") MobileOS: String,
+        //        @Query("MobileApp") MobileApp: String,
+        //        @Query("arrange") arrange: String,
+        //        @Query("numOfRows") numOfRows: Int
+
+        val getFestivalCall = korTripInfoAPI.getFestivalInfoCall(
+            SecretConstants.KOR_TRIP_INFO_SERVICE_KEY,
+            KorTripInfoAPI.tripDateFormat.format(System.currentTimeMillis()),
+            "json",
+            "AND",
+            "STAMF",
+            "B",
+            6
+        )
+
+        getFestivalCall.enqueue(object : Callback<FestivalDTO> {
+            override fun onResponse(call: Call<FestivalDTO>, response: Response<FestivalDTO>) {
+                val festivalModel = ArrayList<Item>()
+
+                response.body()?.response?.body?.items?.item?.forEach {
+                    festivalModel.add(it)
+                }
+
+
+                val festivalPreviewAdapter = FestivalPreviewAdapter(
+                    requireContext(),
+                    festivalModel
+                )
+                binding.rvFestivalPreview.adapter = festivalPreviewAdapter
+                festivalPreviewAdapter.notifyDataSetChanged()
+            }
+
+            override fun onFailure(call: Call<FestivalDTO>, t: Throwable) {
+
+            }
+        })
     }
 
     private fun setUpTrip100RecyclerView() = with(binding) {
@@ -84,7 +156,7 @@ class HomeFragment : Fragment() {
                     idx++
                     val model = document.toObject(KoreaTrip100::class.java)
                     trip100List.add(model)
-                    if(idx > 2) break
+                    if (idx > 2) break
                 }
                 trip100Adapter.notifyDataSetChanged()
             }

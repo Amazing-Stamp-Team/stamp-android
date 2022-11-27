@@ -63,24 +63,26 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginLeft="35dp"
+                    android:layout_marginRight="@dimen/gap_line_double"
                     android:drawableTop="@drawable/ic_arrow"
                     android:text="@string/tv_trip_attractions"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_popular_attractions"
+                android:layout_marginTop="@dimen/gap_line_double"
+                android:id="@+id/rv_festival_preview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_popular_attractions_image" />
+                tools:listitem="@layout/item_festival_preview" />
 
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gap_vertical"
+                android:layout_marginTop="50dp"
                 android:src="@drawable/img_location_based" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -88,11 +90,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_full_height"
                 android:layout_marginHorizontal="@dimen/gap_horizontal"
-                android:foreground="?attr/selectableItemBackground"
                 android:background="@drawable/btn_main_light_10"
                 android:drawableRight="@drawable/ic_arrow"
-                android:paddingHorizontal="@dimen/gap_line_double"
                 android:drawableTint="@color/main_color_100"
+                android:foreground="?attr/selectableItemBackground"
+                android:paddingHorizontal="@dimen/gap_line_double"
                 android:text="위치 기반 관광지 검색"
                 android:textColor="@color/main_color_100" />
 

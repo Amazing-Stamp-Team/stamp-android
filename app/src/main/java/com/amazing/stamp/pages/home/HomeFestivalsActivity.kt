@@ -81,7 +81,7 @@ class HomeFestivalsActivity : ParentActivity() {
         Log.d(TAG, "getFestival: ${KorTripInfoAPI.tripDateFormat.format(System.currentTimeMillis())}")
         val festivalCall = korTripInfoAPI.getFestivalInfoCall(
             SecretConstants.KOR_TRIP_INFO_SERVICE_KEY,
-            KorTripInfoAPI.tripDateFormat.format(System.currentTimeMillis()).toInt(),
+            KorTripInfoAPI.tripDateFormat.format(System.currentTimeMillis()),
             "json",
             "AND",
             "STAMF",

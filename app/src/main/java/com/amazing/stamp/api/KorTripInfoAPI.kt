@@ -45,7 +45,7 @@ interface KorTripInfoAPI {
     @GET("searchFestival")
     fun getFestivalInfoCall(
         @Query("serviceKey", encoded = true) serviceKey: String,
-        @Query("eventStartDate") eventStartDate: Int,
+        @Query("eventStartDate") eventStartDate: String,
         @Query("_type") _type: String,
         @Query("MobileOS") MobileOS: String,
         @Query("MobileApp") MobileApp: String,
