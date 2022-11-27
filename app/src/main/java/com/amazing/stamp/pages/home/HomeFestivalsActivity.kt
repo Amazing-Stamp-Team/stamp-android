@@ -74,15 +74,6 @@ class HomeFestivalsActivity : ParentActivity() {
         btnRefresh()
         getFestival()
 
-        festivalAdapter.itemClickListener = object : FestivalAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val intent = Intent(Intent.ACTION_VIEW)
-                val uri: Uri = Uri.parse("http://www.naver.com")
-                intent.data = uri
-                startActivity(intent)
-            }
-        }
-
         binding.rvLocalAttractions.adapter = festivalAdapter
     }
 

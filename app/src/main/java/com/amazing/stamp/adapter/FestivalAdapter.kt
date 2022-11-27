@@ -24,11 +24,6 @@ class FestivalAdapter(
 ) :
     RecyclerView.Adapter<FestivalAdapter.Holder>() {
 
-    interface OnItemClickListener {
-        fun onItemClick(position: Int)
-    }
-
-    var itemClickListener: OnItemClickListener? = null
 
     private val dtoSDF = SimpleDateFormat("yyyyMMdd")
     private val festivalSDF = SimpleDateFormat("yyyy.MM.dd")
@@ -71,9 +66,5 @@ class FestivalAdapter(
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ItemFestivalBinding.bind(itemView)
-
-        init {
-            itemView.setOnClickListener { itemClickListener?.onItemClick(bindingAdapterPosition) }
-        }
     }
 }
