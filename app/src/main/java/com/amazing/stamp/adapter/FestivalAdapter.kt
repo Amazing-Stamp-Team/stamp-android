@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.amazing.stamp.api.dto.festivalDTO.Item
 import com.amazing.stamp.models.FestivalModel
 import com.amazing.stamp.utils.FirebaseConstants
 import com.bumptech.glide.Glide
@@ -19,8 +20,7 @@ import java.text.SimpleDateFormat
 
 class FestivalAdapter(
     private val context: Context,
-    private val festivalIds: ArrayList<String>,
-    private val festivalModels: ArrayList<FestivalModel>
+    private val festivalModels: ArrayList<Item>
 ) :
     RecyclerView.Adapter<FestivalAdapter.Holder>() {
 
@@ -30,7 +30,8 @@ class FestivalAdapter(
 
     var itemClickListener: OnItemClickListener? = null
 
-    private val festivalSDF = SimpleDateFormat("yy.MM.dd")
+    private val dtoSDF = SimpleDateFormat("yyyyMMdd")
+    private val festivalSDF = SimpleDateFormat("yyyy.MM.dd")
     private val storage = Firebase.storage
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -45,33 +46,21 @@ class FestivalAdapter(
             val model = festivalModels[position]
 
             // 뷰를 재사용하기 때문에 기존의 뷰가 남아있을 수 있음. 따라서 디폴트 이미지로 한번 더 세팅해야함
-            Glide.with(context).load(context.getDrawable(R.drawable.ic_default_stamp))
-                .into(ivItemFestival)
+            Glide.with(context).load(context.getDrawable(R.drawable.ic_default_stamp)).into(ivItemFestival)
 
             try {
-                storage.getReference(FirebaseConstants.STORAGE_FESTIVAL)
-                    .child("${festivalIds[position]}.png")
-                    .downloadUrl
-                    .addOnSuccessListener { uri ->
-                        Glide.with(context).load(uri).into(ivItemFestival)
-                    }
+                Glide.with(context).load(model.firstimage).into(ivItemFestival)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
             tvItemFestivalTitle.text = model.title
-            tvItemFestivalLocation.text = model.location
-            tvItemFestivalCall.text = model.call
-
-            var durationStr =
-                if (model.durationStart != null) festivalSDF.format(model.durationStart.seconds * 1000)
-                else ""
-
-            durationStr += if (model.durationEnd != null) " ~ ${festivalSDF.format(model.durationEnd.seconds * 1000)}"
-            else ""
-
-            if (durationStr != null) {
-                tvItemFestivalDuration.text = durationStr
+            tvItemFestivalLocation.text = model.addr1
+            tvItemFestivalCall.text = "tel : ${model.tel}"
+            try {
+                tvItemFestivalDuration.text = "${festivalSDF.format(dtoSDF.parse(model.eventstartdate))} ~ ${festivalSDF.format(dtoSDF.parse(model.eventenddate))}"
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
