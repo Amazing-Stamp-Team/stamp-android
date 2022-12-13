@@ -135,10 +135,10 @@ class ChatSearchActivity : ParentActivity() {
                         chatIds.clear()
                         Log.d(TAG, "currentLocationSet: ${city}")
                         for (document in it) {
-                            chatIds.add(document.id)
                             val chatRoomModel = document.toObject(ChatRoomModel::class.java)
 
                             if(auth.currentUser!!.uid !in chatRoomModel.users) {
+                                chatIds.add(document.id)
                                 chatRoomModels.add(chatRoomModel)
                             }
                         }

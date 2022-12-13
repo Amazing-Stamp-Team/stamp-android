@@ -91,6 +91,7 @@
                     android:layout_height="@dimen/btn_small_height"
                     android:background="@drawable/btn_main_light_10"
                     android:text="@string/obj_email_certify"
+                    android:visibility="gone"
                     android:textColor="@color/main_color_100" />
 
             </LinearLayout>

@@ -90,15 +90,24 @@ class FeedFragment : Fragment() {
 
             setUpFeedLikeClick()
 
-            CoroutineScope(Dispatchers.Main).launch {
-                getUserFriends()
-                setUpFeedRecyclerView()
-            }
+
         }
 
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        postModels.clear()
+        postIds.clear()
+        isLikeClickeds.clear()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            getUserFriends()
+            setUpFeedRecyclerView()
+        }
+    }
 
     private fun setUpFeedRecyclerView() {
         binding.recyclerFeed.adapter = feedAdapter

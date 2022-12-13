@@ -59,9 +59,18 @@ class ChatHomeActivity : AppCompatActivity() {
                 }
             }
 
-            CoroutineScope(Dispatchers.Main).launch {
-                getChatRoomList()
-            }
+
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        chatRoomIds.clear()
+        chatRoomModels.clear()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            getChatRoomList()
         }
     }
 
