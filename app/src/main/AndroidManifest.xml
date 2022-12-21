@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.stamp">
+    package="com.example.stamp" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -30,7 +30,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Stamp"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".ChatMapActivity"
+            android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.home.KoreaTrip100Activity"
             android:exported="false" />
@@ -41,16 +44,16 @@
             android:name="com.amazing.stamp.pages.map.MapSearchActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.chat.ChatActivity"
+            android:name=".ChatActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.chat.ChatAddActivity"
+            android:name=".ChatAddActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.chat.ChatSearchActivity"
+            android:name=".ChatSearchActivity"
             android:exported="false" />
         <activity
-            android:name="com.amazing.stamp.pages.chat.ChatHomeActivity"
+            android:name=".ChatHomeActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.sns.PostEditActivity"
@@ -89,7 +92,7 @@
         <activity
             android:name="com.amazing.stamp.pages.session.LoginActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

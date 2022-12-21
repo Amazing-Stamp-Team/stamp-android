@@ -12,6 +12,7 @@ import com.amazing.stamp.adapter.FeedAdapter
 import com.amazing.stamp.models.FriendModel
 import com.amazing.stamp.models.PostModel
 import com.amazing.stamp.pages.chat.ChatHomeActivity
+import com.amazing.stamp.pages.chat.ChatMapActivity
 import com.amazing.stamp.pages.chat.ChatSearchActivity
 import com.amazing.stamp.utils.FirebaseConstants
 import com.example.stamp.R
@@ -81,6 +82,11 @@ class FeedFragment : Fragment() {
                     }
                     R.id.toolbar_action_dm -> {
                         val intent = Intent(requireContext(), ChatHomeActivity::class.java)
+                        startActivity(intent)
+                        return@setOnMenuItemClickListener true
+                    }
+                    R.id.toolbar_action_chat_map -> {
+                        val intent = Intent(requireContext(), ChatMapActivity::class.java)
                         startActivity(intent)
                         return@setOnMenuItemClickListener true
                     }

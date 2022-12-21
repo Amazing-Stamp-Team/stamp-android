@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/toolbar_action_chat_map"
+        android:icon="@drawable/ic_map"
+        android:title="지도로 근처 채팅방 찾기"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/toolbar_action_dm"
         android:icon="@drawable/ic_send"
         android:title="DM"

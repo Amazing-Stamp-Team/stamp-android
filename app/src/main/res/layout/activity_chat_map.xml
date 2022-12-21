@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.amazing.stamp.pages.chat.ChatMapActivity">
+
+    <fragment
+        android:id="@+id/fg_map"
+        android:name="com.naver.maps.map.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="120dp"
+        android:background="@drawable/btn_main_round"
+        android:drawableLeft="@drawable/ic_refresh_resize"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/white"
+        android:elevation="3dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/gap_line"
+        android:paddingVertical="5dp"
+        android:text="현 지도에서 검색"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="@dimen/gap_horizontal"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/round_white_10"
+        android:elevation="3dp"
+        android:gravity="center"
+        tools:text="현재 위치" />
+
+    <FrameLayout
+        android:id="@+id/fl_des_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gap_line"
+            android:background="@drawable/round_white_10"
+            android:elevation="3dp"
+            android:padding="@dimen/gap_line_double">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_des_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/semi_title_size"
+                    android:textStyle="bold"
+                    tools:text="태조산 등산모임" />
+
+                <TextView
+                    android:id="@+id/tv_des_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/gap_line"
+                    tools:text="충청남도 천안시 서북구 태조산" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_des_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="@dimen/gap_line_double"
+            android:elevation="4dp"
+            android:src="@drawable/ic_exit"
+            app:tint="@color/black" />
+    </FrameLayout>
+</FrameLayout>
