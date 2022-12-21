@@ -47,9 +47,9 @@
         android:id="@+id/fl_des_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:orientation="vertical">
+        tools:visibility="visible">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -76,6 +76,14 @@
                         android:textSize="@dimen/semi_title_size"
                         android:textStyle="bold"
                         tools:text="태조산 등산모임" />
+
+                    <TextView
+                        android:id="@+id/tv_des_introduce"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gap_line"
+                        tools:text="채팅방에 대한 간단한 소개" />
+
 
                     <TextView
                         android:id="@+id/tv_des_address"

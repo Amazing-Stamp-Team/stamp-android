@@ -95,7 +95,7 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
             }
 
             tvRefresh.setOnClickListener {
-                showProgress(this@ChatMapActivity, "채팅방 검색 중...")
+                showProgress(this@ChatMapActivity, "근처 채팅방 검색 중...")
                 mapSearch()
             }
         }
@@ -115,11 +115,13 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
         korTripDTOs.clear()
         locationBaseInfoModels.clear()
 
+        val city = currentAddress?.split(" ")?.get(2) // 0은 대한민국, 1은 도(경기도, 충청남도)
 
-        fireStore.collection(FirebaseConstants.COLLECTION_CHAT).get()
+        fireStore.collection(FirebaseConstants.COLLECTION_CHAT)
+            .whereEqualTo(FirebaseConstants.CHAT_FIELD_CITY, city)
+            .get()
             .addOnSuccessListener {
                 it.documents.forEach { document ->
-                    hideProgress()
                     val chatRoomModel = document.toObject(ChatRoomModel::class.java)
 
                     val geoCoder = Geocoder(this@ChatMapActivity, Locale.KOREA)
@@ -134,6 +136,7 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
                         ChatMapModel(
                             chatRoomModel!!.title,
                             chatRoomModel!!.address!!,
+                            chatRoomModel!!.introduce,
                             document.id,
                         )
                     )
@@ -144,6 +147,7 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
                         binding.run {
                             tvDesTitle.text = locationBaseInfoModels[i].title
                             tvDesAddress.text = locationBaseInfoModels[i].address
+                            tvDesIntroduce.text = locationBaseInfoModels[i].introduce
 
                             flDesContainer.visibility = View.VISIBLE
                         }
@@ -151,6 +155,8 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
                         true
                     }
                 }
+
+                hideProgress()
             }
     }
 
