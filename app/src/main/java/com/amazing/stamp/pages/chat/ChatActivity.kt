@@ -13,6 +13,7 @@ import com.example.stamp.databinding.ActivityChatBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -31,6 +32,7 @@ class ChatActivity : AppCompatActivity() {
     private val userModels = ArrayList<UserModel>()
     private val chatAdapter by lazy { ChatAdapter(applicationContext, chatModels, userModels) }
     private var chatRoomID: String? = null
+    private var myNickname: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +46,42 @@ class ChatActivity : AppCompatActivity() {
 
         chatRoomID = intent.getStringExtra(Constants.INTENT_EXTRA_CHAT_ID)
 
+
+
+
         binding.run {
             CoroutineScope(Dispatchers.Main).launch {
-                setUpRecyclerView()
+                setUpRecyclerView() // await 함
+                invite() // await 함
                 setUpSend()
                 getUserNicknames()
             }
+        }
+    }
+
+    private suspend fun invite() {
+        if (auth.currentUser!!.uid !in chatRoomModel.users) {
+            fireStore.collection(FirebaseConstants.COLLECTION_CHAT).document(chatRoomID!!)
+                .update(
+                    FirebaseConstants.CHAT_FIELD_USERS,
+                    FieldValue.arrayUnion(auth.currentUser!!.uid)
+                )
+                .await()
+
+            myNickname = fireStore.collection(FirebaseConstants.COLLECTION_USERS)
+                .document(auth.currentUser!!.uid)
+                .get()
+                .await()
+                .toObject<UserModel>()!!.nickname
+
+            val chatModel = ChatModel(
+                "system",
+                "${myNickname}님이 채팅방에 들어왔습니다.",
+                Timestamp.now()
+            )
+
+            fireStore.collection(FirebaseConstants.COLLECTION_CHAT).document(chatRoomID!!)
+                .collection(FirebaseConstants.COLLECTION_MESSAGE_LOG).add(chatModel).await()
         }
     }
 

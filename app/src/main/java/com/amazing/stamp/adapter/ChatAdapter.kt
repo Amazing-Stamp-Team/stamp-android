@@ -51,6 +51,12 @@ class ChatAdapter(
                 // 내가 보낸 채팅은 닉네임 숨김
                 tvItemChatName.visibility = View.GONE
                 tvItemChatMessage.setTextColor(context.getColor(R.color.white))
+            } else if(model.user == "system") {
+                tvItemChatMessage.setBackgroundResource(R.drawable.talk_system)
+                tvItemChatMessage.setTextColor(context.getColor(R.color.main_color_100))
+                tvItemChatMessage.gravity = Gravity.CENTER
+                (tvItemChatMessage.layoutParams as LinearLayout.LayoutParams).gravity = Gravity.CENTER
+
             } else {
                 tvItemChatName.visibility = View.VISIBLE
                 tvItemChatMessage.setBackgroundResource(R.drawable.ic_talk_other)
