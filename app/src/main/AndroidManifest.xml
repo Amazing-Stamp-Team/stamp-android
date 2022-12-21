@@ -32,7 +32,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
-            android:name=".ChatMapActivity"
+            android:name="com.amazing.stamp.pages.chat.ChatMapActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.home.KoreaTrip100Activity"
@@ -44,16 +44,16 @@
             android:name="com.amazing.stamp.pages.map.MapSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatActivity"
+            android:name="com.amazing.stamp.pages.chat.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatAddActivity"
+            android:name="com.amazing.stamp.pages.chat.ChatAddActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatSearchActivity"
+            android:name="com.amazing.stamp.pages.chat.ChatSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatHomeActivity"
+            android:name="com.amazing.stamp.pages.chat.ChatHomeActivity"
             android:exported="false" />
         <activity
             android:name="com.amazing.stamp.pages.sns.PostEditActivity"
