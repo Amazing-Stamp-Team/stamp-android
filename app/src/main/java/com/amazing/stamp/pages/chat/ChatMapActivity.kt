@@ -1,6 +1,7 @@
 package com.amazing.stamp.pages.chat
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
@@ -20,6 +21,7 @@ import com.amazing.stamp.models.ChatModel
 import com.amazing.stamp.models.ChatRoomModel
 import com.amazing.stamp.models.LocationBaseInfoModel
 import com.amazing.stamp.pages.map.LocationBasedViewActivity
+import com.amazing.stamp.utils.Constants
 import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.SecretConstants
@@ -62,6 +64,7 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
     private val korTripDTOs = ArrayList<Item>()
     private val locationBaseInfoModels = ArrayList<ChatMapModel>()
     private val fireStore by lazy { Firebase.firestore }
+    private var selectedMarkerIdx = -1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +86,12 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
         binding.run {
             ivDesClose.setOnClickListener {
                 flDesContainer.visibility = View.GONE
+            }
+
+            btnInviteChat.setOnClickListener {
+                val intent = Intent(this@ChatMapActivity, ChatActivity::class.java)
+                intent.putExtra(Constants.INTENT_EXTRA_CHAT_ID, locationBaseInfoModels[selectedMarkerIdx].chatId)
+                startActivity(intent)
             }
 
             tvRefresh.setOnClickListener {
@@ -128,6 +137,19 @@ class ChatMapActivity : ParentActivity(), OnMapReadyCallback {
                             document.id,
                         )
                     )
+                }
+
+                for(i in 0 until markers.size) {
+                    markers[i].setOnClickListener {
+                        binding.run {
+                            tvDesTitle.text = locationBaseInfoModels[i].title
+                            tvDesAddress.text = locationBaseInfoModels[i].address
+
+                            flDesContainer.visibility = View.VISIBLE
+                        }
+                        selectedMarkerIdx = i
+                        true
+                    }
                 }
             }
     }
