@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.amazing.stamp.pages.MainActivity
 import com.amazing.stamp.pages.RequireAuthorityActivity
 import com.amazing.stamp.pages.map.LocationBasedViewActivity
+import com.amazing.stamp.utils.FirebaseConstants
 import com.amazing.stamp.utils.ParentActivity
 import com.amazing.stamp.utils.Utils
 import com.example.stamp.R
@@ -20,9 +21,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class LoginActivity : ParentActivity() {
@@ -70,19 +75,35 @@ class LoginActivity : ParentActivity() {
 
             // dev
             btnDev.setOnClickListener {
-                onLogin("aaa@aaa.aaa","aaaaaa")
+                onLogin("aaa@aaa.aaa", "aaaaaa")
             }
             btnTest.setOnClickListener {
                 startActivity(Intent(applicationContext, LocationBasedViewActivity::class.java))
             }
         }
+        dev()
     }
 
-    private fun checkPermission(){
+    private fun dev() {
+
+        val fireStore = Firebase.firestore
+
+
+
+    }
+
+
+    private fun checkPermission() {
         val permissionCheckStorage =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) // 외부 저장소 권한 확인
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) // 외부 저장소 권한 확인
         val permissionCheckLocation =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) // GPS 권한 확인
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) // GPS 권한 확인
 
         if (permissionCheckStorage == PackageManager.PERMISSION_DENIED || permissionCheckLocation == PackageManager.PERMISSION_DENIED) {
             val intent = Intent(applicationContext, RequireAuthorityActivity::class.java)
@@ -109,7 +130,7 @@ class LoginActivity : ParentActivity() {
             .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
             .check()
     }
-    
+
 
     private fun onLogin(id: String, password: String) {
         FirebaseApp.initializeApp(applicationContext)
@@ -118,13 +139,13 @@ class LoginActivity : ParentActivity() {
 
         auth.signInWithEmailAndPassword(id, password).addOnCompleteListener { task ->
             hideProgress()
-            if(task.isSuccessful) {
-                Toast.makeText(applicationContext, "로그인 성공",Toast.LENGTH_SHORT).show()
+            if (task.isSuccessful) {
+                Toast.makeText(applicationContext, "로그인 성공", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
-                Toast.makeText(applicationContext, "로그인 실패",Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "로그인 실패", Toast.LENGTH_SHORT).show()
             }
         }
 

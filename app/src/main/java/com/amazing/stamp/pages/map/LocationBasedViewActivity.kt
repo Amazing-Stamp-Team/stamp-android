@@ -31,9 +31,13 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.await
 import java.io.IOException
 import java.lang.Exception
 import java.util.*
@@ -116,7 +120,10 @@ class LocationBasedViewActivity : ParentActivity(), OnMapReadyCallback {
         korTripDTOs.clear()
         locationBaseInfoModels.clear()
 
+        CoroutineScope(Dispatchers.Main).launch {
+            locationBaseCall.await()
 
+        }
         locationBaseCall.enqueue(object : Callback<KorTripDTO> {
             override fun onResponse(call: Call<KorTripDTO>, response: Response<KorTripDTO>) {
                 hideProgress()

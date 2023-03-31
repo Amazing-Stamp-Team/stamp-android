@@ -34,9 +34,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.FileInputStream
@@ -67,7 +65,7 @@ class MyPageFragment : ParentFragment() {
 
     override fun onResume() {
         super.onResume()
-        countFollow() // FollowingListActivity에서 언팔로우 후, 다시 팔로잉 카운트를 해서 현 팔로우 수를 출력
+        //countFollow() // FollowingListActivity에서 언팔로우 후, 다시 팔로잉 카운트를 해서 현 팔로우 수를 출력
     }
 
     companion object {
@@ -78,9 +76,6 @@ class MyPageFragment : ParentFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        countFollow()
-        setUpFeedRecyclerView()
 
         binding.tvProfileNickname.text = auth.currentUser!!.displayName
 
@@ -105,20 +100,37 @@ class MyPageFragment : ParentFragment() {
 
         CoroutineScope(Dispatchers.Main).launch {
 
-            // UserModel 의 imageName 값을 이용해 이미지를 가져오므로 순차적으로 실행되야함
-            getUserModel() // UserModel 가져오기
-            getUserProfilePhoto() // UserProfileImage 가져오기
+            getUserModel() // UserModel 가져오기, 이것만 await
 
-            //hideProgress()
+            // 위의 정보를 토대로 각각 가져옴
+            getUserProfilePhoto() // UserProfileImage 가져오기
+            countFollow() // 팔로워 가져오기
+            setUpFeedRecyclerView() // 여행지 가져오기 & 리사이클러뷰 세팅
+
         }
+
+
+       CoroutineScope(Dispatchers.Main).launch {
+           val job1 = async { getUserModel() } // UserModel 가져오기
+
+           job1.await()
+
+           val job2 = async { getUserProfilePhoto() }// UserProfileImage 가져오기
+           val job3 = async { countFollow() } // 팔로워 가져오기
+           val job4 = async { setUpFeedRecyclerView() } // 여행지 가져오기 & 리사이클러뷰 세팅
+
+           joinAll(job2, job3, job4)
+
+           hideProgress()
+       }
 
         return binding.root
     }
 
-    private fun setUpFeedRecyclerView() {
+    private suspend fun setUpFeedRecyclerView() {
         binding.rvMyPageTrip.adapter = myPageTripAdapter
 
-        myPageTripAdapter.onItemClickListener= object :MyPageTripAdapter.OnItemClickListener {
+        myPageTripAdapter.onItemClickListener = object : MyPageTripAdapter.OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
                 val intent = Intent(requireActivity(), PostActivity::class.java)
                 intent.putExtra(Constants.INTENT_EXTRA_POST_ID, postIDs[position])
@@ -126,44 +138,48 @@ class MyPageFragment : ParentFragment() {
             }
         }
 
+//        fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
+//            .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.currentUser?.uid)
+//            .orderBy(FirebaseConstants.POSTS_FIELD_START_DATE, Query.Direction.DESCENDING)
+//            .limit(3)
+//            .get().addOnSuccessListener { value ->
+//                value.documents.forEach { dc ->
+//                    val postModel = dc.toObject<PostModel>()
+//                    postIDs.add(dc.id)
+//                    myPageTripModel.add(postModel!!)
+//                }
+//
+//                myPageTripAdapter.notifyDataSetChanged()
+//            }
         fireStore.collection(FirebaseConstants.COLLECTION_POSTS)
             .whereEqualTo(FirebaseConstants.POSTS_FIELD_WRITER, auth!!.currentUser?.uid)
             .orderBy(FirebaseConstants.POSTS_FIELD_START_DATE, Query.Direction.DESCENDING)
             .limit(3)
-            .get().addOnSuccessListener { value ->
-                value.documents.forEach { dc ->
-                    val postModel = dc.toObject<PostModel>()
-                    postIDs.add(dc.id)
-                    myPageTripModel.add(postModel!!)
-                }
-
+            .get().await().documents.forEach { dc ->
+                val postModel = dc.toObject<PostModel>()
+                postIDs.add(dc.id)
+                myPageTripModel.add(postModel!!)
                 myPageTripAdapter.notifyDataSetChanged()
             }
+
+        Log.d(TAG, "get trip models complete")
     }
 
 
-    private fun countFollow() {
-        val uid = auth!!.currentUser!!.uid
-        val followRef = fireStore?.collection("friends")?.document(uid)
+    private suspend fun countFollow() {
+        try {
+            val uid = auth.currentUser!!.uid
+            val friendModel = fireStore.collection("friends").document(uid).get().await()
+                .toObject(FriendModel::class.java)
 
+            Log.d(TAG, "get following / follower list complete")
 
-        followRef?.get()
-            ?.addOnSuccessListener { document ->
-                if (document != null) {
-                    val model = document.toObject<FriendModel>() // 다큐먼트.toObject<모델>()을 변수로 받아와 접근 가능하게 한다
-//                    Log.d(TAG,model!!.followers!!.size.toString()) 해당 유저 모델의 followers 변수의 길이를 받는다
-//                    Log.d(TAG, model!!.followings!!.size.toString())
+            binding.tvProfileFollowerCount.text = friendModel!!.followers!!.size.toString()
+            binding.tvProfileFollowingCount.text = friendModel!!.followings!!.size.toString()
 
-                    binding.tvProfileFollowerCount.text = model!!.followers!!.size.toString()
-                    binding.tvProfileFollowingCount.text = model!!.followings!!.size.toString()
-
-                } else {
-                    Log.d(TAG, "No such document")
-                }
-            }
-            ?.addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
+        } catch (e: Exception) {
+            Log.d(TAG, "countFollow: ${e.message}")
+        }
     }
 
     private fun changeNickname() {
@@ -260,12 +276,14 @@ class MyPageFragment : ParentFragment() {
                 pathUri = Utils.getPath(requireContext(), data!!.data!!)
 
                 binding.ivProfile.setImageURI(imageUri)
-                binding.ivProfile.background = ContextCompat.getDrawable(requireActivity(), R.drawable.bg_for_rounding_10)
+                binding.ivProfile.background =
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.bg_for_rounding_10)
                 binding.ivProfile.clipToOutline = true
 
                 //Log.d(TAG,"${pathUri} 사진 업로드 과정")
                 if (pathUri != null) {
-                    val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_PROFILE).child("${auth.uid}.png")
+                    val photoFileRef = storage.reference.child(FirebaseConstants.STORAGE_PROFILE)
+                        .child("${auth.uid}.png")
                     val uploadTask = photoFileRef.putStream(FileInputStream(File(pathUri)))
                     val uploadResult = uploadTask
                 }
@@ -359,23 +377,39 @@ class MyPageFragment : ParentFragment() {
     }
 
     private suspend fun getUserModel() {
-        // 한 번만 필요할 경우 get() 으로 호출
-        val userModelResult = fireStore.collection(FirebaseConstants.COLLECTION_USERS).document(auth!!.uid!!).get().await()
+        val userModelResult =
+            fireStore
+                .collection(FirebaseConstants.COLLECTION_USERS)
+                .document(auth.uid!!).get()
+                .await()
         userModel = userModelResult.toObject()
         binding.tvProfileNickname.text = userModel!!.nickname
+
+        Log.d(TAG, "get user model complete")
     }
 
-    private fun getUserProfilePhoto() {
-        storage.getReference(FirebaseConstants.STORAGE_PROFILE).child("${auth.uid!!}.png").downloadUrl.addOnSuccessListener {
-            try {
-                Glide.with(requireContext()).load(it).into(binding.ivProfile)
-            } catch (e: Exception) {
-                try {
-                    Glide.with(requireContext()).load(R.drawable.ic_default_profile).into(binding.ivProfile)
-                } catch (e: Exception) {
-                    Log.d(TAG, "Glide Error")
-                }
-            }
+    private suspend fun getUserProfilePhoto() {
+//        storage.getReference(FirebaseConstants.STORAGE_PROFILE)
+//            .child("${auth.uid!!}.png").downloadUrl.addOnSuccessListener {
+//                try {
+//                    Log.d(TAG, "get user profile image complete")
+//                    Glide.with(requireContext()).load(it).into(binding.ivProfile)
+//                } catch (e: Exception) {
+//                    try {
+//                        Glide.with(requireContext()).load(R.drawable.ic_default_profile)
+//                            .into(binding.ivProfile)
+//                    } catch (e: Exception) {
+//                        Log.d(TAG, "Glide Error")
+//                    }
+//                }
+//            }
+
+        try {
+            val uri = storage.getReference(FirebaseConstants.STORAGE_PROFILE).child("${auth.uid!!}.png").downloadUrl.await()
+            Glide.with(requireContext()).load(uri).into(binding.ivProfile)
+            Log.d(TAG, "user profile image load complete")
+        }catch (e: Exception){
+            Glide.with(requireContext()).load(R.drawable.ic_default_profile).into(binding.ivProfile)
         }
     }
 }
