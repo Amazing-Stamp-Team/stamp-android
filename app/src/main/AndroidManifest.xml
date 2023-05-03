@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.stamp">
+    package="com.example.stamp" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -9,19 +23,92 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Stamp"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31" >
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name="com.amazing.stamp.pages.chat.ChatMapActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.home.KoreaTrip100Activity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.map.LocationBasedViewActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.map.MapSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.chat.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.chat.ChatAddActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.chat.ChatSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.chat.ChatHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.PostEditActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.PostAddActivity"
+            android:exported="false" />
+        <activity android:name="com.amazing.stamp.pages.MyPageAttractionsActivity" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.FriendsSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.FriendsTagActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.utils.ParentActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.PostActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.session.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.RequireAuthorityActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.FollowerListActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.sns.FollowingListActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.home.HomeFestivalsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amazing.stamp.pages.session.LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.amazing.stamp.pages.MainActivity"
+            android:exported="true" />
+
+        <meta-data
+            android:name="com.samsung.android.keepalive.density"
+            android:value="true" />
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="jk12kbh4av" />
     </application>
 
 </manifest>

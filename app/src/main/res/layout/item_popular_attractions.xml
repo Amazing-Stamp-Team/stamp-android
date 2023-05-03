@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="5dp">
+
+    <ImageView
+        android:id="@+id/iv_item_attraction_image_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_for_rounding_10"
+        android:src="@drawable/img_sample_1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="@dimen/gap_line_double"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_attraction_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_marginBottom="@dimen/gap_line"
+            tools:text="서울, 남산" />
+
+        <TextView
+            android:id="@+id/tv_item_attraction_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            tools:text="서울 용산구 남산공원길 105" />
+
+        <TextView
+            android:id="@+id/tv_item_attraction_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            tools:text="2022년 02월 02일" />
+
+    </LinearLayout>
+
+</LinearLayout>

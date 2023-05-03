@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea/misc.xml
+app/src/main/java/com/amazing/stamp/utils/SecretConstants.kt
+.idea/

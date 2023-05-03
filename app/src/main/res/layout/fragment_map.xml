@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.amazing.stamp.pages.map.MapFragment">
+
+    <ImageView
+        android:id="@+id/iv_korea"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/ic_korea_map_merged" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_map_location"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_marginHorizontal="@dimen/gap_horizontal"
+        android:layout_marginVertical="@dimen/gap_vertical"
+        android:background="@drawable/btn_main_10"
+        android:drawableLeft="@drawable/ic_location"
+        android:drawableTint="@color/white"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingHorizontal="@dimen/gap_line_double"
+        android:text="@string/obj_map_location_register" />
+</LinearLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_post_edit"
+        android:icon="@drawable/ic_edit"
+        android:title="게시글 수정"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_post_delete"
+        android:icon="@drawable/ic_delete"
+        android:title="게시글 삭제"
+        app:showAsAction="always" />
+
+
+</menu>

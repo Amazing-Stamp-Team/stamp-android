@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_top_20"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/gap_horizontal"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    tools:context="com.amazing.stamp.pages.session.RegisterActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:text="@string/obj_stamp_login"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:text="@string/obj_email"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/et_login_id"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_marginTop="@dimen/gap_line"
+        android:background="@drawable/et_gray_10" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:text="@string/obj_pw"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/et_login_pw"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_marginTop="@dimen/gap_line"
+        android:background="@drawable/et_gray_10"
+        android:inputType="textPassword" />
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_vertical"
+        android:layout_marginBottom="@dimen/gap_vertical"
+        android:background="@drawable/btn_main_10"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/obj_login"
+        android:textStyle="bold" />
+</LinearLayout>

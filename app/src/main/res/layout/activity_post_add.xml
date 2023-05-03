@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.amazing.stamp.pages.sns.PostAddActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_post_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="3dp"
+        app:title="@string/obj_post_add_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_post_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_post_image" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_post_photo_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_photo_add"
+                android:drawablePadding="@dimen/gap_line"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="@string/obj_post_add_photo"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_post_location_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawablePadding="@dimen/gap_line"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:text="@string/obj_post_add_location"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_post_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_line"
+                android:animateLayoutChanges="true"
+                android:visibility="gone"
+                tools:text="경기도 용인시 처인구 000"
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_calendar"
+                android:drawablePadding="@dimen/gap_line"
+                android:text="@string/obj_post_add_date"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_line"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_post_duration_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/et_gray_10"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:hint="@string/obj_post_add_duration_start"
+                    android:padding="@dimen/gap_line" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/gap_line"
+                    android:text="~" />
+
+                <EditText
+                    android:id="@+id/et_post_duration_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/et_gray_10"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:hint="@string/obj_post_add_duration_end"
+                    android:padding="@dimen/gap_line" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_group"
+                android:drawablePadding="@dimen/gap_line"
+                android:text="@string/tv_post_add_friends"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tagged_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_line"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/gap_horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_profile_nickname" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_post_add_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_line"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="@string/obj_post_add_friends"
+                android:textColor="@color/gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_vertical"
+                android:drawableLeft="@drawable/ic_edit_note"
+                android:drawablePadding="@dimen/gap_line"
+                android:text="@string/tv_post_add_write"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_post_write_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/gap_horizontal"
+                android:layout_marginTop="@dimen/gap_line"
+                android:background="@drawable/et_gray_10"
+                android:hint="@string/et_post_add_write_feed"
+                android:maxLines="10"
+                android:layout_marginBottom="@dimen/gap_vertical"
+                android:padding="@dimen/gap_line" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_post_add_finish"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:background="@drawable/btn_main_square"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/obj_post_add_finish" />
+
+</LinearLayout>

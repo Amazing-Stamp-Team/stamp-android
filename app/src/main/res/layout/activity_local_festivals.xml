@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.amazing.stamp.pages.home.HomeFestivalsActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_local_attractions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="3dp"
+        app:title="@string/obj_local_attractions_all" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="지역"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_0"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="전국" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_1"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+
+                        android:text="서울" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_2"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="경기" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_3"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="강원" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_4"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="충북" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_5"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="충남" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_6"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="경북" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_7"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="경남" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_8"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="전북" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_9"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="전남" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_region_10"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="제주" />
+
+                </LinearLayout>
+
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="시즌"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_1"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="1월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_2"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="2월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_3"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="3월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_4"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="4월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_5"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="5월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_6"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="6월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_7"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="7월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_8"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="8월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_9"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="9월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_10"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="10월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_11"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="11월" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_attraction_season_12"
+                        style="@style/festival_btn_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12월" />
+
+                </LinearLayout>
+
+
+            </HorizontalScrollView>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_local_attractions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="@dimen/gap_line_double"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_festival" />
+
+</LinearLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/gap_horizontal"
+        android:paddingVertical="@dimen/gap_line_double"
+        android:text="새 채팅"
+        android:textColor="@color/main_color_100"
+        android:textSize="@dimen/semi_title_size"
+        android:textStyle="bold" />
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <TextView
+        android:id="@+id/tv_item_new_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingHorizontal="@dimen/gap_horizontal"
+        android:paddingVertical="@dimen/gap_line_double"
+        android:text="새로운 채팅 만들기" />
+
+    <TextView
+        android:id="@+id/tv_item_search_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingHorizontal="@dimen/gap_horizontal"
+        android:paddingVertical="@dimen/gap_line_double"
+        android:text="기존 채팅방 검색하기" />
+
+</LinearLayout>

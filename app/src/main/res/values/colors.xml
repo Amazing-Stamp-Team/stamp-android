@@ -7,4 +7,20 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="main_color_pressed">#47AE97</color>
+    <color name="main_color_100">#53BF9D</color>
+    <color name="main_color_80">#ddf2eb</color>
+    <color name="main_color_30">#cbece2</color>
+
+    <color name="gray_bright">#F5F5F5</color>
+    <color name="gray_light">#EDEDED</color>
+    <color name="gray">#939393</color>
+    <color name="gray_dark">#b2b2b2</color>
+
+    <color name="clear">#00000000</color>
+
+    <color name="civ_profile_border_color">#50000000</color>
+
+    <color name="default_map_color">@color/main_color_80</color>
 </resources>

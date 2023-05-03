@@ -1,3 +1,124 @@
 <resources>
-    <string name="app_name">stamp</string>
+    <string name="app_name">stamf</string>
+    <string name="glb_stamp">Stamf</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="obj_home_title">STAMF</string>
+
+
+    <!-- Navigation -->
+    <string name="nav_menu_home">홈</string>
+    <string name="nav_menu_map">여행지도</string>
+    <string name="nav_menu_feed">피드</string>
+    <string name="nav_menu_my_page">마이페이지</string>
+
+    <!-- Login -->
+    <string name="obj_login">로그인</string>
+    <string name="obj_register">회원가입</string>
+    <string name="obj_login_help">아이디 혹은 비밀번호를 잊으셨나요?</string>
+    <string name="obj_stamp_login">스탬프 로그인</string>
+    <string name="obj_email">이메일</string>
+    <string name="obj_pw">비밀번호</string>
+
+    <!-- Register -->
+    <string name="obj_register_title">회원 가입</string>
+    <string name="obj_register_email">이메일</string>
+    <string name="obj_email_certify">인증</string>
+    <string name="obj_register_email_certify">인증번호</string>
+    <string name="obj_email_certify_ok">확인</string>
+    <string name="obj_register_nickname">닉네임</string>
+    <string name="obj_register_nickname_dupl">중복확인</string>
+    <string name="obj_register_password">비밀번호</string>
+    <string name="obj_register_password_check">비밀번호 확인</string>
+    <string name="obj_register_finish">회원가입</string>
+    <string name="obj_register_nickname_dupl_check">사용 가능한 닉네임입니다!</string>
+
+
+    <!-- PostAdd -->
+    <string name="obj_post_add_toolbar">여행 기록하기</string>
+    <string name="obj_post_add_photo">사진 추가하기</string>
+    <string name="msg_max_image_count_exceed">첨부 가능한 사진 개수를 초과했어요</string>
+    <string name="obj_post_add_finish">기록하기</string>
+    <string name="obj_post_add_location">위치 추가하기</string>
+    <string name="obj_post_add_date">날짜</string>
+    <string name="obj_post_add_duration_start">시작 날짜</string>
+    <string name="obj_post_add_duration_end">종료 날짜</string>
+    <string name="tv_post_add_friends">친구</string>
+    <string name="tv_post_add_write">글 작성</string>
+    <string name="et_post_add_write_feed">글 내용을 작성해주세요</string>
+    <string name="obj_post_add_friends">+ 친구 추가하기</string>
+
+    <!-- MyPage -->
+    <string name="obj_my_page_toolbar">마이페이지</string>
+    <string name="obj_profile_trip">다녀온 여행지</string>
+    <string name="obj_profile_view_trip_all">모두보기</string>
+    <string name="obj_profile_follower">팔로워</string>
+    <string name="obj_profile_following">팔로잉</string>
+    <string name="obj_my_page_attractions_all">다녀온 여행지 모두보기</string>
+
+
+    <!-- MainPage -->
+    <string name="obj_festival">전국의 축제 및 행사</string>
+
+
+    <!-- FeedFragment -->
+    <string name="obj_feed_toolbar">피드</string>
+    <string name="obj_friends_add_id">닉네임/이메일로 친구 추가</string>
+    <string name="obj_friends_add_location">주위 친구 찾기</string>
+    <string name="obj_friends_toolbar">친구 추가하기</string>
+    <string name="obj_friends_search_hint">닉네임 혹은 이메일을 입력해주세요</string>
+
+
+    <string name="obj_Withdrawal_title">스탬프 회원을 탈퇴하시겠습니까?</string>
+    <string name="obj_Withdrawal_content">탈퇴 시 정보는 즉시 삭제되며,\n삭제된 정보는 복구할 수 없습니다.</string>
+    <string name="obj_Withdrawal_no">아니요. 탈퇴하지 않겠습니다.</string>
+    <string name="obj_Withdrawal_yes">네, 탈퇴하겠습니다</string>
+    <string name="obj_Withdrawal">회원탈퇴</string>
+
+    <!-- 회원정보 변경 -->
+    <string name="obj_Change_value_changetitle">비밀번호 변경</string>
+    <string name="tv_Change_value_wanttochange1">변경할 비밀번호를 입력해주세요</string>
+    <string name="tv_Change_value_wanttochange2">변경할 번호를 한 번 더 입력해주세요.</string>
+    <string name="obj_Change_value_change_pw_yes">변경하기</string>
+    <string name="obj_Change_pw">비밀번호 변경</string>
+    <string name="obj_Change_value_change_nickname_title">닉네임 변경</string>
+    <string name="tv_Change_value_change_name">변경하려는 닉네임을 입력하세요</string>
+    <string name="obj_Change_nickname">닉네임 변경</string>
+    <string name="obj_Change_profile_picture">프로필 사진 변경</string>
+    <string name="obj_post_title">게시글 보기</string>
+
+    <!-- 권한 허가하기 -->
+    <string name="obj_require_authority_finish">권한 허가하기</string>
+    <string name="tv_require_authority_title">원활한 Stamp 앱 사용을 위한\n사용 권한 안내</string>
+    <string name="tv_require_authority_necessary">필수 접근 권한</string>
+    <string name="obj_require_authority_location">위치</string>
+    <string name="tv_require_authority_location">현 위치 파악</string>
+    <string name="tv_require_authority_storage">저장공간</string>
+    <string name="tv_require_authority_download">사진 저장 및 불러오기</string>
+    <string name="obj_map_location_register">현재 위치 등록하기</string>
+    <string name="obj_current_location">현재 위치</string>
+    <string name="obj_current_location_register">위치 등록하기</string>
+    <string name="obj_chat_home">STAMP 채팅방</string>
+    <string name="obj_chat_home_location_label">현재 내 위치</string>
+    <string name="obj_chat_add_title">채팅방 이름</string>
+    <string name="obj_chat_add_introduce">채팅방 소개</string>
+    <string name="obj_chat_add_title_hint">채팅방 이름을 입력해주세요</string>
+    <string name="obj_chat_add_introduce_hint">채팅방에 대해 소개하는 글을 작성해주세요</string>
+    <string name="obj_chat_add_location">위치</string>
+    <string name="obj_chat_add_finish">채팅방 만들기</string>
+
+
+    <!-- 팔로잉/팔로워 목록 -->
+    <string name="obj_my_page_follower_list">팔로워</string>
+    <string name="obj_my_page_following_list">팔로잉</string>
+    <string name="obj_toolbar_chat">내 채팅</string>
+    <string name="obj_chat_title">채팅방</string>
+    <string name="tv_trip_attractions">모두보기</string>
+
+    <!-- 지역 축제 목록 및  리스트-->
+    <string name="obj_local_attractions_all">지역 축제 및 행사</string>
+    <string name="obj_title_korea_100">대한민국 관광 100선</string>
+
+
 </resources>

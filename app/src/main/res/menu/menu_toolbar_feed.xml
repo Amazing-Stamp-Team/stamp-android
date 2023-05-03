@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/toolbar_action_friends"
+        android:icon="@drawable/ic_friends_add"
+        android:title="이메일/닉네임으로 친구 추가"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/toolbar_action_chat_map"
+        android:icon="@drawable/ic_map"
+        android:title="지도로 근처 채팅방 찾기"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/toolbar_action_dm"
+        android:icon="@drawable/ic_send"
+        android:title="DM"
+        app:showAsAction="always" />
+
+
+</menu>

@@ -1,0 +1,72 @@
+{
+  "project_info": {
+    "project_number": "371331893475",
+    "firebase_url": "https://stamp-3fea1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "stamp-3fea1",
+    "storage_bucket": "stamp-3fea1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371331893475:android:613fc20999da6fe8dd5dd6",
+        "android_client_info": {
+          "package_name": "com.amazing.stamp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371331893475-5reu1d7tq1vh2hmdkrjghqn1dvrkljrv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amazing.stamp",
+            "certificate_hash": "9fc561e78fac40f564f089509608882486ea12d8"
+          }
+        },
+        {
+          "client_id": "371331893475-i9oi3g5suqcmq98oobf2rfgsi09hhd8p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amazing.stamp",
+            "certificate_hash": "0706ff43da636783d9f36c21968d5fd723f9a5e2"
+          }
+        },
+        {
+          "client_id": "371331893475-kipa7upi6s40fsdpen9klrodtdfm8kou.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amazing.stamp",
+            "certificate_hash": "439c5698ce4d203bd8c429e8b934823dfa635fb6"
+          }
+        },
+        {
+          "client_id": "371331893475-krh1l4vksm8r6f3mhs9jgdun9tlsjhlq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amazing.stamp",
+            "certificate_hash": "b1b98a6b6c855ede5171fd6cdcd7855b64984534"
+          }
+        },
+        {
+          "client_id": "371331893475-0oj18r2dv9pc1ub673ta473b4da5nnuq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZwIlqYTIUkAA-cP-ZuOXUEX4Z0VzhZ_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371331893475-0oj18r2dv9pc1ub673ta473b4da5nnuq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

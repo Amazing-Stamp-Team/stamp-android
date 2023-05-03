@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/round_white_10"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/gap_line_double">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/obj_current_location"
+        android:textSize="@dimen/semi_title_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_dialog_current_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_line_double"
+        android:paddingHorizontal="@dimen/gap_line_double"
+        tools:text="충청남도 천안시 서북구" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_register_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_full_height"
+        android:layout_marginTop="@dimen/gap_line_double"
+        android:background="@drawable/btn_main_square"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/obj_current_location_register" />
+
+</LinearLayout>

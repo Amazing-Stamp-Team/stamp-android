@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="170dp"
+    android:layout_marginRight="1dp">
+
+    <!-- 이미지뷰의 테두리 색상을 지정해주기 위해,
+    테두리 크기(2dp)만큼 패딩을 줘야함
+     또한, 테두리가 라운딩 처리 되있기에 별도의 레이아웃으로 감싸야 함-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/iv_round"
+        android:padding="1dp">
+
+        <ImageView
+            android:id="@+id/iv_item_attraction_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/iv_round"
+            android:scaleType="centerCrop" />
+    </FrameLayout>
+
+
+</FrameLayout>
